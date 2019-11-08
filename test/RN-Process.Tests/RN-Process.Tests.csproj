@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>RN_Process.Tests</RootNamespace>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+    <PackageReference Include="coverlet.collector" Version="1.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RN-Process.Api\RN-Process.Api.csproj" />
+    <ProjectReference Include="..\..\src\RN-Process.WebUi\RN-Process.WebUi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ModelsTests\" />
+    <Folder Include="FeaturesTests\" />
+    <Folder Include="DataAccessTests\" />
+    <Folder Include="PresentationTests\" />
+    <Folder Include="SecurityTests\" />
+    <Folder Include="ServicesTests\" />
+  </ItemGroup>
+
+</Project>

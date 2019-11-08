@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>RN_Process.Api</RootNamespace>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DataAccess\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RN-Process.DataAcces\RN-Process.DataAccess.csproj" />
+    <ProjectReference Include="..\RN-Process.Shared\RN-Process.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

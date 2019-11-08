@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>RN_Process.WebUi</RootNamespace>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\RN-Process.Api\RN-Process.Api.csproj" />
+  </ItemGroup>
+
+</Project>
