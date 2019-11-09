@@ -36,7 +36,7 @@ namespace RN_Process.Tests.DataAccessTests
 
 
             Assert.NotNull(SystemUnderTest.UniqCode);
-            Assert.Empty(SystemUnderTest.UniqCode);
+            Assert.NotEmpty(SystemUnderTest.UniqCode);
             Assert.NotEmpty(SystemUnderTest.Description);
         }
 

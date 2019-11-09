@@ -6,6 +6,7 @@ using System.Text;
 using MongoDB.Bson;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
+using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
 {
@@ -22,10 +23,16 @@ namespace RN_Process.Api.Models
             Id = ObjectId.GenerateNewId().ToString();
             SetContractNumber(contractNumber);
             SetTypeDebt(typeDebt);
+
             DebtDescription = debtDescription;
             CreatedBy = string.Empty;
             ModifiedBy = string.Empty;
             Customer = customer;
+        }
+
+        private void SetRequisitionType(RequisitionType requisitionType)
+        {
+            string enumDesc = requisitionType.DescriptionAttr();
         }
 
         private void SetTypeDebt(int typeDebt)

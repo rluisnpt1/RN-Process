@@ -1,6 +1,6 @@
 ﻿namespace RN_Process.Shared.Commun
 {
-    public static class TaskManagerConstant
+    public static class RnProcessConstant
     {
         public const string Open = "Open";
         public const string Complete = "Complete";

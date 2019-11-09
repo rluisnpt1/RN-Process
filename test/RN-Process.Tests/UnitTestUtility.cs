@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RN_Process.Api.Models;
+using RN_Process.Shared.Enums;
 using Xunit;
 
 namespace RN_Process.Tests
@@ -14,7 +15,7 @@ namespace RN_Process.Tests
 
         public static Contract GetContractCustomerToTest()
         {
-            return new Contract(14533686, 5546, "Divida 1",GetBancoPortugalCustomerToTest());
+            return new Contract(14533686, 5546, "Divida 1"  , GetBancoPortugalCustomerToTest());
         }
 
         public static List<Contract> GetManyContractCustomerToTest()
