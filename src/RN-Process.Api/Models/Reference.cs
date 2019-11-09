@@ -6,8 +6,11 @@ using RN_Process.DataAccess;
 
 namespace RN_Process.Api.Models
 {
-    public class References :  Entity<Guid>
+    public class Reference :  Entity<string>
     {
         public string UniqCode { get; set; }
+
+        public string ReferencesTypeId { get; set; }
+        public virtual ReferencesType ReferencesType  { get; set; }
     }
 }

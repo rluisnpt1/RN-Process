@@ -1,12 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using MongoDB.Bson;
+﻿using System.Collections.Generic;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
-using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
 {
@@ -17,22 +11,29 @@ namespace RN_Process.Api.Models
         public int TypeDebt { get; private set; }
 
         public string DebtDescription { get; private set; }
+        
+        public virtual List<ContractMappingBase> ContractMappingBases { get; set; }
+
+
+        public string CustomerId { get; private set; }
+        public virtual Customer Customer { get; set; }
 
         public Contract(int contractNumber, int typeDebt, string debtDescription, Customer customer)
         {
-            Id = ObjectId.GenerateNewId().ToString();
             SetContractNumber(contractNumber);
             SetTypeDebt(typeDebt);
-
+            SetCustomer(customer);
             DebtDescription = debtDescription;
             CreatedBy = string.Empty;
             ModifiedBy = string.Empty;
-            Customer = customer;
+            ContractMappingBases = new List<ContractMappingBase>();
         }
 
-        private void SetRequisitionType(RequisitionType requisitionType)
+        private void SetCustomer(Customer customer)
         {
-            string enumDesc = requisitionType.DescriptionAttr();
+            Guard.Against.Null(customer, nameof(customer));
+            CustomerId = CustomerId;
+            Customer = customer;
         }
 
         private void SetTypeDebt(int typeDebt)
@@ -47,6 +48,5 @@ namespace RN_Process.Api.Models
             ContractNumber = contractNumber;
         }
 
-        public virtual Customer Customer { get; set; }
     }
 }
