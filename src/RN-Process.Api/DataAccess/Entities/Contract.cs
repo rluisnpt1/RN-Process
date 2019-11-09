@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class Contract : EntityMdb<string>
+    public class Contract : Entity<string>
     {
         public int ContractNumber { get; private set; }
 
@@ -12,11 +14,18 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public string DebtDescription { get; private set; }
         
-        public virtual List<ContractMappingBase> ContractMappingBases { get; set; }
+        public virtual ICollection<ContractMappingBase> ContractMappingBases { get; set; }
 
 
+        [BsonRepresentation(BsonType.ObjectId)]
         public string CustomerId { get; private set; }
         public virtual Customer Customer { get; set; }
+
+        //Runtime execution
+        protected Contract()
+        {
+            
+        }
 
         public Contract(int contractNumber, int typeDebt, string debtDescription, Customer customer)
         {

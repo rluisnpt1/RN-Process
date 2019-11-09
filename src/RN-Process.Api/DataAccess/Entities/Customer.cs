@@ -7,7 +7,7 @@ using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class Customer : EntityMdb<string>
+    public class Customer : Entity<string>
     {
         private static readonly DateTime DefaultDateValue = DateTime.MinValue;
         /// <summary>
@@ -21,11 +21,11 @@ namespace RN_Process.Api.DataAccess.Entities
         [StringLength(250)]
         public string Description { get; private set; }
 
-        public virtual List<Contract> Contracts { get; set; }
+        public virtual ICollection<Contract> Contracts { get; set; }
 
         public Customer(string description, string uniqCode)
         {
-            Id = ObjectId.GenerateNewId().ToString();
+          
             SetDescription(description);
             SetUniqCode(uniqCode);
             SetVersion();
@@ -62,7 +62,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public void AddNewContract(string id, int contractNumber, int typeDebt, string debtDescription)
         {
-            var fact = new Contract(contractNumber, typeDebt, debtDescription, this) { Id = id };
+            var fact = new Contract(contractNumber, typeDebt, debtDescription, this);
             Contracts.Add(fact);
         }
 

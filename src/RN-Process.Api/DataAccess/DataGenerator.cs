@@ -57,7 +57,7 @@ namespace RN_Process.Api.DataAccess
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Destination",
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Backup",
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\BackupToHost",
-                    new char[','], 
+                    ',', 
                     listContract.FirstOrDefault()
                     )
                 );

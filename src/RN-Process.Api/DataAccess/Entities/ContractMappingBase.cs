@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class ContractMappingBase : EntityMdb<string>
+    public class ContractMappingBase : Entity<string>
     {
 
-        public virtual List<FileImport> FileImports { get; set; }
+        public virtual ICollection<FileImport> FileImports { get; set; }
 
 
         public string CodReference { get; set; }
@@ -23,12 +25,23 @@ namespace RN_Process.Api.DataAccess.Entities
         public string PathToDestinationFile { get; set; }
         public string PathToFileBackupAtClient { get; set; }
         public string PathToFileBackupAtHostServer { get; set; }
-        public char[] FileDeLimiter { get; set; }
+        public virtual char FileDeLimiter { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string ContractId { get; private set; }
         public virtual Contract Contract { get; set; }
 
-
-        public ContractMappingBase(string codReference, string internalHost, string linkToAccess, string linkToAccesTipo, string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword, string authenticationCodeApp, string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient, string pathToFileBackupAtHostServer, char[] fileDeLimiter, Contract contract)
+        /// <summary>
+        /// Runtime execution
+        /// </summary>
+        protected ContractMappingBase()
+        {
+            
+        }
+        public ContractMappingBase(string codReference, string internalHost, string linkToAccess,
+            string linkToAccesTipo, string typeOfResponse, bool requiredLogin, string authenticationLogin,
+            string authenticationPassword, string authenticationCodeApp, string pathToOriginFile,
+            string pathToDestinationFile, string pathToFileBackupAtClient, string pathToFileBackupAtHostServer,
+            char fileDeLimiter, Contract contract)
         {
             SetContract(contract);
             CodReference = codReference;

@@ -18,7 +18,7 @@ namespace RN_Process.Api.Interfaces
         DbSet<ContractMappingBase> ContractMappingBases { get; set; }
         DbSet<FileImport> FileImports { get; set; }
 
-        //EntityEntry<IEntityBase> Entry(object entity);
+        //EntityEntry<IEntity<T>> Entry<T>(object entity);
         EntityEntry Entry(object entity);
         int SaveChanges();
     }

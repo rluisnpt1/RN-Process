@@ -10,19 +10,22 @@ namespace RN_Process.DataAccess
     public abstract class EntityMdb<T> : IEntity<T>
     {
         private static readonly DateTime DefaultDateValue = DateTime.UtcNow;
-
+        
+    
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        
         public T Id { get;  set; }
-
-
-        private DateTime? _createdDate;
-
+        [Key]
         object IEntityBase.Id
         {
             get => Id;
             set => Id = (T)value;
         }
+
+        private DateTime? _createdDate;
+
+       
 
         /// <summary>
         ///  The CreatedDate value is a DateTime that can store the complete date of criation.

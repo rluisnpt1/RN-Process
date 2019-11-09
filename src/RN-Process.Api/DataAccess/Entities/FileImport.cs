@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Enums;
 
@@ -17,13 +18,22 @@ namespace RN_Process.Api.DataAccess.Entities
         public bool FileMigrated { get; set; }
         public DateTime? FileMigratedOn { get; set; }
 
-        public virtual List<BsonDocument> AllDataInFile { get; set; }
+        public string AllDataInFile { get; set; }
+        //  public virtual ICollection<AllDataInFile> AllDataInFile { get; set; }
+
+        //runtime execution
+        protected FileImport()
+        {
+           
+        }
 
         public FileImport(ContractMappingBase contractMappingBase)
         {
+         
             ContractMappingBase = contractMappingBase;
         }
 
+        [BsonRepresentation(BsonType.ObjectId)]
         public string ContractMappingBaseId { get; set; }
         public virtual ContractMappingBase ContractMappingBase { get; set; }
     }

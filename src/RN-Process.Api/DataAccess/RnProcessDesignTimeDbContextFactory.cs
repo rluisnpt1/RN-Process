@@ -61,7 +61,7 @@ namespace RN_Process.Api.DataAccess
             var optionsBuilder =
               new DbContextOptionsBuilder<RnProcessContext>();
 
-            Console.WriteLine("TaskManagerDesignTimeDbContextFactory.Create(string): Connection string: {0}", connectionString);
+            Console.WriteLine("RnProcessDesignTimeDbContextFactory.Create(string): Connection string: {0}", connectionString);
 
             optionsBuilder.UseSqlServer(connectionString);
 

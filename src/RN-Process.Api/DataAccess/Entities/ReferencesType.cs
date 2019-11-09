@@ -5,7 +5,12 @@ namespace RN_Process.Api.DataAccess.Entities
 {
     public class ReferencesType : Entity<string>
     {
-        public virtual List<Reference> References { get; set; }
+        //runtime execution
+        protected ReferencesType()
+        {
+            
+        }
+        public virtual ICollection<Reference> References { get; set; }
         public string UniqCode { get; set; }
 
         public ReferencesType(string uniqCode)
