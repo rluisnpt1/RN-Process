@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using RN_Process.Api.Models;
+using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Shared.Enums;
 using Xunit;
 

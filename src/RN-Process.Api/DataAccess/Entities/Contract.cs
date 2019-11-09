@@ -2,7 +2,7 @@
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Api.DataAccess.Entities
 {
     public class Contract : EntityMdb<string>
     {

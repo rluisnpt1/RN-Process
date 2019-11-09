@@ -1,11 +1,8 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Api.DataAccess.Entities
 {
     public class ContractMappingBase : EntityMdb<string>
     {

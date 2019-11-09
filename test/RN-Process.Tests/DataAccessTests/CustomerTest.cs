@@ -1,5 +1,5 @@
 ﻿using System;
-using RN_Process.Api.Models;
+using RN_Process.Api.DataAccess.Entities;
 using Xunit;
 
 namespace RN_Process.Tests.DataAccessTests

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using MongoDB.Bson;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Api.DataAccess.Entities
 {
     public class Customer : EntityMdb<string>
     {
@@ -52,6 +51,7 @@ namespace RN_Process.Api.Models
         {
             Guard.Against.NullOrEmpty(uniqCode, nameof(uniqCode));
             Guard.Against.OutOfRange(uniqCode.Length, nameof(uniqCode), 3, 10);
+          
             UniqCode = uniqCode;
         }
 

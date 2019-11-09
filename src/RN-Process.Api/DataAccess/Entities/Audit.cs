@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Api.DataAccess.Entities
 {
     /// <summary>
     /// https://www.meziantou.net/entity-framework-core-history-audit-table.htm

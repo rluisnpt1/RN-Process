@@ -1,12 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using MongoDB.Bson;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Enums;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Api.DataAccess.Entities
 {
     public class FileImport : Entity<string>
     {
