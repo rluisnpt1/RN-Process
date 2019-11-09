@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace RN_Process.DataAccess.SqlServer
+namespace RN_Process.DataAccess.MongoDb
 {
     public abstract class MongoDbCrudRepositoryBase<TEntity, V, TDbContext> :
-        MngodbRepositoryBase<TEntity, V, TDbContext>, IRepository<TEntity, V>
+        MngoDbRepositoryBase<TEntity, V, TDbContext>, IRepository<TEntity, V>
         where TEntity : class, IEntity<V>
         where TDbContext : DbContext
     {
@@ -23,7 +23,7 @@ namespace RN_Process.DataAccess.SqlServer
         public virtual void Delete(TEntity deleteThis)
         {
             if (deleteThis == null)
-                throw new ArgumentNullException("deleteThis", "deleteThis is null.");
+                throw new ArgumentNullException(nameof(deleteThis), "deleteThis is null.");
 
             var entry = Context.Entry(deleteThis);
 
@@ -51,7 +51,7 @@ namespace RN_Process.DataAccess.SqlServer
         public virtual void Save(TEntity saveThis)
         {
             if (saveThis == null)
-                throw new ArgumentNullException("saveThis", "saveThis is null.");
+                throw new ArgumentNullException(nameof(saveThis), "saveThis is null.");
 
             VerifyItemIsAddedOrAttachedToDbSet(
                 EntityDbSet, saveThis);

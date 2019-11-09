@@ -1,4 +1,4 @@
-﻿using RN_Process.DataAcces;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,5 +8,6 @@ namespace RN_Process.Api.Models
 {
     public class ReferencesType : Entity<Guid>
     {
+        public string UniqCode { get; set; }
     }
 }

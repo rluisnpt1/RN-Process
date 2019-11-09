@@ -42,7 +42,7 @@ namespace RN_Process.Shared.Commun
             Guard.Against.Null(input, parameterName);
             if (input == String.Empty)
             {
-                throw new ArgumentException($"Required input {parameterName} was empty.", parameterName);
+                throw new ArgumentException($"Required input '{parameterName.ToUpper()}' was empty.", parameterName);
             }
         }
 
@@ -60,7 +60,7 @@ namespace RN_Process.Shared.Commun
             Guard.Against.Null(input, parameterName);
             if (!input.Any())
             {
-                throw new ArgumentException($"Required input {parameterName} was empty.", parameterName);
+                throw new ArgumentException($"Required input '{parameterName.ToUpper()}' was empty.", parameterName);
             }
         }
 
@@ -78,7 +78,7 @@ namespace RN_Process.Shared.Commun
             Guard.Against.NullOrEmpty(input, parameterName);
             if (String.IsNullOrWhiteSpace(input))
             {
-                throw new ArgumentException($"Required input {parameterName} was empty.", parameterName);
+                throw new ArgumentException($"Required input '{parameterName.ToUpper()}' was empty.", parameterName);
             }
         }
 
@@ -139,7 +139,7 @@ namespace RN_Process.Shared.Commun
 
             if (comparer.Compare(input, rangeFrom) < 0 || comparer.Compare(input, rangeTo) > 0)
             {
-                throw new ArgumentOutOfRangeException($"Input {parameterName} was out of range", parameterName);
+                throw new ArgumentOutOfRangeException($"Input '{parameterName.ToUpper()}' was out of range", parameterName);
             }
         }
 
@@ -214,7 +214,7 @@ namespace RN_Process.Shared.Commun
         {
             if (EqualityComparer<T>.Default.Equals(input, default(T)))
             {
-                throw new ArgumentException($"Required input {parameterName} cannot be zero.", parameterName);
+                throw new ArgumentException($"Required input '{parameterName.ToUpper()}' cannot be zero.", parameterName);
             }
         }
 
@@ -231,7 +231,7 @@ namespace RN_Process.Shared.Commun
             if (!Enum.IsDefined(typeof(T), input))
             {
                 string enumName = typeof(T).ToString();
-                throw new ArgumentOutOfRangeException($"Required input {parameterName} was not a valid enum value for {typeof(T).ToString()}.", parameterName);
+                throw new ArgumentOutOfRangeException($"Required input '{parameterName.ToUpper()}' was not a valid enum value for {typeof(T).ToString()}.", parameterName);
             }
         }
 
@@ -246,7 +246,7 @@ namespace RN_Process.Shared.Commun
         {
             if (EqualityComparer<T>.Default.Equals(input, default(T)))
             {
-                throw new ArgumentException($"Parameter [{parameterName}] is default value for type {typeof(T).Name}", parameterName);
+                throw new ArgumentException($"Parameter ['{parameterName.ToUpper()}'] is default value for type {typeof(T).Name}", parameterName);
             }
         }
     }

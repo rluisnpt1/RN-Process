@@ -1,21 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace RN_Process.DataAccess
 {
-    public abstract class Entity<T> : IEntity<T>
+    public abstract class EntityMdb<T> : IEntity<T>
     {
         private static readonly DateTime DefaultDateValue = DateTime.UtcNow;
 
-        [Key]
-        public T Id { get; private set; }
-     
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public T Id { get;  set; }
+
+
         private DateTime? _createdDate;
 
         object IEntityBase.Id
         {
             get => Id;
-            set => Id = (T) value;
+            set => Id = (T)value;
         }
 
         /// <summary>

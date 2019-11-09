@@ -1,12 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace RN_Process.DataAccess.SqlServer
+namespace RN_Process.DataAccess.MongoDb
 {
-    public abstract class MngodbRepositoryBase<TEntity, TV, TDbContext> : IDisposable where TEntity : class, IEntity<TV>
+    public abstract class MngoDbRepositoryBase<TEntity, TV, TDbContext> : IDisposable where TEntity : class, IEntity<TV>
         where TDbContext : DbContext
     {
-        public MngodbRepositoryBase(TDbContext context)
+        public MngoDbRepositoryBase(TDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context), "context is null.");
         }

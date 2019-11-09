@@ -1,4 +1,4 @@
-﻿using RN_Process.DataAcces;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +8,9 @@ namespace RN_Process.Api.Models
 {
     public class FileImport : Entity<Guid>
     {
-        public FileImport()
+        public FileImport(ContractMappingBase contractMappingBase)
         {
-            ContractMappingBase = new ContractMappingBase();
+            ContractMappingBase = contractMappingBase;
         }
 
         public virtual ContractMappingBase ContractMappingBase { get; set; }

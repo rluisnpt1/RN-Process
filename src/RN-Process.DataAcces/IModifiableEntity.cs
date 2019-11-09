@@ -2,6 +2,6 @@
 {
     public interface IModifiableEntity
     {
-        string Description { get; set; }
+        //   string Description { get; set; }
     }
 }
