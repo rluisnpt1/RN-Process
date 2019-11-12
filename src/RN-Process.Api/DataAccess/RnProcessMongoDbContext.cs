@@ -36,7 +36,7 @@ namespace RN_Process.Api.DataAccess
 
             RegisterMapIfNeeded<Organization>();
             RegisterMapIfNeeded<Contract>();
-            RegisterMapIfNeeded<ContractMappingBase>();
+            RegisterMapIfNeeded<ContractDetailConfig>();
             RegisterMapIfNeeded<FileImport>();
         }
 
@@ -47,7 +47,7 @@ namespace RN_Process.Api.DataAccess
         {
             //MongoDbMap.OrganizationConfigure();
             //MongoDbMap.ContractConfigure();
-            //MongoDbMap.ContractMappingBaseConfigure();
+            //MongoDbMap.ContractDetailConfigConfigure();
             //MongoDbMap.FileImPortConfigure();
 
             if (!BsonClassMap.IsClassMapRegistered(typeof(TClass)))

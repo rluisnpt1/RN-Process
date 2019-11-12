@@ -15,18 +15,18 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public string DebtDescription { get; private set; }
 
-        [BsonIgnore]
-        private ICollection<ContractMappingBase> _configMapping;
-
-        public virtual ICollection<ContractMappingBase> ContractMappingBases
-        {
-            get { return _configMapping ??= new List<ContractMappingBase>(); }
-            set => _configMapping = value;
-        }
-
-
         public string OrganizationId { get; private set; }
         public virtual Organization Organization { get; set; }
+
+
+        [BsonIgnore]
+        private ICollection<ContractDetailConfig> _configMapping;
+
+        public virtual ICollection<ContractDetailConfig> ContractDetailConfigs
+        {
+            get { return _configMapping ??= new List<ContractDetailConfig>(); }
+            set => _configMapping = value;
+        }
 
         //Runtime execution
         protected Contract()
@@ -40,7 +40,10 @@ namespace RN_Process.Api.DataAccess.Entities
             SetContractNumber(contractNumber);
             SetTypeDebt(typeDebt);
             SetCustomer(organization);
+            Active = true;
+            Deleted = false;
             DebtDescription = debtDescription;
+            CreatedDate = DateTime.UtcNow;
         }
 
         private void SetCustomer(Organization organization)

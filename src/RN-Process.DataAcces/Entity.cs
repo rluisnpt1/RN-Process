@@ -20,6 +20,7 @@ namespace RN_Process.DataAccess
 
         public virtual bool Active { get; set; }
 
+        private byte[] _rowVersion;
         /// <summary>
         /// The rowversion value is a sequential number that's incremented each time the row is updated. 
         /// In an Update or Delete command, the Where clause includes the original value of the tracking 
@@ -31,7 +32,11 @@ namespace RN_Process.DataAccess
         /// </summary>
         /// [ConcurrencyCheck]
         [Timestamp]
-        public byte[] RowVersion { get; set; }
+        public byte[] RowVersion
+        {
+            get => _rowVersion ??= _rowVersion = new byte[0];
+            set => value = _rowVersion;
+        }
     }
 
 }

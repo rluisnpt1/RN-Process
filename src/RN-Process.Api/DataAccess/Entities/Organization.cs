@@ -18,7 +18,7 @@ namespace RN_Process.Api.DataAccess.Entities
         public virtual string UniqCode { get; private set; }
         public string Description { get; private set; }
         public string Uri { get; set; }
-        
+
         [BsonIgnore]
         private ICollection<Contract> _contract;
         public virtual ICollection<Contract> Contracts
@@ -27,14 +27,29 @@ namespace RN_Process.Api.DataAccess.Entities
             protected set => _contract = value;
         }
 
+        [BsonIgnore]
+        private ICollection<ContractDetailConfig> _contractConfig;
+        public virtual ICollection<ContractDetailConfig> ContractDetails
+        {
+            get { return _contractConfig ??= new List<ContractDetailConfig>(); }
+            protected set => _contractConfig = value;
+        }
+
         public Organization(string description, string uniqCode)
         {
             Id = ObjectId.GenerateNewId().ToString();
             SetDescription(description);
             SetUniqCode(uniqCode);
             SetVersion();
+            Active = true;
+            Deleted = false;
+            CreatedDate = DateTime.UtcNow;
+            RowVersion = new byte[0];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected Organization()
         {
 
@@ -61,11 +76,23 @@ namespace RN_Process.Api.DataAccess.Entities
             RowVersion = new byte[0];
         }
 
-        public void AddNewContract(string id, int contractNumber, int typeDebt, string debtDescription)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contractNumber"></param>
+        /// <param name="typeDebt"></param>
+        /// <param name="debtDescription"></param>
+        public void AddNewContract(int contractNumber, int typeDebt, string debtDescription)
         {
             var fact = new Contract(contractNumber, typeDebt, debtDescription, this);
+
+            UpdateContractConfigurationById(fact);
+
             Contracts.Add(fact);
         }
+
+
 
         /// <summary>
         /// Add contract 
@@ -83,11 +110,11 @@ namespace RN_Process.Api.DataAccess.Entities
 
             if (!string.IsNullOrEmpty(id))
             {
-                UpdateExistingContractById(id, contractNumber, typeDebt, debtDescription, DefaultDateTime);
+                UpdateExistingContractById(id, contractNumber, typeDebt, debtDescription);
             }
             else
             {
-                AddNewContract(id, contractNumber, typeDebt, debtDescription);
+                AddNewContract(contractNumber, typeDebt, debtDescription);
             }
         }
 
@@ -99,28 +126,63 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="typeDebt"></param>
         /// <param name="debtDescription"></param>
         /// <param name="modificationDate"></param>
-        private void UpdateExistingContractById(string id, int contractNumber, int typeDebt, string debtDescription, DateTime modificationDate)
+        private void UpdateExistingContractById(string id, int contractNumber, int typeDebt, string debtDescription)
         {
             bool foundIt = false;
 
             // locate existing contract 
-            Contract contract = (Contracts.Where(temp => temp.ContractNumber == contractNumber && temp.TypeDebt == typeDebt)).FirstOrDefault();
+            Contract contract = (Contracts.Where(temp => temp.Id == id && temp.ContractNumber == contractNumber && temp.TypeDebt == typeDebt)).FirstOrDefault();
 
             if (contract == null)
             {
-                contract = new Contract(contractNumber, typeDebt, debtDescription, this) { Id = id };
+                contract = new Contract(contractNumber, typeDebt, debtDescription, this);
                 //Id = ObjectId.GenerateNewId().ToString();
             }
             else
             {
                 foundIt = true;
-                contract.ModifiedDate = modificationDate;
+                contract.ModifiedDate = DateTime.UtcNow;
                 contract.ModifiedBy = "System-- need change for user";
             }
 
             if (foundIt == false)
             {
                 Contracts.Add(contract);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contr"></param>
+        public void UpdateContractConfigurationById(Contract contr)
+        {
+            bool foundIt = false;
+
+            ContractDetailConfig contractDetail = (ContractDetails
+                                                    .Where(temp => temp.ContractId == contr.Id
+                                                                   && temp.Contract.OrganizationId == this.Id))
+                                                    .FirstOrDefault();
+
+            if (contractDetail == null)
+            {
+                contractDetail = new ContractDetailConfig(string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, false, string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    new List<string>(), contr);
+            }
+            else
+            {
+                foundIt = true;
+                contractDetail.ModifiedDate = DateTime.UtcNow;
+                contractDetail.ModifiedBy = "System-- need change for user";
+            }
+
+            if (foundIt == false)
+            {
+                ContractDetails.Add(contractDetail);
             }
         }
     }

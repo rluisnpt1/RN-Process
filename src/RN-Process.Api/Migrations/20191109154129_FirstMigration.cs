@@ -93,7 +93,7 @@ namespace RN_Process.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ContractMappingBase",
+                name: "ContractDetailConfig",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -120,9 +120,9 @@ namespace RN_Process.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ContractMappingBase", x => x.Id);
+                    table.PrimaryKey("PK_ContractDetailConfig", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContractMappingBase_Contract_ContractId",
+                        name: "FK_ContractDetailConfig_Contract_ContractId",
                         column: x => x.ContractId,
                         principalTable: "Contract",
                         principalColumn: "Id",
@@ -148,15 +148,15 @@ namespace RN_Process.Api.Migrations
                     FileMigrated = table.Column<bool>(nullable: false),
                     FileMigratedOn = table.Column<DateTime>(nullable: true),
                     AllDataInFile = table.Column<string>(nullable: true),
-                    ContractMappingBaseId = table.Column<string>(nullable: true)
+                    ContractDetailConfigId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileImport", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileImport_ContractMappingBase_ContractMappingBaseId",
-                        column: x => x.ContractMappingBaseId,
-                        principalTable: "ContractMappingBase",
+                        name: "FK_FileImport_ContractDetailConfig_ContractDetailConfigId",
+                        column: x => x.ContractDetailConfigId,
+                        principalTable: "ContractDetailConfig",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -167,14 +167,14 @@ namespace RN_Process.Api.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContractMappingBase_ContractId",
-                table: "ContractMappingBase",
+                name: "IX_ContractDetailConfig_ContractId",
+                table: "ContractDetailConfig",
                 column: "ContractId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FileImport_ContractMappingBaseId",
+                name: "IX_FileImport_ContractDetailConfigId",
                 table: "FileImport",
-                column: "ContractMappingBaseId");
+                column: "ContractDetailConfigId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reference_ReferencesTypeId",
@@ -191,7 +191,7 @@ namespace RN_Process.Api.Migrations
                 name: "Reference");
 
             migrationBuilder.DropTable(
-                name: "ContractMappingBase");
+                name: "ContractDetailConfig");
 
             migrationBuilder.DropTable(
                 name: "ReferencesType");

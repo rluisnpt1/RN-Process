@@ -16,7 +16,7 @@ namespace RN_Process.Api.DataAccess
         public DbSet<Reference> References { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Contract> Contracts { get; set; }
-        public DbSet<ContractMappingBase> ContractMappingBases { get; set; }
+        public DbSet<ContractDetailConfig> ContractDetailConfigs { get; set; }
         public DbSet<FileImport> FileImports { get; set; }
 
      
@@ -73,17 +73,17 @@ namespace RN_Process.Api.DataAccess
                 entity.ToTable("Contract");
 
                 entity.HasKey(x => x.Id);
-                entity.HasMany(x => x.ContractMappingBases)
+                entity.HasMany(x => x.ContractDetailConfigs)
                     .WithOne(x => x.Contract);
 
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
 
-            modelBuilder.Entity<ContractMappingBase>(entity =>
+            modelBuilder.Entity<ContractDetailConfig>(entity =>
             {
-                entity.ToTable("ContractMappingBase");
+                entity.ToTable("ContractDetailConfig");
                 entity.HasKey(x => x.Id);
-                entity.HasMany(x => x.FileImports).WithOne(x => x.ContractMappingBase);
+                entity.HasMany(x => x.FileImports).WithOne(x => x.ContractDetailConfig);
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
             modelBuilder.Entity<FileImport>(entity =>

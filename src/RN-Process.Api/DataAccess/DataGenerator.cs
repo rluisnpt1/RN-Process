@@ -20,7 +20,7 @@ namespace RN_Process.Api.DataAccess
                 return;   // Data was already seeded
             }
 
-            if (context.ContractMappingBases.Any())
+            if (context.ContractDetailConfigs.Any())
             {
                 return;   // Data was already seeded
             }
@@ -42,8 +42,8 @@ namespace RN_Process.Api.DataAccess
 
             context.Organizations.AddRange(listCustomer);
             context.Contracts.AddRange(listContract);
-            context.ContractMappingBases.AddRange(
-                new ContractMappingBase(
+            context.ContractDetailConfigs.AddRange(
+                new ContractDetailConfig(
                     "FTP",
                     "LocalHost",
                     "FTP:10.80.5.198",

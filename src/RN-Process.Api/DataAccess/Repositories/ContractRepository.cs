@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -12,7 +10,8 @@ namespace RN_Process.Api.DataAccess.Repositories
 {
     public interface IContractRepository : IRepositoryNoSql<Contract, string>
     {
-
+        new Task SaveOneAsync(Contract entity);
+        new Task<bool> RemoveOneAsync(string id, bool softDelete);
     }
 
     public class ContractRepository : BaseMongoRepository<Contract, string>, IContractRepository

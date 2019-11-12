@@ -27,16 +27,16 @@ namespace RN_Process.Tests
         [Fact]
         public void AddElement()
         {
-            var Organization = new BsonDocument()
+            var organization = new BsonDocument
             {
-                {"contract",new BsonInt32(55) },
-                {"valor",new BsonDecimal128(6655) },
-                {"Date",new BsonDateTime(DateTime.UtcNow) },
-                {"IsDeleted",false }
+                {"contract", new BsonInt32(55)},
+                {"valor", new BsonDecimal128(6655)},
+                {"Date", new BsonDateTime(DateTime.UtcNow)},
+                {"IsDeleted", false},
+                {"codclient", new BsonString("4455db")}
             };
-            Organization.Add("codclient", new BsonString("4455db"));
 
-            _testOutputHelper.WriteLine(Organization.ToString());
+            _testOutputHelper.WriteLine(organization.ToString());
         }
         [Fact]
         public void AddArrays()
@@ -63,7 +63,7 @@ namespace RN_Process.Tests
                         {"debtdescription","Consumo" },
 
                         {
-                            "ContractMappingBase",new BsonDocument()
+                            "ContractDetailConfig",new BsonDocument()
                             {
                                 {"codreference","FTP" },
                                 {"internalhost","Http://localhost" },

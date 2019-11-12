@@ -64,7 +64,7 @@ namespace RN_Process.Api.Migrations
                     b.ToTable("Contract");
                 });
 
-            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.ContractMappingBase", b =>
+            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.ContractDetailConfig", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -138,7 +138,7 @@ namespace RN_Process.Api.Migrations
 
                     b.HasIndex("ContractId");
 
-                    b.ToTable("ContractMappingBase");
+                    b.ToTable("ContractDetailConfig");
                 });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Organization", b =>
@@ -186,7 +186,7 @@ namespace RN_Process.Api.Migrations
                     b.Property<string>("AllDataInFile")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContractMappingBaseId")
+                    b.Property<string>("ContractDetailConfigId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
@@ -234,7 +234,7 @@ namespace RN_Process.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContractMappingBaseId");
+                    b.HasIndex("ContractDetailConfigId");
 
                     b.ToTable("FileImport");
                 });
@@ -317,18 +317,18 @@ namespace RN_Process.Api.Migrations
                         .HasForeignKey("OrganizationId");
                 });
 
-            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.ContractMappingBase", b =>
+            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.ContractDetailConfig", b =>
                 {
                     b.HasOne("RN_Process.Api.DataAccess.Entities.Contract", "Contract")
-                        .WithMany("ContractMappingBases")
+                        .WithMany("ContractDetailConfigs")
                         .HasForeignKey("ContractId");
                 });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.FileImport", b =>
                 {
-                    b.HasOne("RN_Process.Api.DataAccess.Entities.ContractMappingBase", "ContractMappingBase")
+                    b.HasOne("RN_Process.Api.DataAccess.Entities.ContractDetailConfig", "ContractDetailConfig")
                         .WithMany("FileImports")
-                        .HasForeignKey("ContractMappingBaseId");
+                        .HasForeignKey("ContractDetailConfigId");
                 });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Reference", b =>

@@ -27,18 +27,7 @@ namespace RN_Process.Tests.DataAccessTests
         private Contract _sut;
         private Contract SystemUnderTest => _sut ?? UnitTestUtility.GetContractOrganizationToTest();
 
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenCreated_ContractIsValid()
-        {
-            Assert.NotNull(SystemUnderTest);
-            Assert.NotNull(SystemUnderTest.Id);
-        //   Assert.IsType<string>(SystemUnderTest.Id);
-            Assert.NotNull(SystemUnderTest.Organization);
-            Assert.NotEqual(0, SystemUnderTest.ContractNumber);
-            Assert.NotEqual(0, SystemUnderTest.TypeDebt);
-            Assert.NotEmpty(SystemUnderTest.DebtDescription);
-        }
+
 
         [Fact]
         [Trait("Category", "Unit")]
@@ -79,32 +68,69 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.NotEqual(0, SystemUnderTest.TypeDebt);
             Assert.Equal(5546, SystemUnderTest.TypeDebt);
         }
-       
+
         [Fact]
         [Trait("Category", "Unit")]
         public void MongodbToDocument_Contract_Bson()
         {
             var toBsonDocument = SystemUnderTest.ToBsonDocument();
-            Assert.Equal(BsonType.Int32,toBsonDocument["ContractNumber"].BsonType);
-            Assert.Equal(BsonType.Int32,toBsonDocument["ContractNumber"].BsonType);
+            Assert.Equal(BsonType.Int32, toBsonDocument["ContractNumber"].BsonType);
+            Assert.Equal(BsonType.Int32, toBsonDocument["ContractNumber"].BsonType);
 
             _testOutputHelper.WriteLine(toBsonDocument.ToJson());
         }
 
-         [Fact]
+        [Fact]
         [Trait("Category", "Unit")]
         public void MongodbToDocument_ContractWithAnId_IsRepresentedAsObjectId()
         {
             var toBsonDocument = SystemUnderTest.ToBsonDocument();
 
             _testOutputHelper.WriteLine(toBsonDocument.ToJson());
-            Assert.Equal(BsonType.ObjectId,toBsonDocument["_id"].BsonType);
+            Assert.Equal(BsonType.ObjectId, toBsonDocument["_id"].BsonType);
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void WhenCreated_DataCriation_ThenThrowException()
+        {
+            //arrange
+            var expect = DateTime.UtcNow;
+            //act
+            var ex = Assert.Throws<Exception>(() => UnitTestUtility.DateTimeAssertAreEqual(expect, SystemUnderTest.CreatedDate, TimeSpan.MinValue));
+
+            //assert
+            Assert.Contains("Expected Date: " + expect, ex.Message);
         }
 
 
-        private static Contract ContractInit(int contractNumber, int typeDebt, string nameDebt, Organization Organization)
-        {
-            return new Contract(contractNumber, typeDebt, nameDebt, Organization);
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void WhenCreated_ContractIsValid()
+            {
+                Assert.NotNull(SystemUnderTest);
+                Assert.NotNull(SystemUnderTest.Id);
+                Assert.NotNull(SystemUnderTest.Organization);
+                Assert.NotNull(SystemUnderTest.OrganizationId);
+
+                Assert.NotEqual(0, SystemUnderTest.ContractNumber);
+                Assert.NotEqual(0, SystemUnderTest.TypeDebt);
+                Assert.NotEmpty(SystemUnderTest.DebtDescription);
+
+
+                Assert.NotNull(SystemUnderTest.CreatedBy);
+                UnitTestUtility.DateTimeAssertAreEqual(DateTime.UtcNow, SystemUnderTest.CreatedDate, TimeSpan.MaxValue);
+
+                Assert.Null(SystemUnderTest.ModifiedBy);
+                Assert.Null(SystemUnderTest.ModifiedDate);
+                Assert.True(SystemUnderTest.Active);
+                Assert.False(SystemUnderTest.Deleted);
+                Assert.NotNull(SystemUnderTest.RowVersion);
+            }
+
+            private static Contract ContractInit(int contractNumber, int typeDebt, string nameDebt, Organization Organization)
+            {
+                return new Contract(contractNumber, typeDebt, nameDebt, Organization);
+            }
         }
     }
-}

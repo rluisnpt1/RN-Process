@@ -4,7 +4,7 @@ using Xunit;
 
 namespace RN_Process.Tests.DataAccessTests
 {
-    public class CustomerTest : IDisposable
+    public class OrganizationTest : IDisposable
     {
         private const string CodClientForTest = "003344";
         private const string Name = "First Organization";
@@ -15,6 +15,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         private Organization _sut;
+
         private Organization SystemUnderTest => _sut ?? CustomerInit(Name, CodClientForTest);
 
         private static Organization CustomerInit(string description, string uniqcode)
@@ -29,13 +30,17 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.NotNull(SystemUnderTest);
             Assert.NotNull(SystemUnderTest.Id);
             Assert.IsType<string>(SystemUnderTest.Id);
-            Assert.Null(SystemUnderTest.ModifiedDate);
-          //  UnitTestUtility.DateTimeAssertAreEqual(DateTime.UtcNow, SystemUnderTest.CreatedDate, TimeSpan.FromMinutes(0.1));
+
+            Assert.IsType<string>(SystemUnderTest.Id);
 
 
             Assert.NotNull(SystemUnderTest.UniqCode);
             Assert.NotEmpty(SystemUnderTest.UniqCode);
             Assert.NotEmpty(SystemUnderTest.Description);
+
+            Assert.True(SystemUnderTest.Active);
+            Assert.False(SystemUnderTest.Deleted);
+            Assert.Null(SystemUnderTest.ModifiedDate);
         }
 
         [Fact]
@@ -124,7 +129,6 @@ namespace RN_Process.Tests.DataAccessTests
         [Trait("Category", "Unit")]
         public void WhenCreated_UniqCodeLessThenThree_ThenSizeNameIsNotValid()
         {
-
             //act
             var ex = Assert.Throws<ArgumentOutOfRangeException>(() => CustomerInit(Name, "w"));
 
@@ -156,11 +160,23 @@ namespace RN_Process.Tests.DataAccessTests
         [Trait("Category", "Unit")]
         public void WhenCreated_RowVersion_IsNotNull()
         {
-
             //assert
             Assert.NotNull(SystemUnderTest.RowVersion);
-
         }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void WhenCreated_DataCriation_ThenThrowException()
+        {
+            //arrange
+            var expect = DateTime.UtcNow;
+            //act
+            var ex = Assert.Throws<Exception>(() => UnitTestUtility.DateTimeAssertAreEqual(expect, SystemUnderTest.CreatedDate, TimeSpan.MinValue));
+
+            //assert
+            Assert.Contains("Expected Date: " + expect, ex.Message);
+        }
+
 
     }
 }

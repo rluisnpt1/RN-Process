@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -6,7 +7,7 @@ using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class ContractMappingBase : AuditableEntity<string>
+    public class ContractDetailConfig : AuditableEntity<string>
     {
 
         public string CodReference { get; set; }
@@ -43,11 +44,11 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <summary>
         /// Runtime execution
         /// </summary>
-        protected ContractMappingBase()
+        protected ContractDetailConfig()
         {
 
         }
-        public ContractMappingBase(string codReference, string internalHost, string linkToAccess,
+        public ContractDetailConfig(string codReference, string internalHost, string linkToAccess,
             string linkToAccesTipo, string typeOfResponse, bool requiredLogin, string authenticationLogin,
             string authenticationPassword, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient, string pathToFileBackupAtHostServer,
@@ -68,8 +69,10 @@ namespace RN_Process.Api.DataAccess.Entities
             PathToDestinationFile = pathToDestinationFile;
             PathToFileBackupAtClient = pathToFileBackupAtClient;
             PathToFileBackupAtHostServer = pathToFileBackupAtHostServer;
-            FileDeLimiter = fileDeLimiter;
-            FileImports = new List<FileImport>();
+            FileDeLimiter = fileDeLimiter; 
+            Active = true;
+            Deleted = false;
+            CreatedDate = DateTime.UtcNow;
         }
 
         private void SetContract(Contract contract)

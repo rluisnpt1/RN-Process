@@ -22,11 +22,14 @@ namespace RN_Process.Api.DataAccess.Entities
         public bool FileMigrated { get; set; }
         public DateTime? FileMigratedOn { get; set; }
 
+
         public ICollection<BsonDocument> AllDataInFile { get; set; }
 
+
         [BsonRepresentation(BsonType.ObjectId)]
-        public string ContractMappingBaseId { get; set; }
-        public virtual ContractMappingBase ContractMappingBase { get; set; }
+        public string ContractDetailConfigId { get; set; }
+        public virtual ContractDetailConfig ContractDetailConfig { get; set; }
+
 
         protected FileImport()
         {
@@ -35,7 +38,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public FileImport(string fileDescription, int fileSize, string fileFormat, string fileLocationOrigin,
             string locationToCopy, StatusType status, bool fileMigrated, DateTime? fileMigratedOn,
-            ContractMappingBase contractMappingBase, List<BsonDocument> allDataInFile)
+            ContractDetailConfig contractDetailConfig, List<BsonDocument> allDataInFile)
         {
 
             Id = ObjectId.GenerateNewId().ToString();
@@ -49,16 +52,20 @@ namespace RN_Process.Api.DataAccess.Entities
             FileMigrated = fileMigrated;
             FileMigratedOn = fileMigratedOn;
             AllDataInFile = allDataInFile;
+            Active = true;
+            Deleted = false;
+            CreatedDate = DateTime.UtcNow;
 
-            SetContractMappingBase(contractMappingBase);
+
+            SetContractDetailConfig(contractDetailConfig);
         }
 
 
-        private void SetContractMappingBase(ContractMappingBase contractMappingBase)
+        private void SetContractDetailConfig(ContractDetailConfig contractDetailConfig)
         {
-            Guard.Against.Null(contractMappingBase, nameof(contractMappingBase));
-            ContractMappingBaseId = contractMappingBase.ContractId;
-            ContractMappingBase = contractMappingBase;
+            Guard.Against.Null(contractDetailConfig, nameof(contractDetailConfig));
+            ContractDetailConfigId = contractDetailConfig.ContractId;
+            ContractDetailConfig = contractDetailConfig;
         }
     }
 }

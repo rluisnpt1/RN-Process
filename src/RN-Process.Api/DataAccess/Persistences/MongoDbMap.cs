@@ -37,9 +37,9 @@ namespace RN_Process.Api.DataAccess.Persistences
                 map.MapMember(x => x.ContractNumber).SetIsRequired(true);
             });
         }
-        public static void ContractMappingBaseConfigure()
+        public static void ContractDetailConfigConfigure()
         {
-            BsonClassMap.RegisterClassMap<ContractMappingBase>(map =>
+            BsonClassMap.RegisterClassMap<ContractDetailConfig>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
