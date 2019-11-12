@@ -43,21 +43,56 @@ namespace RN_Process.Api.DataAccess.Entities
 
             Id = ObjectId.GenerateNewId().ToString();
 
-            FileDescription = fileDescription;
-            FileSize = fileSize;
-            FileFormat = fileFormat;
+            SetFileDescritption(fileDescription);
+            SetFileSize(fileSize);
+            SetFileFormat(fileFormat);
             FileLocationOrigin = fileLocationOrigin;
             LocationToCopy = locationToCopy;
             Status = status;
-            FileMigrated = fileMigrated;
-            FileMigratedOn = fileMigratedOn;
-            AllDataInFile = allDataInFile;
+            SetMigration(fileMigrated);
+            SetMigrationDate(fileMigratedOn);
+            SetAllDatafromFile(allDataInFile);
             Active = true;
             Deleted = false;
-            CreatedDate = DateTime.UtcNow;
-
 
             SetContractDetailConfig(contractDetailConfig);
+        }
+
+        private void SetAllDatafromFile(IList<BsonDocument> allDataInFile)
+        {
+            Guard.Against.NullOrEmpty(allDataInFile, nameof(allDataInFile));
+            AllDataInFile = allDataInFile;
+        }
+
+        private void SetMigrationDate(DateTime? fileMigratedOn)
+        {
+            if (fileMigratedOn != null)
+                FileMigratedOn = fileMigratedOn.Value.Date;
+            else
+                FileMigratedOn = null;
+        }
+
+        private void SetMigration(bool fileMigrated)
+        {
+            FileMigrated = fileMigrated;
+        }
+
+        private void SetFileFormat(string fileFormat)
+        {
+            Guard.Against.NullOrEmpty(fileFormat, nameof(fileFormat));
+            FileFormat = fileFormat;
+        }
+
+        private void SetFileSize(int fileSize)
+        {
+            Guard.Against.Zero(fileSize, nameof(fileSize));
+            FileSize = fileSize;
+        }
+
+        private void SetFileDescritption(string fileDescription)
+        {
+            Guard.Against.NullOrEmpty(fileDescription,nameof(fileDescription));
+            FileDescription = fileDescription;
         }
 
 

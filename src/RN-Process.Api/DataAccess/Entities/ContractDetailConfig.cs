@@ -138,8 +138,8 @@ namespace RN_Process.Api.DataAccess.Entities
 
             if (RequiredLogin)
             {
-                Guard.Against.NullOrEmpty(authenticationLogin, authenticationLogin);
-                Guard.Against.NullOrWhiteSpace(authenticationLogin, authenticationLogin);
+                Guard.Against.NullOrEmpty(authenticationLogin, nameof(authenticationLogin));
+                Guard.Against.NullOrWhiteSpace(authenticationLogin, nameof(authenticationLogin));
             }
 
             AuthenticationLogin = authenticationLogin;

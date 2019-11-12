@@ -41,17 +41,21 @@ namespace RN_Process.Tests
         [Fact]
         public void AddArrays()
         {
-            var Organization = new BsonDocument();
-            Organization.Add("files", new BsonArray(
-                new[] { "file.xml", "455", "http://10.05.0.0" }));
+            var organization = new BsonDocument
+            {
+                {
+                    "files", new BsonArray(
+                        new[] {"file.xml", "455", "http://10.05.0.0"})
+                }
+            };
 
-            _testOutputHelper.WriteLine(Organization.ToString());
+            _testOutputHelper.WriteLine(organization.ToString());
         }
 
         [Fact]
         public void AddEmbededDocument()
         {
-            var Organization = new BsonDocument()
+            var organization = new BsonDocument()
             {
                 {"uniqcode",new BsonInt32(1) },
                 {"description","Client Name" },
@@ -76,7 +80,7 @@ namespace RN_Process.Tests
                 }
             };
 
-            _testOutputHelper.WriteLine(Organization.ToString());
+            _testOutputHelper.WriteLine(organization.ToString());
         }
 
         [Fact]

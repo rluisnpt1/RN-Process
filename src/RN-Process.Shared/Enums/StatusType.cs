@@ -14,6 +14,9 @@ namespace RN_Process.Shared.Enums
         Error,
 
         [Description("Need Verification")]
-        VerificationRequired,
+        VerificationRequired,    
+        
+        [Description("Processed")]
+        Processed,
     }
 }

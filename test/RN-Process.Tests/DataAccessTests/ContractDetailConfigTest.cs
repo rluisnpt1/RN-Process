@@ -39,7 +39,7 @@ namespace RN_Process.Tests.DataAccessTests
             // Act
             var ex = Assert.Throws<ArgumentException>(() => 
                 UnitTestUtility.GetContractDetailConfigToTest(
-                new ContractDetailConfig(string.Empty,
+                new ContractDetailConfig("FTP",
                     string.Empty, string.Empty,
                     string.Empty, string.Empty,
                     true, string.Empty,
