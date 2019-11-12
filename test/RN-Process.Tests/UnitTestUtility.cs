@@ -8,34 +8,34 @@ namespace RN_Process.Tests
 {
     public static class UnitTestUtility
     {
-        public static Customer GetBancoPortugalCustomerToTest()
+        public static Organization GetBancoPortugalOrganizationToTest()
         {
-            return new Customer("Banco de portugal", "BDPT48");
+            return new Organization("Banco de portugal", "BDPT48");
         }
 
-        public static Contract GetContractCustomerToTest()
+        public static Contract GetContractOrganizationToTest()
         {
-            return new Contract(14533686, 5546, "Divida 1"  , GetBancoPortugalCustomerToTest());
+            return new Contract(14533686, 5546, "Divida 1", GetBancoPortugalOrganizationToTest());
         }
 
-        public static List<Contract> GetManyContractCustomerToTest()
+        public static List<Contract> GetManyContractOrganizationToTest()
         {
             var list = new List<Contract>();
 
-            var listc = new Contract(14533686,323,"divida 2", GetBancoPortugalCustomerToTest());
-            var listb = new Contract(14533686, 65991 ,"Divida 1",GetBancoPortugalCustomerToTest());
+            var listc = new Contract(14533686,323,"divida 2", GetBancoPortugalOrganizationToTest());
+            var listb = new Contract(14533686, 65991 ,"Divida 1",GetBancoPortugalOrganizationToTest());
             list.Add(listc);
             list.Add(listb);
             return list;
         }
 
-        public static List<Customer> GetManyCustomersToTest()
+        public static List<Organization> GetManyOrganizationsToTest()
         {
-            var listB = new List<Customer>();
-            var t = new Customer("Banco de portugal", "BDPT48");
-            var t1 = new Customer("Banco de Lisboa", "BDLI48");
-            var t2 = new Customer("Banco de Aveiro", "BDAV78");
-            var t3 = new Customer("Banco de Porto", "@BDPP48");
+            var listB = new List<Organization>();
+            var t = new Organization("Banco de portugal", "BDPT48");
+            var t1 = new Organization("Banco de Lisboa", "BDLI48");
+            var t2 = new Organization("Banco de Aveiro", "BDAV78");
+            var t3 = new Organization("Banco de Porto", "@BDPP48");
             listB.Add(t);
             listB.Add(t1);
             listB.Add(t2);
