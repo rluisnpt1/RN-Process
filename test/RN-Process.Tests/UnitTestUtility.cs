@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using RN_Process.Api.DataAccess.Entities;
-using RN_Process.Shared.Enums;
-using Xunit;
 
 namespace RN_Process.Tests
 {
@@ -18,7 +16,8 @@ namespace RN_Process.Tests
             return new Contract(14533686, 5546, "Divida 1", GetBancoPortugalOrganizationToTest());
         }
 
-        public static ContractDetailConfig GetContractDetailConfigToTest(ContractDetailConfig getContractDetailConfigToTest)
+        public static ContractDetailConfig GetContractDetailConfigToTest(
+            ContractDetailConfig getContractDetailConfigToTest)
         {
             return getContractDetailConfigToTest;
         }
@@ -35,24 +34,24 @@ namespace RN_Process.Tests
                 "MYLogin@MyName",
                 "MyPass1234",
                 null,
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Origin",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Destination",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Backup",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\BackupToHost",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Origin",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Backup",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
                 ",",
-                new List<string>(){"NDIV","COD_CRED","VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, 
+                new List<string>
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
                 GetContractOrganizationToTest()
             );
         }
-
 
 
         public static List<Contract> GetManyContractOrganizationToTest()
         {
             var list = new List<Contract>();
 
-            var listc = new Contract(14533686,323,"divida 2", GetBancoPortugalOrganizationToTest());
-            var listb = new Contract(14533686, 65991 ,"Divida 1",GetBancoPortugalOrganizationToTest());
+            var listc = new Contract(14533686, 323, "divida 2", GetBancoPortugalOrganizationToTest());
+            var listb = new Contract(14533686, 65991, "Divida 1", GetBancoPortugalOrganizationToTest());
             list.Add(listc);
             list.Add(listb);
             return list;
@@ -71,8 +70,6 @@ namespace RN_Process.Tests
             listB.Add(t3);
             return listB;
         }
-
-
 
 
         ///// <summary>
@@ -106,7 +103,7 @@ namespace RN_Process.Tests
         //}
 
         /// <summary>
-        /// Date Time validate
+        ///     Date Time validate
         /// </summary>
         /// <param name="expectedDate"></param>
         /// <param name="actualDate"></param>
@@ -120,25 +117,18 @@ namespace RN_Process.Tests
                 case null:
                     throw new NullReferenceException("The expected date was null");
                 default:
-                    {
-                        if (actualDate == null)
-                        {
-                            throw new NullReferenceException("The actual date was null");
-                        }
+                {
+                    if (actualDate == null) throw new NullReferenceException("The actual date was null");
 
-                        break;
-                    }
+                    break;
+                }
             }
-            double totalSecondsDifference = Math.Abs(((DateTime)actualDate - (DateTime)expectedDate).TotalSeconds);
+
+            var totalSecondsDifference = Math.Abs(((DateTime) actualDate - (DateTime) expectedDate).TotalSeconds);
 
             if (totalSecondsDifference > maximumDelta.TotalSeconds)
-            {
                 throw new Exception(
                     $"Expected Date: {expectedDate}, Actual Date: {actualDate} \nExpected Delta: {maximumDelta}, Actual Delta in seconds- {totalSecondsDifference}");
-            }
         }
-
-
     }
 }
-

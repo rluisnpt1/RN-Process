@@ -1,5 +1,3 @@
-using System;
-
 namespace RN_Process.WebUi.Models
 {
     public class ErrorViewModel

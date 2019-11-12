@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RN_Process.Api.DataAccess.Entities;
@@ -22,11 +18,11 @@ namespace RN_Process.WebUi.Controllers
             _logger = logger;
             _productService = productService;
         }
-       
+
         public IActionResult Index()
         {
-            var ct = new Contract(5454,55,"Consumo",new Organization("Banco BB","BBB"));
-            var ss =  _productService.SaveOneAsync(ct);
+            var ct = new Contract(5454, 55, "Consumo", new Organization("Banco BB", "BBB"));
+            var ss = _productService.SaveOneAsync(ct);
             var s2 = _productService.GetAllAsync();
 
             return View();
@@ -40,7 +36,7 @@ namespace RN_Process.WebUi.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
     }
 }

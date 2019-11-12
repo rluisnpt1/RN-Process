@@ -31,13 +31,14 @@ namespace RN_Process.Api.DataAccess.Repositories
 
         public async Task<IEnumerable<T>> GetManyAsync(IEnumerable<TKey> ids)
         {
-            var list= new List<T>();
+            var list = new List<T>();
             foreach (var id in ids)
             {
                 var doc = await GetOneAsync(id);
                 if (doc == null) continue;
                 list.Add(doc);
             }
+
             return list;
         }
 
@@ -49,9 +50,8 @@ namespace RN_Process.Api.DataAccess.Repositories
         public virtual async Task<bool> RemoveOneAsync(TKey id, bool softDelete)
         {
             var filter = Builders<T>.Filter.Eq("_id", id);
-             await _repository.Collection.DeleteOneAsync(filter);
-             return true;
+            await _repository.Collection.DeleteOneAsync(filter);
+            return true;
         }
     }
-
 }

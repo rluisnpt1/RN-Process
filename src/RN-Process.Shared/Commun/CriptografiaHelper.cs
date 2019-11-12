@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace RN_Process.Shared.Commun
@@ -14,13 +12,11 @@ namespace RN_Process.Shared.Commun
 
         public static byte[] Cryptography(string text, string salt)
         {
-            while (salt.Length < 6)
-            {
-                salt += salt + "Z";
-            }
+            while (salt.Length < 6) salt += salt + "Z";
             using (var sha = SHA512.Create())
             {
-                salt = Encoding.UTF8.GetString(sha.ComputeHash(Encoding.UTF8.GetBytes(salt.Substring(salt.Length - 5))));
+                salt = Encoding.UTF8.GetString(
+                    sha.ComputeHash(Encoding.UTF8.GetBytes(salt.Substring(salt.Length - 5))));
                 return sha.ComputeHash(Encoding.UTF8.GetBytes(text + salt));
             }
         }

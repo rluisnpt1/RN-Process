@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace RN_Process.Shared.Enums
 {
     public enum StatusType
     {
-        [Description("Success")]
-        Success,
+        [Description("Success")] Success,
 
-        [Description("Error On processing")]
-        Error,
+        [Description("Error On processing")] Error,
 
-        [Description("Need Verification")]
-        VerificationRequired,    
-        
-        [Description("Processed")]
-        Processed,
+        [Description("Need Verification")] VerificationRequired,
+
+        [Description("Processed")] Processed
     }
 }

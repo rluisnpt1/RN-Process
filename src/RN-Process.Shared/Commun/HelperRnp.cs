@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace RN_Process.Shared.Commun
@@ -18,9 +14,9 @@ namespace RN_Process.Shared.Commun
 
         public static string DescriptionAttr<TEnum>(this TEnum source)
         {
-            FieldInfo fi = source.GetType().GetField(source.ToString());
+            var fi = source.GetType().GetField(source.ToString());
 
-            DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(
+            var attributes = (DescriptionAttribute[]) fi.GetCustomAttributes(
                 typeof(DescriptionAttribute), false);
 
             return attributes.Length > 0 ? attributes[0].Description : source.ToString();
@@ -51,6 +47,7 @@ namespace RN_Process.Shared.Commun
 
             return textoretorno;
         }
+
         public static string FormatarTextoApenasLetrasENumeros(string texto)
         {
             texto = RemoverAcentos(texto);
@@ -75,7 +72,7 @@ namespace RN_Process.Shared.Commun
             Textoretorno(texto, permitidos, textoretorno);
 
             //single space
-            RegexOptions options = RegexOptions.None;
+            var options = RegexOptions.None;
             var regex = new Regex("[ ]{2,}", options);
             textoretorno = regex.Replace(textoretorno, " ");
 
@@ -86,29 +83,24 @@ namespace RN_Process.Shared.Commun
         {
             for (var i = 0; i < texto.Length; i++)
                 if (!permitidos.Contains(texto.Substring(i, 1)))
-                {
                     textoretorno = textoretorno.Replace(texto.Substring(i, 1), "");
-                }
 
             return textoretorno;
         }
 
         public static string GetNumeros(string texto)
         {
-            return string.IsNullOrEmpty(texto) ? "" : new String(texto.Where(Char.IsDigit).ToArray());
+            return string.IsNullOrEmpty(texto) ? "" : new string(texto.Where(char.IsDigit).ToArray());
         }
 
         public static string AjustarTexto(string valor, int tamanho)
         {
-            if (valor.Length > tamanho)
-            {
-                valor = valor.Substring(1, tamanho);
-            }
+            if (valor.Length > tamanho) valor = valor.Substring(1, tamanho);
             return valor;
         }
 
         /// <summary>
-        /// deixa as primeiras letras maiusculas
+        ///     deixa as primeiras letras maiusculas
         /// </summary>
         /// <param name="texto"></param>
         /// <returns></returns>
@@ -124,9 +116,8 @@ namespace RN_Process.Shared.Commun
             if (!manterOqueJaEstiverMaiusculo)
                 texto = texto.ToLower();
 
-            TextInfo textInfo = new CultureInfo("pt-BR", false).TextInfo;
+            var textInfo = new CultureInfo("pt-BR", false).TextInfo;
             return textInfo.ToTitleCase(texto);
         }
-
     }
 }

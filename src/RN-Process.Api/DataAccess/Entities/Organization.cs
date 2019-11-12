@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -12,28 +11,11 @@ namespace RN_Process.Api.DataAccess.Entities
     [BsonKnownTypes(typeof(Organization))]
     public class Organization : AuditableEntity<string>
     {
-
         private static readonly DateTime DefaultDateTime = DateTime.UtcNow;
 
-        public virtual string UniqCode { get; private set; }
-        public string Description { get; private set; }
-        public string Uri { get; set; }
+        [BsonIgnore] private ICollection<Contract> _contract;
 
-        [BsonIgnore]
-        private ICollection<Contract> _contract;
-        public virtual ICollection<Contract> Contracts
-        {
-            get { return _contract ??= new List<Contract>(); }
-            protected set => _contract = value;
-        }
-
-        [BsonIgnore]
-        private ICollection<ContractDetailConfig> _contractConfig;
-        public virtual ICollection<ContractDetailConfig> ContractDetails
-        {
-            get { return _contractConfig ??= new List<ContractDetailConfig>(); }
-            protected set => _contractConfig = value;
-        }
+        [BsonIgnore] private ICollection<ContractDetailConfig> _contractConfig;
 
         public Organization(string description, string uniqCode)
         {
@@ -47,11 +29,25 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
         /// <summary>
-        /// 
         /// </summary>
         protected Organization()
         {
+        }
 
+        public virtual string UniqCode { get; private set; }
+        public string Description { get; private set; }
+        public string Uri { get; set; }
+
+        public virtual ICollection<Contract> Contracts
+        {
+            get { return _contract ??= new List<Contract>(); }
+            protected set => _contract = value;
+        }
+
+        public virtual ICollection<ContractDetailConfig> ContractDetails
+        {
+            get { return _contractConfig ??= new List<ContractDetailConfig>(); }
+            protected set => _contractConfig = value;
         }
 
         private void SetDescription(string description)
@@ -77,7 +73,6 @@ namespace RN_Process.Api.DataAccess.Entities
 
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="contractNumber"></param>
         /// <param name="typeDebt"></param>
@@ -92,9 +87,8 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-
         /// <summary>
-        /// Add contract 
+        ///     Add contract
         /// </summary>
         /// <param name="id"></param>
         /// <param name="contractNumber"></param>
@@ -108,17 +102,13 @@ namespace RN_Process.Api.DataAccess.Entities
             Guard.Against.Zero(typeDebt, nameof(typeDebt));
 
             if (!string.IsNullOrEmpty(id))
-            {
                 UpdateExistingContractById(id, contractNumber, typeDebt, debtDescription);
-            }
             else
-            {
                 AddNewContract(contractNumber, typeDebt, debtDescription);
-            }
         }
 
         /// <summary>
-        /// Update existing contract by id 
+        ///     Update existing contract by id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="contractNumber"></param>
@@ -127,10 +117,12 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="modificationDate"></param>
         private void UpdateExistingContractById(string id, int contractNumber, int typeDebt, string debtDescription)
         {
-            bool foundIt = false;
+            var foundIt = false;
 
             // locate existing contract 
-            Contract contract = (Contracts.Where(temp => temp.Id == id && temp.ContractNumber == contractNumber && temp.TypeDebt == typeDebt)).FirstOrDefault();
+            var contract = Contracts
+                .Where(temp => temp.Id == id && temp.ContractNumber == contractNumber && temp.TypeDebt == typeDebt)
+                .FirstOrDefault();
 
             if (contract == null)
             {
@@ -144,24 +136,20 @@ namespace RN_Process.Api.DataAccess.Entities
                 contract.ModifiedBy = "System-- need change for user";
             }
 
-            if (foundIt == false)
-            {
-                Contracts.Add(contract);
-            }
+            if (foundIt == false) Contracts.Add(contract);
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="contr"></param>
         public void UpdateContractConfigurationById(Contract contr)
         {
-            bool foundIt = false;
+            var foundIt = false;
 
-            ContractDetailConfig contractDetail = (ContractDetails
-                                                    .Where(temp => temp.ContractId == contr.Id
-                                                                   && temp.Contract.OrganizationId == this.Id))
-                                                    .FirstOrDefault();
+            var contractDetail = ContractDetails
+                .Where(temp => temp.ContractId == contr.Id
+                               && temp.Contract.OrganizationId == Id)
+                .FirstOrDefault();
 
             if (contractDetail == null)
             {
@@ -170,7 +158,7 @@ namespace RN_Process.Api.DataAccess.Entities
                     string.Empty, false, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    String.Empty, new List<string>(), contr);
+                    string.Empty, new List<string>(), contr);
             }
             else
             {
@@ -179,10 +167,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 contractDetail.ModifiedBy = "System-- need change for user";
             }
 
-            if (foundIt == false)
-            {
-                ContractDetails.Add(contractDetail);
-            }
+            if (foundIt == false) ContractDetails.Add(contractDetail);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RN_Process.Shared.Enums
+﻿namespace RN_Process.Shared.Enums
 {
     public enum FileAccessType
     {
@@ -11,6 +7,5 @@ namespace RN_Process.Shared.Enums
         WebServer,
         Api,
         WebSite
-
     }
 }

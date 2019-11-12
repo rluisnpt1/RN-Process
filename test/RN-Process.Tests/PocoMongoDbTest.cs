@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using Xunit;
@@ -10,20 +8,19 @@ namespace RN_Process.Tests
 {
     public class PocoMongoDbTest
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
         public PocoMongoDbTest(ITestOutputHelper testOutputHelper)
         {
             JsonWriterSettings.Defaults.Indent = true;
             _testOutputHelper = testOutputHelper;
         }
 
+        private readonly ITestOutputHelper _testOutputHelper;
+
         public class Pessoa
         {
+            public List<string> Address = new List<string>();
             public string Description { get; set; }
             public int Age { get; set; }
-
-            public List<string> Address = new List<string>();
             public Contact Contact { get; set; } = new Contact();
         }
 
@@ -37,7 +34,7 @@ namespace RN_Process.Tests
         [Fact]
         public void Automatic()
         {
-            var person = new Pessoa()
+            var person = new Pessoa
             {
                 Description = "Meu Nome 1",
                 Age = 45
@@ -45,7 +42,7 @@ namespace RN_Process.Tests
 
             person.Address.Add("My location 011");
             person.Address.Add("My location two n 2 road 11");
-            person.Contact.Email ="teste@email.com";
+            person.Contact.Email = "teste@email.com";
             person.Contact.PhoneNumber = "9127756652";
             person.Contact.Description = "Personal";
 

@@ -18,7 +18,7 @@ namespace RN_Process.Api.DataAccess.Repositories
     {
         private readonly RnProcessMongoDbContext<Contract> _repository;
 
-        public ContractRepository(IOptions<MongoDbSettings> settings):base(settings)
+        public ContractRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {
             _repository = new RnProcessMongoDbContext<Contract>("Contracts", settings);
         }

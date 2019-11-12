@@ -7,10 +7,17 @@ using Microsoft.Extensions.Configuration;
 namespace RN_Process.Api.DataAccess
 {
     /// <summary>
-    /// For Integration tests
+    ///     For Integration tests
     /// </summary>
     public class RnProcessDesignTimeDbContextFactory : IDesignTimeDbContextFactory<RnProcessContext>
     {
+        public RnProcessContext CreateDbContext(string[] args)
+        {
+            return Create(
+                Directory.GetCurrentDirectory(),
+                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+        }
+
         public RnProcessContext Create()
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -20,17 +27,8 @@ namespace RN_Process.Api.DataAccess
             return Create(basePath, environmentName);
         }
 
-        public RnProcessContext CreateDbContext(string[] args)
-        {
-            return Create(
-                Directory.GetCurrentDirectory(),
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
-        }
-
         private RnProcessContext Create(string basePath, string environmentName)
         {
-
-
             var builder = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
@@ -42,15 +40,10 @@ namespace RN_Process.Api.DataAccess
 
             var connstr = config.GetConnectionString("default");
 
-            if (String.IsNullOrWhiteSpace(connstr) == true)
-            {
+            if (string.IsNullOrWhiteSpace(connstr))
                 throw new InvalidOperationException(
                     "Could not find a connection string named 'default'.");
-            }
-            else
-            {
-                return Create(connstr);
-            }
+            return Create(connstr);
         }
 
         private RnProcessContext Create(string connectionString)
@@ -59,9 +52,10 @@ namespace RN_Process.Api.DataAccess
                 throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
             var optionsBuilder =
-              new DbContextOptionsBuilder<RnProcessContext>();
+                new DbContextOptionsBuilder<RnProcessContext>();
 
-            Console.WriteLine("RnProcessDesignTimeDbContextFactory.Create(string): Connection string: {0}", connectionString);
+            Console.WriteLine("RnProcessDesignTimeDbContextFactory.Create(string): Connection string: {0}",
+                connectionString);
 
             optionsBuilder.UseSqlServer(connectionString);
 

@@ -8,24 +8,19 @@ namespace RN_Process.DataAccess.SqlServer
     {
         public MngodbRepositoryBase(TDbContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context), "context is null.");
+            Context = context ?? throw new ArgumentNullException(nameof(context), "context is null.");
         }
+
+        protected TDbContext Context { get; }
 
         public void Dispose()
         {
-            ((IDisposable)_context).Dispose();
+            ((IDisposable) Context).Dispose();
         }
-
-        private readonly TDbContext _context;
-
-        protected TDbContext Context => _context;
 
         protected void VerifyItemIsAddedOrAttachedToDbSet(DbSet<TEntity> dbset, TEntity item)
         {
-            if (item == null)
-            {
-                return;
-            }
+            if (item == null) return;
 
             if (item.Id.Equals(0) || item.Id == null)
             {
@@ -33,12 +28,9 @@ namespace RN_Process.DataAccess.SqlServer
             }
             else
             {
-                var entry = _context.Entry<TEntity>(item);
+                var entry = Context.Entry(item);
 
-                if (entry.State == EntityState.Detached)
-                {
-                    dbset.Attach(item);
-                }
+                if (entry.State == EntityState.Detached) dbset.Attach(item);
 
                 entry.State = EntityState.Modified;
             }

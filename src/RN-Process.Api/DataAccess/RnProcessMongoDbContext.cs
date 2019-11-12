@@ -5,7 +5,6 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using RN_Process.Api.DataAccess.Entities;
-using RN_Process.Api.DataAccess.Persistences;
 using RN_Process.DataAccess.MongoDb;
 using RN_Process.Shared.Commun;
 
@@ -13,14 +12,11 @@ namespace RN_Process.Api.DataAccess
 {
     public class RnProcessMongoDbContext<T> : IRnProcessMongoDbContext<T>
     {
-        public IMongoDatabase Database { get; }
-        public IMongoCollection<T> Collection { get; }
-
         public RnProcessMongoDbContext(string collectionName, IOptions<MongoDbSettings> settings)
         {
-            Guard.Against.NullOrEmpty(collectionName,nameof(collectionName));
+            Guard.Against.NullOrEmpty(collectionName, nameof(collectionName));
             Guard.Against.Null(settings, nameof(settings));
-          
+
             try
             {
                 var client = new MongoClient(settings.Value.ConnectionString);
@@ -32,13 +28,16 @@ namespace RN_Process.Api.DataAccess
             {
                 throw new Exception("Can not access to MongoDb server.", ex);
             }
-     
+
 
             RegisterMapIfNeeded<Organization>();
             RegisterMapIfNeeded<Contract>();
             RegisterMapIfNeeded<ContractDetailConfig>();
             RegisterMapIfNeeded<FileImport>();
         }
+
+        public IMongoDatabase Database { get; }
+        public IMongoCollection<T> Collection { get; }
 
 
         // Check to see if map is registered before registering class map
@@ -65,7 +64,7 @@ namespace RN_Process.Api.DataAccess
         }
     }
 
-    public interface IRnProcessMongoDbContext<T> 
+    public interface IRnProcessMongoDbContext<T>
     {
         IMongoDatabase Database { get; }
         IMongoCollection<T> Collection { get; }

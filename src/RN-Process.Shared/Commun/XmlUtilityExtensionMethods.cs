@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -9,34 +8,24 @@ namespace RN_Process.Shared.Commun
     {
         public static IEnumerable<XElement> ElementsByLocalName(this XElement parent, string name)
         {
-            if (parent == null)
-            {
-                return null;
-            }
-            else
-            {
-                var result = (from temp in parent.Elements()
-                              where temp.Name.LocalName == name
-                              select temp);
+            if (parent == null) return null;
 
-                return result;
-            }
+            var result = from temp in parent.Elements()
+                where temp.Name.LocalName == name
+                select temp;
+
+            return result;
         }
 
         public static XElement ElementByLocalName(this XElement parent, string name)
         {
-            if (parent == null)
-            {
-                return null;
-            }
-            else
-            {
-                var result = (from temp in parent.Elements()
-                              where temp.Name.LocalName == name
-                              select temp).FirstOrDefault();
+            if (parent == null) return null;
 
-                return result;
-            }
+            var result = (from temp in parent.Elements()
+                where temp.Name.LocalName == name
+                select temp).FirstOrDefault();
+
+            return result;
         }
 
         public static XElement ElementByLocalNameAndAttributeValue(this XElement parent,
@@ -47,16 +36,16 @@ namespace RN_Process.Shared.Commun
             var matchingElementsByName = parent.ElementsByLocalName(elementName);
 
             var match = (from temp in matchingElementsByName
-                         where
-                         temp.HasAttributes == true &&
-                         temp.AttributeValue(attributeName) == attributeValue
-                         select temp).FirstOrDefault();
+                where
+                    temp.HasAttributes &&
+                    temp.AttributeValue(attributeName) == attributeValue
+                select temp).FirstOrDefault();
 
             return match;
         }
 
         /// <summary>
-        /// Finds a child element starting from parent and returns the inner text value.
+        ///     Finds a child element starting from parent and returns the inner text value.
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="childElement"></param>
@@ -66,13 +55,8 @@ namespace RN_Process.Shared.Commun
             var child = parent.ElementByLocalName(childElement);
 
             if (child == null)
-            {
                 return null;
-            }
-            else
-            {
-                return child.Value;
-            }
+            return child.Value;
         }
 
         public static void SetElementValueByLocalName(this XElement parent, string childElement, string value)
@@ -80,33 +64,19 @@ namespace RN_Process.Shared.Commun
             var child = parent.ElementByLocalName(childElement);
 
             if (child == null)
-            {
                 return;
-            }
-            else
-            {
-                child.Value = value;
-            }
+            child.Value = value;
         }
 
         public static string AttributeValue(this XElement parent, string attributeName)
         {
             if (parent == null)
-            {
-                return String.Empty;
-            }
-            else if (parent.HasAttributes == false)
-            {
-                return String.Empty;
-            }
-            else if (parent.Attribute(attributeName) == null)
-            {
-                return String.Empty;
-            }
-            else
-            {
-                return parent.Attribute(attributeName).Value;
-            }
+                return string.Empty;
+            if (parent.HasAttributes == false)
+                return string.Empty;
+            if (parent.Attribute(attributeName) == null)
+                return string.Empty;
+            return parent.Attribute(attributeName).Value;
         }
     }
 }

@@ -12,13 +12,9 @@ namespace RN_Process.DataAccess.SqlServer
     {
         public MongoDbCrudRepositoryBase(TDbContext context) : base(context)
         {
-
         }
 
-        protected abstract DbSet<TEntity> EntityDbSet
-        {
-            get;
-        }
+        protected abstract DbSet<TEntity> EntityDbSet { get; }
 
         public virtual void Delete(TEntity deleteThis)
         {
@@ -27,10 +23,7 @@ namespace RN_Process.DataAccess.SqlServer
 
             var entry = Context.Entry(deleteThis);
 
-            if (entry.State == EntityState.Detached)
-            {
-                EntityDbSet.Attach(deleteThis);
-            }
+            if (entry.State == EntityState.Detached) EntityDbSet.Attach(deleteThis);
 
             EntityDbSet.Remove(deleteThis);
 

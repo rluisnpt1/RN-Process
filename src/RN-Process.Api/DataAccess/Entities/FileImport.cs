@@ -10,37 +10,14 @@ namespace RN_Process.Api.DataAccess.Entities
 {
     public class FileImport : AuditableEntity<string>
     {
-        public string FileDescription { get; set; }
-        public int FileSize { get; set; }
-        public string FileFormat { get; set; }
-        public string FileLocationOrigin { get; set; }
-        public string LocationToCopy { get; set; }
-
-        [BsonRepresentation(BsonType.String)]
-        public StatusType Status { get; set; }
-
-        public bool FileMigrated { get; set; }
-        public DateTime? FileMigratedOn { get; set; }
-
-
-        public ICollection<BsonDocument> AllDataInFile { get; set; }
-
-
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string ContractDetailConfigId { get; set; }
-        public virtual ContractDetailConfig ContractDetailConfig { get; set; }
-
-
         protected FileImport()
         {
-
         }
 
         public FileImport(string fileDescription, int fileSize, string fileFormat, string fileLocationOrigin,
             string locationToCopy, StatusType status, bool fileMigrated, DateTime? fileMigratedOn,
             ContractDetailConfig contractDetailConfig, List<BsonDocument> allDataInFile)
         {
-
             Id = ObjectId.GenerateNewId().ToString();
 
             SetFileDescritption(fileDescription);
@@ -57,6 +34,26 @@ namespace RN_Process.Api.DataAccess.Entities
 
             SetContractDetailConfig(contractDetailConfig);
         }
+
+        public string FileDescription { get; set; }
+        public int FileSize { get; set; }
+        public string FileFormat { get; set; }
+        public string FileLocationOrigin { get; set; }
+        public string LocationToCopy { get; set; }
+
+        [BsonRepresentation(BsonType.String)] public StatusType Status { get; set; }
+
+        public bool FileMigrated { get; set; }
+        public DateTime? FileMigratedOn { get; set; }
+
+
+        public ICollection<BsonDocument> AllDataInFile { get; set; }
+
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ContractDetailConfigId { get; set; }
+
+        public virtual ContractDetailConfig ContractDetailConfig { get; set; }
 
         private void SetAllDatafromFile(IList<BsonDocument> allDataInFile)
         {
@@ -91,7 +88,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         private void SetFileDescritption(string fileDescription)
         {
-            Guard.Against.NullOrEmpty(fileDescription,nameof(fileDescription));
+            Guard.Against.NullOrEmpty(fileDescription, nameof(fileDescription));
             FileDescription = fileDescription;
         }
 

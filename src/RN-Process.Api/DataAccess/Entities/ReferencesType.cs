@@ -9,10 +9,7 @@ namespace RN_Process.Api.DataAccess.Entities
         //runtime execution
         protected ReferencesType()
         {
-            
         }
-        public virtual ICollection<Reference> References { get; set; }
-        public string UniqCode { get; set; }
 
         public ReferencesType(string uniqCode)
         {
@@ -20,5 +17,8 @@ namespace RN_Process.Api.DataAccess.Entities
             References = new List<Reference>();
             UniqCode = uniqCode;
         }
+
+        public virtual ICollection<Reference> References { get; set; }
+        public string UniqCode { get; set; }
     }
 }

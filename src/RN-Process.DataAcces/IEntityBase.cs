@@ -1,12 +1,6 @@
-﻿using System;
-
-
-namespace RN_Process.DataAccess
+﻿namespace RN_Process.DataAccess
 {
-
     public abstract class BaseEntity
     {
-
     }
-    
 }

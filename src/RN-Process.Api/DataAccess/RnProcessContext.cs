@@ -10,8 +10,8 @@ namespace RN_Process.Api.DataAccess
         public RnProcessContext(DbContextOptions options) :
             base(options)
         {
-
         }
+
         public DbSet<ReferencesType> ReferencesTypes { get; set; }
         public DbSet<Reference> References { get; set; }
         public DbSet<Organization> Organizations { get; set; }
@@ -19,7 +19,6 @@ namespace RN_Process.Api.DataAccess
         public DbSet<ContractDetailConfig> ContractDetailConfigs { get; set; }
         public DbSet<FileImport> FileImports { get; set; }
 
-     
 
         public override int SaveChanges()
         {
@@ -31,10 +30,7 @@ namespace RN_Process.Api.DataAccess
         private void CleanupOrphanedPersonFacts()
         {
             var deleteThese = Contracts.Local.Where(pf => pf.Organization == null).ToList();
-            foreach (var deleteThis in deleteThese)
-            {
-                Contracts.Remove(deleteThis);
-            }
+            foreach (var deleteThis in deleteThese) Contracts.Remove(deleteThis);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,7 +41,7 @@ namespace RN_Process.Api.DataAccess
                 entity.HasKey(x => x.Id);
                 entity.HasMany(x => x.References)
                     .WithOne(x => x.ReferencesType);
-                
+
                 entity.Property(x => x.UniqCode).IsUnicode();
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
@@ -93,6 +89,5 @@ namespace RN_Process.Api.DataAccess
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
         }
-
     }
 }

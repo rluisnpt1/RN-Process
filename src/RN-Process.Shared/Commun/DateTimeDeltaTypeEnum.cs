@@ -5,6 +5,6 @@
         GreaterThan,
         LessThan,
         Days,
-        Minutes,
+        Minutes
     }
 }
