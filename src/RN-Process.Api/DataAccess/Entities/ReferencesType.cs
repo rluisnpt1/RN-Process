@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MongoDB.Bson;
 using RN_Process.DataAccess;
 
 namespace RN_Process.Api.DataAccess.Entities
@@ -15,8 +16,9 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public ReferencesType(string uniqCode)
         {
-            References =new List<Reference>();
-            UniqCode = uniqCode;    
+            Id = ObjectId.GenerateNewId().ToString();
+            References = new List<Reference>();
+            UniqCode = uniqCode;
         }
     }
 }

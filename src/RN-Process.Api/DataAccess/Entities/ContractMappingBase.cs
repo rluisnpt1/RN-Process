@@ -6,11 +6,8 @@ using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class ContractMappingBase : Entity<string>
+    public class ContractMappingBase : AuditableEntity<string>
     {
-
-        public virtual ICollection<FileImport> FileImports { get; set; }
-
 
         public string CodReference { get; set; }
         public string InternalHost { get; set; }
@@ -25,24 +22,38 @@ namespace RN_Process.Api.DataAccess.Entities
         public string PathToDestinationFile { get; set; }
         public string PathToFileBackupAtClient { get; set; }
         public string PathToFileBackupAtHostServer { get; set; }
-        public virtual char FileDeLimiter { get; set; }
+        public virtual List<string> FileDeLimiter { get; set; }
+
+
+     
         [BsonRepresentation(BsonType.ObjectId)]
         public string ContractId { get; private set; }
         public virtual Contract Contract { get; set; }
+
+        [BsonIgnore]
+        private ICollection<FileImport> _fileImport;
+
+        public virtual ICollection<FileImport> FileImports
+        {
+            get { return _fileImport ??= new List<FileImport>(); }
+            protected set => _fileImport = value;
+        }
+
 
         /// <summary>
         /// Runtime execution
         /// </summary>
         protected ContractMappingBase()
         {
-            
+
         }
         public ContractMappingBase(string codReference, string internalHost, string linkToAccess,
             string linkToAccesTipo, string typeOfResponse, bool requiredLogin, string authenticationLogin,
             string authenticationPassword, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient, string pathToFileBackupAtHostServer,
-            char fileDeLimiter, Contract contract)
+            List<string> fileDeLimiter, Contract contract)
         {
+            Id = ObjectId.GenerateNewId().ToString();
             SetContract(contract);
             CodReference = codReference;
             InternalHost = internalHost;
@@ -60,6 +71,7 @@ namespace RN_Process.Api.DataAccess.Entities
             FileDeLimiter = fileDeLimiter;
             FileImports = new List<FileImport>();
         }
+
         private void SetContract(Contract contract)
         {
             Guard.Against.Null(contract, nameof(contract));

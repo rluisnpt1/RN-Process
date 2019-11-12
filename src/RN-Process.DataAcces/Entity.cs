@@ -1,51 +1,24 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace RN_Process.DataAccess
 {
-    public abstract class Entity<T> : IEntity<T>
+    public abstract class Entity<T> : BaseEntity, IEntity<T>
     {
-        private static readonly DateTime DefaultDateValue = DateTime.UtcNow;
-
-        [Key]
-        public T Id { get; private set; }
-     
-        private DateTime? _createdDate;
-
-        object IEntityBase.Id
-        {
-            get => Id;
-            set => Id = (T) value;
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        [BsonRepresentation(BsonType.ObjectId)]
+        public virtual T Id { get; set; }
 
         /// <summary>
-        ///  The CreatedDate value is a DateTime that can store the complete date of criation.
+        /// 
         /// </summary>
-        [DataType(DataType.DateTime)]
-        public DateTime CreatedDate
-        {
-            get => _createdDate ?? DefaultDateValue;
-            set => _createdDate = DefaultDateValue;
-        }
+        public virtual bool Deleted { get; set; }
 
-        /// <summary>
-        /// The ModifiedDate value is a DateTime that can store the complete date of change.
-        /// </summary>
-        [DataType(DataType.DateTime)]
-        public DateTime? ModifiedDate { get; set; }
-
-        /// <summary>
-        /// The CreatedBy value is a string that can store the description name of an user or application
-        /// </summary>
-        [StringLength(250)]
-        public string CreatedBy { get; set; }
-
-        /// <summary>
-        /// The ModifiedBy value is a string that can store the description name of an user or application
-        /// </summary>
-        [StringLength(250)]
-        public string ModifiedBy { get; set; }
-
+        public virtual bool Active { get; set; }
 
         /// <summary>
         /// The rowversion value is a sequential number that's incremented each time the row is updated. 
@@ -60,4 +33,5 @@ namespace RN_Process.DataAccess
         [Timestamp]
         public byte[] RowVersion { get; set; }
     }
+
 }

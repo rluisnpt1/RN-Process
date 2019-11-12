@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -6,43 +7,47 @@ using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class Contract : Entity<string>
+    public class Contract : AuditableEntity<string>
     {
         public int ContractNumber { get; private set; }
 
         public int TypeDebt { get; private set; }
 
         public string DebtDescription { get; private set; }
-        
-        public virtual ICollection<ContractMappingBase> ContractMappingBases { get; set; }
+
+        [BsonIgnore]
+        private ICollection<ContractMappingBase> _configMapping;
+
+        public virtual ICollection<ContractMappingBase> ContractMappingBases
+        {
+            get { return _configMapping ??= new List<ContractMappingBase>(); }
+            set => _configMapping = value;
+        }
 
 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string CustomerId { get; private set; }
-        public virtual Customer Customer { get; set; }
+        public string OrganizationId { get; private set; }
+        public virtual Organization Organization { get; set; }
 
         //Runtime execution
         protected Contract()
         {
-            
+
         }
 
-        public Contract(int contractNumber, int typeDebt, string debtDescription, Customer customer)
+        public Contract(int contractNumber, int typeDebt, string debtDescription, Organization organization)
         {
+            Id = ObjectId.GenerateNewId().ToString();
             SetContractNumber(contractNumber);
             SetTypeDebt(typeDebt);
-            SetCustomer(customer);
+            SetCustomer(organization);
             DebtDescription = debtDescription;
-            CreatedBy = string.Empty;
-            ModifiedBy = string.Empty;
-            ContractMappingBases = new List<ContractMappingBase>();
         }
 
-        private void SetCustomer(Customer customer)
+        private void SetCustomer(Organization organization)
         {
-            Guard.Against.Null(customer, nameof(customer));
-            CustomerId = CustomerId;
-            Customer = customer;
+            Guard.Against.Null(organization, nameof(organization));
+            OrganizationId = organization.Id;
+            Organization = organization;
         }
 
         private void SetTypeDebt(int typeDebt)

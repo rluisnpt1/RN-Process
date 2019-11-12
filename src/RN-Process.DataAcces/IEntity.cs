@@ -2,8 +2,8 @@
 
 namespace RN_Process.DataAccess
 {
-    public interface IEntity<out TV> : IEntityBase
+    public interface IEntity<T>
     {
-        new TV Id { get; }
+       new T Id { get; set; }
     }
 }
