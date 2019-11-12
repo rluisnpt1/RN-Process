@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DataAccess\Repository\" />
+    <Compile Remove="DataAccess\Repository\**" />
+    <EmbeddedResource Remove="DataAccess\Repository\**" />
+    <None Remove="DataAccess\Repository\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Services\" />
   </ItemGroup>
@@ -25,6 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.9.3" />
   </ItemGroup>
 
   <ItemGroup>

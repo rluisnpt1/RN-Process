@@ -8,7 +8,7 @@ namespace RN_Process.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Customer",
+                name: "Organization",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -22,7 +22,7 @@ namespace RN_Process.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customer", x => x.Id);
+                    table.PrimaryKey("PK_Organization", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,15 +55,15 @@ namespace RN_Process.Api.Migrations
                     ContractNumber = table.Column<int>(nullable: false),
                     TypeDebt = table.Column<int>(nullable: false),
                     DebtDescription = table.Column<string>(nullable: true),
-                    CustomerId = table.Column<string>(nullable: true)
+                    OrganizationId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Contract", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Contract_Customer_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customer",
+                        name: "FK_Contract_Organization_OrganizationId",
+                        column: x => x.OrganizationId,
+                        principalTable: "Organization",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -162,9 +162,9 @@ namespace RN_Process.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contract_CustomerId",
+                name: "IX_Contract_OrganizationId",
                 table: "Contract",
-                column: "CustomerId");
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContractMappingBase_ContractId",
@@ -200,7 +200,7 @@ namespace RN_Process.Api.Migrations
                 name: "Contract");
 
             migrationBuilder.DropTable(
-                name: "Customer");
+                name: "Organization");
         }
     }
 }

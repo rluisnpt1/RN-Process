@@ -34,7 +34,7 @@ namespace RN_Process.Api.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CustomerId")
+                    b.Property<string>("OrganizationId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DebtDescription")
@@ -57,7 +57,7 @@ namespace RN_Process.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Contract");
                 });
@@ -139,7 +139,7 @@ namespace RN_Process.Api.Migrations
                     b.ToTable("ContractMappingBase");
                 });
 
-            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Customer", b =>
+            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Organization", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -173,7 +173,7 @@ namespace RN_Process.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Organization");
                 });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.FileImport", b =>
@@ -310,9 +310,9 @@ namespace RN_Process.Api.Migrations
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Contract", b =>
                 {
-                    b.HasOne("RN_Process.Api.DataAccess.Entities.Customer", "Customer")
+                    b.HasOne("RN_Process.Api.DataAccess.Entities.Organization", "Organization")
                         .WithMany("Contracts")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("OrganizationId");
                 });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.ContractMappingBase", b =>
