@@ -5,7 +5,7 @@ using RN_Process.Api.Interfaces;
 
 namespace RN_Process.Api.DataAccess
 {
-    public class RnProcessContext : DbContext, IRnProcessContext
+    public class RnProcessContext : DbContext, ISQLRnProcessContext
     {
         public RnProcessContext(DbContextOptions options) :
             base(options)
@@ -14,7 +14,7 @@ namespace RN_Process.Api.DataAccess
         }
         public DbSet<ReferencesType> ReferencesTypes { get; set; }
         public DbSet<Reference> References { get; set; }
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<ContractMappingBase> ContractMappingBases { get; set; }
         public DbSet<FileImport> FileImports { get; set; }
@@ -30,7 +30,7 @@ namespace RN_Process.Api.DataAccess
 
         private void CleanupOrphanedPersonFacts()
         {
-            var deleteThese = Contracts.Local.Where(pf => pf.Customer == null).ToList();
+            var deleteThese = Contracts.Local.Where(pf => pf.Organization == null).ToList();
             foreach (var deleteThis in deleteThese)
             {
                 Contracts.Remove(deleteThis);
@@ -56,13 +56,13 @@ namespace RN_Process.Api.DataAccess
                 entity.Property(x => x.UniqCode).IsUnicode();
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
-            modelBuilder.Entity<Customer>(entity =>
+            modelBuilder.Entity<Organization>(entity =>
             {
-                entity.ToTable("Customer");
+                entity.ToTable("Organization");
                 entity.HasKey(x => x.Id);
 
                 entity.HasMany(x => x.Contracts)
-                    .WithOne(x => x.Customer);
+                    .WithOne(x => x.Organization);
 
                 entity.Property(x => x.UniqCode).IsUnicode();
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();

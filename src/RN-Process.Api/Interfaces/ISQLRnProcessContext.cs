@@ -8,12 +8,12 @@ using RN_Process.DataAccess;
 
 namespace RN_Process.Api.Interfaces
 {
-    interface IRnProcessContext
+    interface ISQLRnProcessContext
     {
 
         DbSet<ReferencesType> ReferencesTypes { get; set; }
         DbSet<Reference> References { get; set; }
-        DbSet<Customer> Customers { get; set; }
+        DbSet<Organization> Organizations { get; set; }
         DbSet<Contract> Contracts { get; set; }
         DbSet<ContractMappingBase> ContractMappingBases { get; set; }
         DbSet<FileImport> FileImports { get; set; }

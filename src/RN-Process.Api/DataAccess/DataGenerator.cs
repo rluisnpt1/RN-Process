@@ -10,7 +10,7 @@ namespace RN_Process.Api.DataAccess
         public static void Initialize(RnProcessContext context)
         {
             // Look for any board games.
-            if (context.Customers.Any())
+            if (context.Organizations.Any())
             {
                 return;   // Data was already seeded
             }
@@ -25,12 +25,12 @@ namespace RN_Process.Api.DataAccess
                 return;   // Data was already seeded
             }
 
-            var listCustomer = new List<Customer>()
+            var listCustomer = new List<Organization>()
             {
-                new Customer("Banco BBVA", "BBVA112"),
-                new Customer("Banco Portugal", "BBPPT"),
-                new Customer("Banco Banco Do Brasil", "BDB1s2"),
-                new Customer("Banco Santander", "BsA32")
+                new Organization("Banco BBVA", "BBVA112"),
+                new Organization("Banco Portugal", "BBPPT"),
+                new Organization("Banco Banco Do Brasil", "BDB1s2"),
+                new Organization("Banco Santander", "BsA32")
 
             };
 
@@ -40,7 +40,7 @@ namespace RN_Process.Api.DataAccess
                 new Contract(21224,458,"CONSUMO",listCustomer.FirstOrDefault(X => X.UniqCode.Equals("BBPPT"))),
             };
 
-            context.Customers.AddRange(listCustomer);
+            context.Organizations.AddRange(listCustomer);
             context.Contracts.AddRange(listContract);
             context.ContractMappingBases.AddRange(
                 new ContractMappingBase(
@@ -57,7 +57,7 @@ namespace RN_Process.Api.DataAccess
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Destination",
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Backup",
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\BackupToHost",
-                    ',', 
+                    new List<string>(){",",";","#"}, 
                     listContract.FirstOrDefault()
                     )
                 );
