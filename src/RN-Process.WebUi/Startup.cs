@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RN_Process.Api.DataAccess.Repositories;
+using RN_Process.DataAccess.MongoDb;
 
 namespace RN_Process.WebUi
 {
@@ -24,6 +27,12 @@ namespace RN_Process.WebUi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.Configure<MongoDbSettings>(Options =>
+            {
+                Options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
+                Options.Database = Configuration.GetSection("MongoConnection:Database").Value;
+            });
+            services.AddTransient<IContractRepository, ContractRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,5 +62,7 @@ namespace RN_Process.WebUi
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+     
     }
 }

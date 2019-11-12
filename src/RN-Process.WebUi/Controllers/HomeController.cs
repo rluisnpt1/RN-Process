@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Api.DataAccess.Repositories;
 using RN_Process.WebUi.Models;
 
 namespace RN_Process.WebUi.Controllers
@@ -13,13 +15,20 @@ namespace RN_Process.WebUi.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IContractRepository _productService;
+
+        public HomeController(ILogger<HomeController> logger, IContractRepository productService)
         {
             _logger = logger;
+            _productService = productService;
         }
-
+       
         public IActionResult Index()
         {
+            var ct = new Contract(5454,55,"Consumo",new Organization("Banco BB","BBB"));
+            var ss =  _productService.SaveOneAsync(ct);
+            var s2 = _productService.GetAllAsync();
+
             return View();
         }
 
