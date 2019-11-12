@@ -57,7 +57,8 @@ namespace RN_Process.Api.DataAccess
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Destination",
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Backup",
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\BackupToHost",
-                    new List<string>(){",",";","#"}, 
+                    ",",
+                    new List<string>() { "NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3" },
                     listContract.FirstOrDefault()
                     )
                 );

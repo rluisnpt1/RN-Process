@@ -9,30 +9,35 @@ namespace RN_Process.Api.DataAccess.Entities
 {
     public class Contract : AuditableEntity<string>
     {
-        public int ContractNumber { get; private set; }
 
-        public int TypeDebt { get; private set; }
-
-        public string DebtDescription { get; private set; }
-
-        public string OrganizationId { get; private set; }
         public virtual Organization Organization { get; set; }
+
+
+        public int ContractNumber { get; private set; }
+        public int TypeDebt { get; private set; }
+        public string DebtDescription { get; private set; }
+        public string OrganizationId { get; private set; }
+       
+
 
 
         [BsonIgnore]
         private ICollection<ContractDetailConfig> _configMapping;
-
         public virtual ICollection<ContractDetailConfig> ContractDetailConfigs
         {
             get { return _configMapping ??= new List<ContractDetailConfig>(); }
             set => _configMapping = value;
         }
 
+
+
         //Runtime execution
         protected Contract()
         {
 
         }
+
+
 
         public Contract(int contractNumber, int typeDebt, string debtDescription, Organization organization)
         {
@@ -64,6 +69,8 @@ namespace RN_Process.Api.DataAccess.Entities
             Guard.Against.Zero(contractNumber, nameof(ContractNumber));
             ContractNumber = contractNumber;
         }
+
+
 
     }
 }

@@ -18,6 +18,35 @@ namespace RN_Process.Tests
             return new Contract(14533686, 5546, "Divida 1", GetBancoPortugalOrganizationToTest());
         }
 
+        public static ContractDetailConfig GetContractDetailConfigToTest(ContractDetailConfig getContractDetailConfigToTest)
+        {
+            return getContractDetailConfigToTest;
+        }
+
+        public static ContractDetailConfig GetContractDetailConfigToTest()
+        {
+            return new ContractDetailConfig(
+                "FTP",
+                "LocalHost",
+                "FTP:10.80.5.198",
+                "ETL",
+                "FTP",
+                true,
+                "MYLogin@MyName",
+                "MyPass1234",
+                null,
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Origin",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Destination",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\Backup",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"\\BackupToHost",
+                ",",
+                new List<string>(){"NDIV","COD_CRED","VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, 
+                GetContractOrganizationToTest()
+            );
+        }
+
+
+
         public static List<Contract> GetManyContractOrganizationToTest()
         {
             var list = new List<Contract>();

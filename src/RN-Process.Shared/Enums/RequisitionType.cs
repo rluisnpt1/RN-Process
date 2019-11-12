@@ -11,5 +11,6 @@ namespace RN_Process.Shared.Enums
         WebServer,
         Api,
         WebSite
+
     }
 }

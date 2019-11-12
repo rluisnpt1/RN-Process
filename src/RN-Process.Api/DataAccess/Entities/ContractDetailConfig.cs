@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -7,72 +8,113 @@ using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class ContractDetailConfig : AuditableEntity<string>
+
+
+    public sealed class ContractDetailConfig : AuditableEntity<string>
     {
 
-        public string CodReference { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ContractId { get; private set; }
+        public Contract Contract { get; set; }
+
+
+        public string CommunicationType { get; set; }
         public string InternalHost { get; set; }
         public string LinkToAccess { get; set; }
-        public string LinkToAccesTipo { get; set; }
+        public string LinkToAccessType { get; set; }
         public string TypeOfResponse { get; set; }
+
+
         public bool RequiredLogin { get; set; }
         public string AuthenticationLogin { get; set; }
-        public string AuthenticationPassword { get; set; }
+        public byte[] AuthenticationPassword { get; set; }
         public string AuthenticationCodeApp { get; set; }
+
         public string PathToOriginFile { get; set; }
         public string PathToDestinationFile { get; set; }
         public string PathToFileBackupAtClient { get; set; }
         public string PathToFileBackupAtHostServer { get; set; }
-        public virtual List<string> FileDeLimiter { get; set; }
+        public string FileDelimiter { get; set; }
+        public IList<string> FileHeaderColumns { get; set; }
 
-
-     
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string ContractId { get; private set; }
-        public virtual Contract Contract { get; set; }
+        public Guid TokenAlteracaoDeSenha { get; private set; }
 
         [BsonIgnore]
         private ICollection<FileImport> _fileImport;
 
-        public virtual ICollection<FileImport> FileImports
+        public ICollection<FileImport> FileImports
         {
             get { return _fileImport ??= new List<FileImport>(); }
             protected set => _fileImport = value;
         }
 
 
+
         /// <summary>
         /// Runtime execution
         /// </summary>
-        protected ContractDetailConfig()
+        private ContractDetailConfig()
         {
 
         }
-        public ContractDetailConfig(string codReference, string internalHost, string linkToAccess,
-            string linkToAccesTipo, string typeOfResponse, bool requiredLogin, string authenticationLogin,
-            string authenticationPassword, string authenticationCodeApp, string pathToOriginFile,
-            string pathToDestinationFile, string pathToFileBackupAtClient, string pathToFileBackupAtHostServer,
-            List<string> fileDeLimiter, Contract contract)
+
+
+
+        public ContractDetailConfig(
+            string communicationType,
+            string internalHost,
+            string linkToAccess,
+            string linkToAccessType,
+            string typeOfResponse,
+            bool requiredLogin,
+            string authenticationLogin,
+            string authenticationPassword,
+            string authenticationCodeApp,
+            string pathToOriginFile,
+            string pathToDestinationFile,
+            string pathToFileBackupAtClient,
+            string pathToFileBackupAtHostServer,
+            string fileDeLimiter,
+            IList<string> fileHeaderColumns,
+            Contract contract)
         {
             Id = ObjectId.GenerateNewId().ToString();
-            SetContract(contract);
-            CodReference = codReference;
+            SetCommunicationType(communicationType);
             InternalHost = internalHost;
             LinkToAccess = linkToAccess;
-            LinkToAccesTipo = linkToAccesTipo;
+            LinkToAccessType = linkToAccessType;
             TypeOfResponse = typeOfResponse;
-            RequiredLogin = requiredLogin;
-            AuthenticationLogin = authenticationLogin;
-            AuthenticationPassword = authenticationPassword;
-            AuthenticationCodeApp = authenticationCodeApp;
             PathToOriginFile = pathToOriginFile;
             PathToDestinationFile = pathToDestinationFile;
             PathToFileBackupAtClient = pathToFileBackupAtClient;
             PathToFileBackupAtHostServer = pathToFileBackupAtHostServer;
-            FileDeLimiter = fileDeLimiter; 
+            FileDelimiter = fileDeLimiter;
+            FileHeaderColumns = fileHeaderColumns;
+
+            RequiredLogin = requiredLogin;
+            SetDelimiter(FileDelimiter);
+            SetLogin(authenticationLogin);
+            SetPassword(authenticationPassword);
+            SetAuthenticationApp(authenticationCodeApp);
+            SetContract(contract);
+
             Active = true;
             Deleted = false;
-            CreatedDate = DateTime.UtcNow;
+            RowVersion = new byte[0];
+        }
+
+        private void SetCommunicationType(string communicationType)
+        {
+            Guard.Against.NullOrEmpty(communicationType, nameof(communicationType));
+            Guard.Against.NullOrWhiteSpace(communicationType, nameof(communicationType));
+            CommunicationType = communicationType;
+        }
+
+
+        private void SetDelimiter(string fileDeLimiter)
+        {
+            var result = string.IsNullOrEmpty(fileDeLimiter) ? "," : fileDeLimiter;
+            FileDelimiter = result;
         }
 
         private void SetContract(Contract contract)
@@ -81,5 +123,70 @@ namespace RN_Process.Api.DataAccess.Entities
             ContractId = contract.Id;
             Contract = contract;
         }
+
+        private void SetAuthenticationApp(string authenticationCodeApp)
+        {
+            AuthenticationCodeApp = authenticationCodeApp;
+        }
+
+        private void SetLogin(string authenticationLogin)
+        {
+            if (AuthenticationLogin == null && RequiredLogin == false && !string.IsNullOrEmpty(authenticationLogin))
+            {
+                RequiredLogin = true;
+            }
+
+            if (RequiredLogin)
+            {
+                Guard.Against.NullOrEmpty(authenticationLogin, authenticationLogin);
+                Guard.Against.NullOrWhiteSpace(authenticationLogin, authenticationLogin);
+            }
+
+            AuthenticationLogin = authenticationLogin;
+        }
+
+        private void SetPassword(string password)
+        {
+            if (AuthenticationPassword == null && RequiredLogin == false && !string.IsNullOrEmpty(password))
+            {
+                RequiredLogin = true;
+            }
+
+            if (RequiredLogin)
+            {
+                Guard.Against.NullOrEmpty(password, nameof(password));
+                Guard.Against.NullOrWhiteSpace(password, nameof(password));
+            }
+            AuthenticationPassword = CriptografiaHelper.PasswordCryptography(password);
+        }
+
+
+        //public void PasswordValidation(string currentPassword)
+        //{
+        //    Guard.Against.NullOrEmpty(currentPassword, nameof(currentPassword));
+        //    var encryptedPassword = CriptografiaHelper.PasswordCryptography(currentPassword);
+
+        //    if (!AuthenticationPassword.SequenceEqual(encryptedPassword))
+        //        throw new Exception("invalid password!");
+        //}
+
+        //public void ChangeAuthenticationPassword(string currentPassword, string newPassword)
+        //{
+        //    PasswordValidation(currentPassword);
+        //    SetPassword(newPassword);
+        //}
+        //    public Guid GenerateNewTokenToChangePassword()
+        //    {
+        //        TokenAlteracaoDeSenha = Guid.NewGuid();
+        //        return TokenAlteracaoDeSenha;
+        //    }
+
+        //    public void ChangePassword(Guid token, string novaSenha)
+        //    {
+        //        if (!TokenAlteracaoDeSenha.Equals(token))
+        //            throw new Exception("token para alteração de senha inválido!");
+        //        SetPassword(novaSenha);
+        //        GenerateNewTokenToChangePassword();
+        //    }
     }
 }

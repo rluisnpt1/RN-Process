@@ -18,7 +18,11 @@ namespace RN_Process.DataAccess
         /// </summary>
         public virtual bool Deleted { get; set; }
 
-        public virtual bool Active { get; set; }
+        public virtual bool Active
+        {
+            get;
+            set;
+        }
 
         private byte[] _rowVersion;
         /// <summary>

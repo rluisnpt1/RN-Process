@@ -43,7 +43,6 @@ namespace RN_Process.Api.DataAccess.Entities
             SetVersion();
             Active = true;
             Deleted = false;
-            CreatedDate = DateTime.UtcNow;
             RowVersion = new byte[0];
         }
 
@@ -171,7 +170,7 @@ namespace RN_Process.Api.DataAccess.Entities
                     string.Empty, false, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    new List<string>(), contr);
+                    String.Empty, new List<string>(), contr);
             }
             else
             {
