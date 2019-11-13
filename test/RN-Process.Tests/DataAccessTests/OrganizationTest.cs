@@ -16,7 +16,7 @@ namespace RN_Process.Tests.DataAccessTests
 
         private Organization _sut;
 
-        private Organization SystemUnderTest => _sut ?? CustomerInit(Name, CodClientForTest);
+        private Organization SystemUnderTest => _sut ??= _sut = CustomerInit(Name, CodClientForTest);
 
         private static Organization CustomerInit(string description, string uniqcode)
         {

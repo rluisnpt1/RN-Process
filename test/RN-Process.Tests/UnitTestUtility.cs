@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Shared.Enums;
 
 namespace RN_Process.Tests
 {
@@ -14,6 +16,19 @@ namespace RN_Process.Tests
         public static Contract GetContractOrganizationToTest()
         {
             return new Contract(14533686, 5546, "Divida 1", GetBancoPortugalOrganizationToTest());
+        }
+        
+        public static FileImport GetOneFileImportToTest()
+        {
+            return new FileImport(
+                "file1", 21233
+                , "csv",
+                "abc/local/path",
+                "retorno/copy/to",
+                StatusType.Processed,
+                false,
+                null, UnitTestUtility.GetContractDetailConfigToTest(),
+                new BsonDocument());
         }
 
         public static ContractDetailConfig GetContractDetailConfigToTest(
@@ -56,21 +71,6 @@ namespace RN_Process.Tests
             list.Add(listb);
             return list;
         }
-
-        public static List<Organization> GetManyOrganizationsToTest()
-        {
-            var listB = new List<Organization>();
-            var t = new Organization("Banco de portugal", "BDPT48");
-            var t1 = new Organization("Banco de Lisboa", "BDLI48");
-            var t2 = new Organization("Banco de Aveiro", "BDAV78");
-            var t3 = new Organization("Banco de Porto", "@BDPP48");
-            listB.Add(t);
-            listB.Add(t1);
-            listB.Add(t2);
-            listB.Add(t3);
-            return listB;
-        }
-
 
         ///// <summary>
         ///// From Entity to Model

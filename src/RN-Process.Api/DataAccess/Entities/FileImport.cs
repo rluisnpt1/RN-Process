@@ -16,7 +16,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public FileImport(string fileDescription, int fileSize, string fileFormat, string fileLocationOrigin,
             string locationToCopy, StatusType status, bool fileMigrated, DateTime? fileMigratedOn,
-            ContractDetailConfig contractDetailConfig, List<BsonDocument> allDataInFile)
+            ContractDetailConfig contractDetailConfig, BsonDocument allDataInFile)
         {
             Id = ObjectId.GenerateNewId().ToString();
 
@@ -47,7 +47,7 @@ namespace RN_Process.Api.DataAccess.Entities
         public DateTime? FileMigratedOn { get; set; }
 
 
-        public ICollection<BsonDocument> AllDataInFile { get; set; }
+        public BsonDocument AllDataInFile { get; set; }
 
 
         [BsonRepresentation(BsonType.ObjectId)]
@@ -55,9 +55,10 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public virtual ContractDetailConfig ContractDetailConfig { get; set; }
 
-        private void SetAllDatafromFile(IList<BsonDocument> allDataInFile)
+        private void SetAllDatafromFile(BsonDocument allDataInFile)
         {
-            Guard.Against.NullOrEmpty(allDataInFile, nameof(allDataInFile));
+            Guard.Against.Null(allDataInFile, nameof(allDataInFile));
+           
             AllDataInFile = allDataInFile;
         }
 
@@ -77,6 +78,7 @@ namespace RN_Process.Api.DataAccess.Entities
         private void SetFileFormat(string fileFormat)
         {
             Guard.Against.NullOrEmpty(fileFormat, nameof(fileFormat));
+            Guard.Against.NullOrWhiteSpace(fileFormat, nameof(fileFormat));
             FileFormat = fileFormat;
         }
 
@@ -89,6 +91,7 @@ namespace RN_Process.Api.DataAccess.Entities
         private void SetFileDescritption(string fileDescription)
         {
             Guard.Against.NullOrEmpty(fileDescription, nameof(fileDescription));
+            Guard.Against.NullOrWhiteSpace(fileDescription, nameof(fileDescription));
             FileDescription = fileDescription;
         }
 
