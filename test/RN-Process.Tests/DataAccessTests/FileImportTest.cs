@@ -211,6 +211,36 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.Equal(BsonType.Document, ex.AllDataInFile.BsonType);
         }
 
+         [Fact]
+        public void FileImportTestIsCreated_IsValid()
+        {
+            // Arrange
+            // Act
+            //Assert
+            Assert.NotNull(SystemUnderTest);
+            Assert.NotNull(SystemUnderTest.Id);
+            Assert.IsType<string>(SystemUnderTest.Id);
+
+            Assert.Equal("file1", SystemUnderTest.FileDescription);
+            Assert.Equal(21233, SystemUnderTest.FileSize);
+            Assert.Equal("csv", SystemUnderTest.FileFormat);
+            Assert.Equal("abc/local/path", SystemUnderTest.FileLocationOrigin);
+            Assert.Equal("retorno/copy/to", SystemUnderTest.LocationToCopy);
+            Assert.Equal(StatusType.Processed, SystemUnderTest.Status);
+            Assert.False(SystemUnderTest.FileMigrated);
+            Assert.Null(SystemUnderTest.FileMigratedOn);
+
+            Assert.NotNull(SystemUnderTest.ContractDetailConfig);
+            Assert.NotNull(SystemUnderTest.ContractDetailConfigId);
+            Assert.NotEmpty(SystemUnderTest.ContractDetailConfigId);
+
+            Assert.Null(SystemUnderTest.ModifiedBy);
+            Assert.Null(SystemUnderTest.ModifiedDate);
+            Assert.True(SystemUnderTest.Active);
+            Assert.False(SystemUnderTest.Deleted);
+            Assert.NotNull(SystemUnderTest.RowVersion);
+        }
+
         public FileImport InitializeTest(
             string fileDescription,
             int fileSize,
