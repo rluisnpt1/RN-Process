@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -36,6 +38,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string pathToFileBackupAtHostServer,
             string fileDeLimiter,
             IList<string> fileHeaderColumns,
+            IList<string> availableFieldsColumns,
             Contract contract)
         {
             Id = ObjectId.GenerateNewId().ToString();
@@ -49,7 +52,8 @@ namespace RN_Process.Api.DataAccess.Entities
             PathToFileBackupAtClient = pathToFileBackupAtClient;
             PathToFileBackupAtHostServer = pathToFileBackupAtHostServer;
             FileDelimiter = fileDeLimiter;
-            FileHeaderColumns = fileHeaderColumns;
+            SetFileHeaderColumns(fileHeaderColumns);
+            SetAvailableFieldsColumns(availableFieldsColumns);
 
             RequiredLogin = requiredLogin;
             SetDelimiter(FileDelimiter);
@@ -61,6 +65,26 @@ namespace RN_Process.Api.DataAccess.Entities
             Active = true;
             Deleted = false;
             RowVersion = new byte[0];
+        }
+
+        private void SetAvailableFieldsColumns(IList<string> availableFieldsColumns)
+        {
+            Guard.Against.Null(availableFieldsColumns, nameof(availableFieldsColumns));
+            Guard.Against.Zero(availableFieldsColumns.Count, nameof(availableFieldsColumns));
+            if(availableFieldsColumns.Contains(" "))
+                throw new EncoderFallbackException("list can not have empty strings");
+
+            AvailableFieldsColumns = availableFieldsColumns;
+        }
+
+        private void SetFileHeaderColumns(IList<string> fileHeaderColumns)
+        {
+            Guard.Against.Null(fileHeaderColumns, nameof(fileHeaderColumns));
+            Guard.Against.Zero(fileHeaderColumns.Count, nameof(fileHeaderColumns));
+            if (fileHeaderColumns.Contains(" "))
+                throw new EncoderFallbackException("list can not have empty strings");
+
+            FileHeaderColumns = fileHeaderColumns;
         }
 
         [BsonRepresentation(BsonType.ObjectId)]
@@ -87,8 +111,8 @@ namespace RN_Process.Api.DataAccess.Entities
         public string PathToFileBackupAtHostServer { get; set; }
         public string FileDelimiter { get; set; }
         public IList<string> FileHeaderColumns { get; set; }
+        public IList<string> AvailableFieldsColumns { get; set; }
 
-        public Guid TokenAlteracaoDeSenha { get; private set; }
 
         public ICollection<FileImport> FileImports
         {

@@ -158,7 +158,7 @@ namespace RN_Process.Api.DataAccess.Entities
                     string.Empty, false, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    string.Empty, new List<string>(), contr);
+                    string.Empty, new List<string>(), new List<string>(), contr);
             }
             else
             {

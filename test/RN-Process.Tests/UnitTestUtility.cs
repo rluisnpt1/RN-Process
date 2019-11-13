@@ -55,6 +55,8 @@ namespace RN_Process.Tests
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
                 ",",
                 new List<string>
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, 
+                new List<string>
                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
                 GetContractOrganizationToTest()
             );

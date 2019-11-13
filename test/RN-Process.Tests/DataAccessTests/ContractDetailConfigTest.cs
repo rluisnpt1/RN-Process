@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using RN_Process.Api.DataAccess.Entities;
 using Xunit;
 
@@ -38,7 +39,9 @@ namespace RN_Process.Tests.DataAccessTests
             string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer,
             string fileDeLimiter,
-            IList<string> fileHeaderColumns)
+            IList<string> fileHeaderColumns,
+            IList<string> AvailableFieldsColumns
+        )
         {
             return new ContractDetailConfig(
                 communicationType,
@@ -56,8 +59,116 @@ namespace RN_Process.Tests.DataAccessTests
                 pathToFileBackupAtHostServer,
                 fileDeLimiter,
                 fileHeaderColumns,
+                AvailableFieldsColumns,
                 UnitTestUtility.GetContractOrganizationToTest()
             );
+        }
+
+        [Fact]
+        public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfListHasEmptyString()
+        {
+            // Arrange            
+            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest("FTP",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                true, "my login",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                new List<string> {"ss", "s"}, new List<string> {"ss", " "}));
+            // Act            
+
+            // Assert            
+            Assert.Contains("list can not have empty strings", expect.Message);
+        }
+
+        [Fact]
+        public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfNull()
+        {
+            // Arrange            
+            var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest("FTP",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                true, "my login",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                new List<string> {"ss", "s"}, null));
+
+            Assert.Contains("Value cannot be null. (Parameter 'availableFieldsColumns')", expect.Message);
+        }
+
+        [Fact]
+        public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfZero()
+        {
+            // Arrange            
+            var expect = Assert.Throws<ArgumentException>(() => InitizerTest("FTP",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                true, "my login",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                new List<string> {"ss", "s"}, new List<string>()));
+
+
+            Assert.Contains(
+                "Required input 'AVAILABLEFIELDSCOLUMNS' cannot be zero. (Parameter 'availableFieldsColumns')",
+                expect.Message);
+        }
+
+        [Fact]
+        public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfListHasEmptyString()
+        {
+            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest("FTP",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                true, "my login",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                new List<string> {"ss", " "}, new List<string> {"cdb"}));
+
+            // Act            
+
+            // Assert     
+            Assert.Contains("list can not have empty strings", expect.Message);
+        }
+
+        [Fact]
+        public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfNull()
+        {
+            // Arrange            
+            var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest("FTP",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                true, "my login",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                null, new List<string> {"cdb"}));
+
+            Assert.Contains("Value cannot be null. (Parameter 'fileHeaderColumns')", expect.Message);
+        }
+
+        [Fact]
+        public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfZero()
+        {
+            // Arrange            
+            var expect = Assert.Throws<ArgumentException>(() => InitizerTest("FTP",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                true, "my login",
+                string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty,
+                new List<string>(), new List<string> {"cdb"}));
+
+            // Act            
+
+            // Assert     
+            Assert.Contains("Required input 'FILEHEADERCOLUMNS' cannot be zero.", expect.Message);
+            Assert.Equal("fileHeaderColumns", expect.ParamName);
         }
 
         [Fact]
@@ -93,7 +204,7 @@ namespace RN_Process.Tests.DataAccessTests
                 false, string.Empty,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, new List<string>());
+                string.Empty, string.Empty, new List<string> {"cdb"}, new List<string> {"cdb"});
 
 
             // Assert
@@ -132,7 +243,8 @@ namespace RN_Process.Tests.DataAccessTests
                     false, "my login",
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    string.Empty, string.Empty, new List<string>()));
+                    string.Empty, string.Empty, new List<string> {"cdb"},
+                    new List<string> {"ab"}));
 
             // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);
@@ -154,7 +266,8 @@ namespace RN_Process.Tests.DataAccessTests
                         true, string.Empty,
                         string.Empty, string.Empty,
                         string.Empty, string.Empty, string.Empty,
-                        string.Empty, string.Empty, new List<string>(),
+                        string.Empty, string.Empty,
+                        new List<string> {"cdb"}, new List<string> {"cdb"},
                         UnitTestUtility.GetContractOrganizationToTest())));
 
             // Assert
@@ -177,7 +290,8 @@ namespace RN_Process.Tests.DataAccessTests
                     true, "my login",
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    string.Empty, string.Empty, new List<string>()));
+                    string.Empty, string.Empty,
+                    new List<string> {"cdb"}, new List<string> {"cdb"}));
 
             // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);
