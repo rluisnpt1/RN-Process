@@ -23,9 +23,9 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public ContractDetailConfig(
-            FileAccessType communicationType,
+        public ContractDetailConfig(FileAccessType communicationType,
             string internalHost,
+            string baseWorkDirectoryHost,
             string linkToAccess,
             string linkToAccessType,
             string typeOfResponse,
@@ -45,6 +45,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Id = ObjectId.GenerateNewId().ToString();
             SetCommunicationType(communicationType);
             InternalHost = internalHost;
+            SetBaseWorkDirectoryHost(baseWorkDirectoryHost);
             LinkToAccess = linkToAccess;
             LinkToAccessType = linkToAccessType;
             TypeOfResponse = typeOfResponse;
@@ -70,11 +71,11 @@ namespace RN_Process.Api.DataAccess.Entities
         public string ContractId { get; private set; }
 
         public Contract Contract { get; set; }
-
         public string OrgCode { get; private set; }
 
         public FileAccessType CommunicationType { get; private set; }
         public string InternalHost { get; private set; }
+        public string BaseWorkDirectoryHost { get; private set; }
         public string LinkToAccess { get; private set; }
         public string LinkToAccessType { get; private set; }
         public string TypeOfResponse { get; private set; }
@@ -98,6 +99,16 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             get { return _fileImport ??= new List<FileImport>(); }
             protected set => _fileImport = value;
+        }
+
+        private void SetBaseWorkDirectoryHost(string baseWorkDirectoryHost)
+        {
+            Guard.Against.NullOrWhiteSpace(baseWorkDirectoryHost, nameof(baseWorkDirectoryHost));
+            var clientDir = "\\" + OrgCode.ToUpper() + "\\";
+            BaseWorkDirectoryHost = string.IsNullOrEmpty(baseWorkDirectoryHost)
+                ? IntrumFile.CreateDirectory(RnProcessConstant.BaseWorkFolder + clientDir) 
+                : IntrumFile.CreateDirectory(baseWorkDirectoryHost + clientDir);
+
         }
 
         private void SetAvailableFieldsColumns(IList<string> availableFieldsColumns)
@@ -172,7 +183,8 @@ namespace RN_Process.Api.DataAccess.Entities
                 Guard.Against.NullOrWhiteSpace(password, nameof(password));
             }
 
-            AuthenticationPassword = Encoding.ASCII.GetBytes(password);//CriptografiaHelper.PasswordCryptography(password);
+            AuthenticationPassword =
+                Encoding.ASCII.GetBytes(password); //CriptografiaHelper.PasswordCryptography(password);
         }
 
 
@@ -192,25 +204,14 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
         public void UpdateContractConfiguration(string id,
-                    FileAccessType communicationType,
-                    string internalHost,
-                    string linkToAccess,
-                    string linkToAccessType,
-                    string typeOfResponse,
-                      bool requiredLogin,
-                    string authenticationLogin,
-                    string authenticationPassword,
-                    string authenticationCodeApp,
-                    string pathToOriginFile,
-                    string pathToDestinationFile,
-                    string pathToFileBackupAtClient,
-                    string pathToFileBackupAtHostServer,
-                    string fileDeLimiter,
-                    IList<string> fileHeaderColumns,
-                    IList<string> availableFieldsColumns,
-                    bool active)
+            FileAccessType communicationType, string internalHost, string linkToAccess, string linkToAccessType,
+            string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
+            string authenticationCodeApp, string pathToOriginFile, string pathToDestinationFile,
+            string pathToFileBackupAtClient,
+            string pathToFileBackupAtHostServer, string fileDeLimiter, IList<string> fileHeaderColumns,
+            IList<string> availableFieldsColumns,
+            bool active)
         {
-
             if (!string.IsNullOrEmpty(id))
             {
                 SetCommunicationType(communicationType);
@@ -229,7 +230,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 SetDelimiter(fileDeLimiter);
                 SetFileHeaderColumns(fileHeaderColumns);
                 SetAvailableFieldsColumns(availableFieldsColumns);
-                this.Active = active;
+                Active = active;
             }
         }
 

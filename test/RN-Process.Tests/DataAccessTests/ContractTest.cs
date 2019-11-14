@@ -1,10 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using RN_Process.Api.DataAccess.Entities;
-using RN_Process.Shared.Enums;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -138,8 +135,5 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.Contains("Required input 'TYPEDEBT' cannot be zero", ex.Message);
             Assert.Equal("typeDebt", ex.ParamName);
         }
-
-       
-
     }
 }

@@ -8,11 +8,11 @@ namespace RN_Process.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Organization",
-                columns: table => new
+                "Organization",
+                table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Id = table.Column<string>(),
+                    CreatedDate = table.Column<DateTime>(),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 250, nullable: true),
                     ModifiedBy = table.Column<string>(maxLength: 250, nullable: true),
@@ -20,40 +20,34 @@ namespace RN_Process.Api.Migrations
                     UniqCode = table.Column<string>(nullable: true),
                     Description = table.Column<string>(maxLength: 250, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Organization", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Organization", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "ReferencesType",
-                columns: table => new
+                "ReferencesType",
+                table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Id = table.Column<string>(),
+                    CreatedDate = table.Column<DateTime>(),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 250, nullable: true),
                     ModifiedBy = table.Column<string>(maxLength: 250, nullable: true),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     UniqCode = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReferencesType", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_ReferencesType", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "Contract",
-                columns: table => new
+                "Contract",
+                table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Id = table.Column<string>(),
+                    CreatedDate = table.Column<DateTime>(),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 250, nullable: true),
                     ModifiedBy = table.Column<string>(maxLength: 250, nullable: true),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    ContractNumber = table.Column<int>(nullable: false),
-                    TypeDebt = table.Column<int>(nullable: false),
+                    ContractNumber = table.Column<int>(),
+                    TypeDebt = table.Column<int>(),
                     DebtDescription = table.Column<string>(nullable: true),
                     OrganizationId = table.Column<string>(nullable: true)
                 },
@@ -61,19 +55,19 @@ namespace RN_Process.Api.Migrations
                 {
                     table.PrimaryKey("PK_Contract", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Contract_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalTable: "Organization",
-                        principalColumn: "Id",
+                        "FK_Contract_Organization_OrganizationId",
+                        x => x.OrganizationId,
+                        "Organization",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reference",
-                columns: table => new
+                "Reference",
+                table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Id = table.Column<string>(),
+                    CreatedDate = table.Column<DateTime>(),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 250, nullable: true),
                     ModifiedBy = table.Column<string>(maxLength: 250, nullable: true),
@@ -85,19 +79,19 @@ namespace RN_Process.Api.Migrations
                 {
                     table.PrimaryKey("PK_Reference", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reference_ReferencesType_ReferencesTypeId",
-                        column: x => x.ReferencesTypeId,
-                        principalTable: "ReferencesType",
-                        principalColumn: "Id",
+                        "FK_Reference_ReferencesType_ReferencesTypeId",
+                        x => x.ReferencesTypeId,
+                        "ReferencesType",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ContractDetailConfig",
-                columns: table => new
+                "ContractDetailConfig",
+                table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Id = table.Column<string>(),
+                    CreatedDate = table.Column<DateTime>(),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 250, nullable: true),
                     ModifiedBy = table.Column<string>(maxLength: 250, nullable: true),
@@ -107,7 +101,7 @@ namespace RN_Process.Api.Migrations
                     LinkToAccess = table.Column<string>(nullable: true),
                     LinkToAccesTipo = table.Column<string>(nullable: true),
                     TypeOfResponse = table.Column<string>(nullable: true),
-                    RequiredLogin = table.Column<bool>(nullable: false),
+                    RequiredLogin = table.Column<bool>(),
                     AuthenticationLogin = table.Column<string>(nullable: true),
                     AuthenticationPassword = table.Column<string>(nullable: true),
                     AuthenticationCodeApp = table.Column<string>(nullable: true),
@@ -115,37 +109,37 @@ namespace RN_Process.Api.Migrations
                     PathToDestinationFile = table.Column<string>(nullable: true),
                     PathToFileBackupAtClient = table.Column<string>(nullable: true),
                     PathToFileBackupAtHostServer = table.Column<string>(nullable: true),
-                    FileDeLimiter = table.Column<string>(nullable: false),
+                    FileDeLimiter = table.Column<string>(),
                     ContractId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ContractDetailConfig", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ContractDetailConfig_Contract_ContractId",
-                        column: x => x.ContractId,
-                        principalTable: "Contract",
-                        principalColumn: "Id",
+                        "FK_ContractDetailConfig_Contract_ContractId",
+                        x => x.ContractId,
+                        "Contract",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "FileImport",
-                columns: table => new
+                "FileImport",
+                table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Id = table.Column<string>(),
+                    CreatedDate = table.Column<DateTime>(),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     CreatedBy = table.Column<string>(maxLength: 250, nullable: true),
                     ModifiedBy = table.Column<string>(maxLength: 250, nullable: true),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     FileDescription = table.Column<string>(nullable: true),
-                    FileSize = table.Column<int>(nullable: false),
+                    FileSize = table.Column<int>(),
                     FileFormat = table.Column<string>(nullable: true),
                     FileLocationOrigin = table.Column<string>(nullable: true),
                     LocationToCopy = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    FileMigrated = table.Column<bool>(nullable: false),
+                    Status = table.Column<int>(),
+                    FileMigrated = table.Column<bool>(),
                     FileMigratedOn = table.Column<DateTime>(nullable: true),
                     AllDataInFile = table.Column<string>(nullable: true),
                     ContractDetailConfigId = table.Column<string>(nullable: true)
@@ -154,53 +148,53 @@ namespace RN_Process.Api.Migrations
                 {
                     table.PrimaryKey("PK_FileImport", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileImport_ContractDetailConfig_ContractDetailConfigId",
-                        column: x => x.ContractDetailConfigId,
-                        principalTable: "ContractDetailConfig",
-                        principalColumn: "Id",
+                        "FK_FileImport_ContractDetailConfig_ContractDetailConfigId",
+                        x => x.ContractDetailConfigId,
+                        "ContractDetailConfig",
+                        "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contract_OrganizationId",
-                table: "Contract",
-                column: "OrganizationId");
+                "IX_Contract_OrganizationId",
+                "Contract",
+                "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContractDetailConfig_ContractId",
-                table: "ContractDetailConfig",
-                column: "ContractId");
+                "IX_ContractDetailConfig_ContractId",
+                "ContractDetailConfig",
+                "ContractId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FileImport_ContractDetailConfigId",
-                table: "FileImport",
-                column: "ContractDetailConfigId");
+                "IX_FileImport_ContractDetailConfigId",
+                "FileImport",
+                "ContractDetailConfigId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reference_ReferencesTypeId",
-                table: "Reference",
-                column: "ReferencesTypeId");
+                "IX_Reference_ReferencesTypeId",
+                "Reference",
+                "ReferencesTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FileImport");
+                "FileImport");
 
             migrationBuilder.DropTable(
-                name: "Reference");
+                "Reference");
 
             migrationBuilder.DropTable(
-                name: "ContractDetailConfig");
+                "ContractDetailConfig");
 
             migrationBuilder.DropTable(
-                name: "ReferencesType");
+                "ReferencesType");
 
             migrationBuilder.DropTable(
-                name: "Contract");
+                "Contract");
 
             migrationBuilder.DropTable(
-                name: "Organization");
+                "Organization");
         }
     }
 }

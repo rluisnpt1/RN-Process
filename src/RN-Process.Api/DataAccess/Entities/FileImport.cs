@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -36,6 +35,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
             SetContractDetailConfig(contractDetailConfig);
         }
+
         public virtual string OrgCode { get; private set; }
         public string FileDescription { get; set; }
         public int FileSize { get; set; }
@@ -107,7 +107,6 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="contractDetailConfig"></param>
         public void CreateCommunicationType(ContractDetailConfig contractDetailConfig)
@@ -116,8 +115,8 @@ namespace RN_Process.Api.DataAccess.Entities
             {
                 case FileAccessType.FTP:
                     var t = new FtpClient(contractDetailConfig.AuthenticationLogin
-                          , Encoding.ASCII.GetString(contractDetailConfig.AuthenticationPassword)
-                          , contractDetailConfig.LinkToAccess);
+                        , Encoding.ASCII.GetString(contractDetailConfig.AuthenticationPassword)
+                        , contractDetailConfig.LinkToAccess);
                     t.CreateCredential("");
                     var te = t.DirectoryListSimple(contractDetailConfig.PathToOriginFile);
                     break;
@@ -134,8 +133,6 @@ namespace RN_Process.Api.DataAccess.Entities
                 case FileAccessType.RemoteDesktop:
                     break;
                 case FileAccessType.ActiveDirectory:
-                    break;
-                default:
                     break;
             }
         }

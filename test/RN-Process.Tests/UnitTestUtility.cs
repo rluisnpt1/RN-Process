@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MongoDB.Bson;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 
 namespace RN_Process.Tests
@@ -17,7 +18,7 @@ namespace RN_Process.Tests
         {
             return new Contract(14533686, 5546, "Divida 1", GetBancoPortugalOrganizationToTest());
         }
-        
+
         public static FileImport GetOneFileImportToTest()
         {
             return new FileImport(
@@ -27,7 +28,7 @@ namespace RN_Process.Tests
                 "retorno/copy/to",
                 StatusType.Processed,
                 false,
-                null, UnitTestUtility.GetContractDetailConfigToTest(),
+                null, GetContractDetailConfigToTest(),
                 new BsonDocument());
         }
 
@@ -37,25 +38,51 @@ namespace RN_Process.Tests
             return getContractDetailConfigToTest;
         }
 
-        public static ContractDetailConfig GetContractDetailConfigToTest()
+        public static ContractDetailConfig GetContractDetailConfigToTest(string codorg)
         {
             return new ContractDetailConfig(
                 FileAccessType.FTP,
                 "LocalHost",
-                "FTP:10.80.5.198",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\WorkDir\\",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 "ETL",
                 "FTP",
                 true,
                 "MYLogin@MyName",
                 "MyPass1234",
                 null,
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Origin",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Backup",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum\\Processados\\",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\Backup\\",
+                RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost",
                 ",",
                 new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, 
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
+                new List<string>
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
+                GetContractOrganizationToTest()
+            );
+        }
+        public static ContractDetailConfig GetContractDetailConfigToTest()
+        {
+            return new ContractDetailConfig(
+                FileAccessType.FTP,
+                "LocalHost",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\WorkDir\\",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                "ETL",
+                "FTP",
+                true,
+                "MYLogin@MyName",
+                "MyPass1234",
+                null,
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum",
+                RnProcessConstant.BaseTestWorkFolder + "\\Destination",
+                RnProcessConstant.BaseTestWorkFolder + "\\Backup",
+                RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost",
+                ",",
+                new List<string>
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
                 new List<string>
                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
                 GetContractOrganizationToTest()
@@ -68,6 +95,7 @@ namespace RN_Process.Tests
             return new ContractDetailConfig(
                 FileAccessType.FTP,
                 "LocalHost",
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 "SFTP://IDCFTPGW.INTRUM.NET:22222",
                 "SFTP",
                 "FTP",

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 
 namespace RN_Process.DataAccess.FTP
 {
@@ -19,6 +18,5 @@ namespace RN_Process.DataAccess.FTP
         string GetFileCreatedDateTime(string fileName);
         string GetFileSize(string fileName);
         void Rename(string currentFileNameAndPath, string newFileName);
-
     }
 }

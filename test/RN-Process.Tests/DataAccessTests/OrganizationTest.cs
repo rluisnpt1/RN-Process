@@ -25,6 +25,105 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
+        public void RemoveOrganizationContractByInvalidId_TheContractsAreNotRemoved()
+        {
+            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
+            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
+
+
+            SystemUnderTest.RemoveContract("21", false);
+
+            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+        }
+
+        [Fact]
+        public void RemoveOrganizationContractNullId_TheContractsAreNotRemoved()
+        {
+            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
+            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
+
+
+            SystemUnderTest.RemoveContract(null, false);
+
+            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+        }
+
+        [Fact]
+        public void RemoveOrganizationContractWhithSoftDeleteFalseById_ThenActiveContract_ShouldBeFalse()
+        {
+            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
+            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
+            var actual21 = SystemUnderTest.Contracts.First();
+
+            //not softdelete
+            SystemUnderTest.RemoveContract(actual21.Id, false);
+
+            Assert.False(SystemUnderTest.Contracts.Contains(actual21),
+                "Should 'not contain' the contract softdelete = false.");
+
+            Assert.Equal(1, SystemUnderTest.Contracts.Count);
+            Assert.True(SystemUnderTest.Active);
+            Assert.False(SystemUnderTest.Deleted);
+        }
+
+        /// <summary>
+        ///     When Contract is disable all configuration should also be desable
+        /// </summary>
+        [Fact]
+        public void RemoveOrganizationContractWhithSoftDeleteTrueById_ThenConfigurationDetailRelated_ShouldNotBeActive()
+        {
+            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
+            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
+
+            var contract = SystemUnderTest.Contracts.First();
+            var config = contract.ContractDetailsConfigs.Where(x => x.ContractId == contract.Id).FirstOrDefault();
+
+            //softdelete
+            SystemUnderTest.RemoveContract(contract.Id, true);
+
+            Assert.True(SystemUnderTest.Contracts.Contains(contract),
+                "Should 'contain' the contract softdelete = true.");
+
+            //
+            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+            Assert.Equal(1, SystemUnderTest.ContractDetails.Count);
+
+            //contract                        
+            Assert.False(contract.Active);
+            Assert.True(contract.Deleted);
+            Assert.NotNull(contract.ModifiedBy);
+            Assert.NotNull(contract.ModifiedDate);
+
+            //configuration 
+            Assert.False(config.Active);
+            Assert.True(config.Deleted);
+            Assert.NotNull(config.ModifiedBy);
+            Assert.NotNull(config.ModifiedDate);
+            Assert.Same(config.ContractId, contract.Id);
+
+            //organization
+            Assert.True(SystemUnderTest.Active);
+            Assert.False(SystemUnderTest.Deleted);
+        }
+
+        [Fact]
+        public void RemoveOrganizationContractWhithSoftDeleteTrueById_ThenContractIsRemoved()
+        {
+            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
+            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
+            var actual21 = SystemUnderTest.Contracts.First();
+
+            SystemUnderTest.RemoveContract(actual21.Id, true);
+
+            Assert.True(SystemUnderTest.Contracts.Contains(actual21),
+                "Should not contain this contract after.");
+
+            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+            Assert.False(actual21.Active);
+            Assert.True(actual21.Deleted);
+        }
+
+        [Fact]
         [Trait("Category", "Unit")]
         public void WhenCreated_CustomerIsvalid()
         {
@@ -163,42 +262,8 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.Equal("orgCode", ex.ParamName);
         }
 
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenOrganizationAddContract_ThenFactIsAddedToCollection_StringBasedContract()
-        {
-            //act
-
-            SystemUnderTest.AddContract(null, 99, 665, "qualquer");
-
-            Assert.Equal(1, SystemUnderTest.Contracts.Count);
-            //get contract from organization
-            var actual = SystemUnderTest.Contracts.First();
-
-            //assert contract created is the same in organization
-            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
-            Assert.Same(SystemUnderTest, actual.Organization);
-        }
-
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenOrganizationAddContractTwice_TheContractIsEqualTwo()
-        {
-            //act
-
-            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
-            SystemUnderTest.AddContract(null, 99, 665, "qualquer");
-
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
-            //get contract from organization
-            var actual = SystemUnderTest.Contracts.First();
-
-            //assert contract created is the same in organization
-            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
-            Assert.Same(SystemUnderTest, actual.Organization);
-        }
         /// <summary>
-        /// When contract is 
+        ///     When contract is
         /// </summary>
         [Fact]
         [Trait("Category", "Unit")]
@@ -231,6 +296,23 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.False(actualConfiguration.Deleted);
         }
 
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void WhenOrganizationAddContract_ThenFactIsAddedToCollection_StringBasedContract()
+        {
+            //act
+
+            SystemUnderTest.AddContract(null, 99, 665, "qualquer");
+
+            Assert.Equal(1, SystemUnderTest.Contracts.Count);
+            //get contract from organization
+            var actual = SystemUnderTest.Contracts.First();
+
+            //assert contract created is the same in organization
+            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
+            Assert.Same(SystemUnderTest, actual.Organization);
+        }
+
 
         [Fact]
         [Trait("Category", "Unit")]
@@ -257,104 +339,21 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void RemoveOrganizationContractWhithSoftDeleteFalseById_ThenActiveContract_ShouldBeFalse()
+        [Trait("Category", "Unit")]
+        public void WhenOrganizationAddContractTwice_TheContractIsEqualTwo()
         {
+            //act
+
             SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
-            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
-            var actual21 = SystemUnderTest.Contracts.First();
-
-            //not softdelete
-            SystemUnderTest.RemoveContract(actual21.Id, false);
-
-            Assert.False(SystemUnderTest.Contracts.Contains(actual21),
-                "Should 'not contain' the contract softdelete = false.");
-
-            Assert.Equal(1, SystemUnderTest.Contracts.Count);
-            Assert.True(SystemUnderTest.Active);
-            Assert.False(SystemUnderTest.Deleted);
-        }
-
-        /// <summary>
-        /// When Contract is disable all configuration should also be desable
-        /// </summary>
-        [Fact]
-        public void RemoveOrganizationContractWhithSoftDeleteTrueById_ThenConfigurationDetailRelated_ShouldNotBeActive()
-        {
-            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
-            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
-
-            var contract = SystemUnderTest.Contracts.First();
-            var config = contract.ContractDetailsConfigs.Where(x => x.ContractId == contract.Id).FirstOrDefault();
-
-            //softdelete
-            SystemUnderTest.RemoveContract(contract.Id, true);
-
-            Assert.True(SystemUnderTest.Contracts.Contains(contract), "Should 'contain' the contract softdelete = true.");
-
-            //
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
-            Assert.Equal(1, SystemUnderTest.ContractDetails.Count);
-
-            //contract                        
-            Assert.False(contract.Active);
-            Assert.True(contract.Deleted);
-            Assert.NotNull(contract.ModifiedBy);
-            Assert.NotNull(contract.ModifiedDate);
-
-            //configuration 
-            Assert.False(config.Active);
-            Assert.True(config.Deleted);
-            Assert.NotNull(config.ModifiedBy);
-            Assert.NotNull(config.ModifiedDate);
-            Assert.Same(config.ContractId, contract.Id);
-
-            //organization
-            Assert.True(SystemUnderTest.Active);
-            Assert.False(SystemUnderTest.Deleted);
-
-        }
-
-        [Fact]
-        public void RemoveOrganizationContractWhithSoftDeleteTrueById_ThenContractIsRemoved()
-        {
-            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
-            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
-            var actual21 = SystemUnderTest.Contracts.First();
-
-            SystemUnderTest.RemoveContract(actual21.Id, true);
-
-            Assert.True(SystemUnderTest.Contracts.Contains(actual21),
-                "Should not contain this contract after.");
+            SystemUnderTest.AddContract(null, 99, 665, "qualquer");
 
             Assert.Equal(2, SystemUnderTest.Contracts.Count);
-            Assert.False(actual21.Active);
-            Assert.True(actual21.Deleted);
+            //get contract from organization
+            var actual = SystemUnderTest.Contracts.First();
+
+            //assert contract created is the same in organization
+            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
+            Assert.Same(SystemUnderTest, actual.Organization);
         }
-
-        [Fact]
-        public void RemoveOrganizationContractByInvalidId_TheContractsAreNotRemoved()
-        {
-            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
-            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
-
-
-            SystemUnderTest.RemoveContract("21", false);
-
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
-        }
-
-        [Fact]
-        public void RemoveOrganizationContractNullId_TheContractsAreNotRemoved()
-        {
-            SystemUnderTest.AddContract(null, 99, 6651, "qualquer");
-            SystemUnderTest.AddContract(null, 95, 6652, "qualquer");
-
-
-            SystemUnderTest.RemoveContract(null, false);
-
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
-        }
-
-
     }
 }

@@ -20,7 +20,7 @@ namespace RN_Process.Api.DataAccess
             var listCustomer = new List<Organization>
             {
                 new Organization("Banco BBVA", "54TG"),
-                new Organization("Banco Portugal","12DD"),
+                new Organization("Banco Portugal", "12DD"),
                 new Organization("Banco Banco Do Brasil", "123FF"),
                 new Organization("Banco Santander", "4543DSS")
             };
@@ -37,6 +37,7 @@ namespace RN_Process.Api.DataAccess
                 new ContractDetailConfig(
                     FileAccessType.FTP,
                     "LocalHost",
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     "FTP:10.80.5.198",
                     "ETL",
                     "FTP",
@@ -50,11 +51,15 @@ namespace RN_Process.Api.DataAccess
                     Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
                     ",",
                     new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", 
-                        "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},  
+                    {
+                        "NDIV", "COD_CRED", "VAL1", "VAL2",
+                        "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"
+                    },
                     new List<string>
-                    {"NDIV", "COD_CRED", "VAL5", "VAL2", 
-                        "VAL39", "VAL24", "VAL8", "DATA1", "DATA2", "DATA93"},
+                    {
+                        "NDIV", "COD_CRED", "VAL5", "VAL2",
+                        "VAL39", "VAL24", "VAL8", "DATA1", "DATA2", "DATA93"
+                    },
                     listContract.FirstOrDefault()
                 )
             );
