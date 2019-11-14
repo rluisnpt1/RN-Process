@@ -10,7 +10,7 @@ namespace RN_Process.Tests
     {
         public static Organization GetBancoPortugalOrganizationToTest()
         {
-            return new Organization("Banco de portugal", "BDPT48");
+            return new Organization("Banco de portugal", "120@12");
         }
 
         public static Contract GetContractOrganizationToTest()

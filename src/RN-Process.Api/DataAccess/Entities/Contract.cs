@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -36,6 +37,8 @@ namespace RN_Process.Api.DataAccess.Entities
         public int ContractNumber { get; private set; }
         public int TypeDebt { get; private set; }
         public string DebtDescription { get; }
+
+        public virtual string OrgCode { get; private set; }
         public string OrganizationId { get; private set; }
 
         public virtual ICollection<ContractDetailConfig> ContractDetailConfigs
@@ -48,6 +51,7 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             Guard.Against.Null(organization, nameof(organization));
             OrganizationId = organization.Id;
+            OrgCode = organization.OrgCode;
             Organization = organization;
         }
 
@@ -61,6 +65,44 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             Guard.Against.Zero(contractNumber, nameof(ContractNumber));
             ContractNumber = contractNumber;
+        }
+
+        
+        /// <summary>
+        /// </summary>
+        /// <param name="contr"></param>
+        public void UpdateContractConfigurationById(string id, bool active = true, bool deleted = false)
+        {
+            
+            ContractDetailConfig config = null;
+            var foundIt = false;
+            if (!string.IsNullOrEmpty(id))
+            {
+                config = ContractDetailConfigs
+                    .FirstOrDefault(temp => temp.ContractId == Id 
+                                            && temp.Contract.OrganizationId == Id
+                                            && temp.Contract.OrgCode == OrgCode);
+            }
+
+            if (config == null)
+            {
+                config = new ContractDetailConfig(string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, false, string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, new List<string>(), new List<string>(), this);
+            }
+            else
+            {
+                foundIt = true;
+                config.ModifiedDate = DateTime.UtcNow;
+                config.ModifiedBy = "System-- need change for user";
+                config.Active = active;
+                config.Deleted = deleted;
+            }
+
+            if (foundIt == false) ContractDetailConfigs.Add(config);
         }
     }
 }

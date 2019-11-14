@@ -18,16 +18,16 @@ namespace RN_Process.Api.DataAccess
 
             var listCustomer = new List<Organization>
             {
-                new Organization("Banco BBVA", "BBVA112"),
-                new Organization("Banco Portugal", "BBPPT"),
-                new Organization("Banco Banco Do Brasil", "BDB1s2"),
-                new Organization("Banco Santander", "BsA32")
+                new Organization("Banco BBVA", "54TG"),
+                new Organization("Banco Portugal","12DD"),
+                new Organization("Banco Banco Do Brasil", "123FF"),
+                new Organization("Banco Santander", "4543DSS")
             };
 
             var listContract = new List<Contract>
             {
                 new Contract(445585, 458, "CONSUMO", listCustomer.FirstOrDefault()),
-                new Contract(21224, 458, "CONSUMO", listCustomer.FirstOrDefault(X => X.UniqCode.Equals("BBPPT")))
+                new Contract(21224, 458, "CONSUMO", listCustomer.FirstOrDefault(X => X.OrgCode.Equals("BBPPT")))
             };
 
             context.Organizations.AddRange(listCustomer);

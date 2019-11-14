@@ -92,7 +92,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public Contract Contract { get; set; }
 
-
+        public  string OrgCode { get; private set; }
         public string CommunicationType { get; set; }
         public string InternalHost { get; set; }
         public string LinkToAccess { get; set; }
@@ -138,6 +138,7 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             Guard.Against.Null(contract, nameof(contract));
             ContractId = contract.Id;
+            OrgCode = contract.OrgCode;
             Contract = contract;
         }
 

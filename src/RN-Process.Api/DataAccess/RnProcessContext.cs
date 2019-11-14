@@ -60,7 +60,7 @@ namespace RN_Process.Api.DataAccess
                 entity.HasMany(x => x.Contracts)
                     .WithOne(x => x.Organization);
 
-                entity.Property(x => x.UniqCode).IsUnicode();
+                entity.Property(x => x.OrgCode).IsUnicode();
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
 

@@ -34,7 +34,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
             SetContractDetailConfig(contractDetailConfig);
         }
-
+        public virtual string OrgCode { get; private set; }
         public string FileDescription { get; set; }
         public int FileSize { get; set; }
         public string FileFormat { get; set; }
@@ -100,6 +100,7 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             Guard.Against.Null(contractDetailConfig, nameof(contractDetailConfig));
             ContractDetailConfigId = contractDetailConfig.ContractId;
+            OrgCode = contractDetailConfig.OrgCode;
             ContractDetailConfig = contractDetailConfig;
         }
     }
