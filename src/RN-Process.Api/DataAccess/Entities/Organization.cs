@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
+using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
@@ -51,6 +52,10 @@ namespace RN_Process.Api.DataAccess.Entities
             protected set => _contractConfig = value;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orgCode"></param>
         private void SetOrgCode(string orgCode)
         {
             Guard.Against.NullOrEmpty(orgCode, nameof(orgCode));
@@ -60,6 +65,10 @@ namespace RN_Process.Api.DataAccess.Entities
             OrgCode = orgCode.ToUpper();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
         private void SetDescription(string description)
         {
             Guard.Against.NullOrEmpty(description, nameof(description));
@@ -67,6 +76,9 @@ namespace RN_Process.Api.DataAccess.Entities
             Description = description;
         }
 
+        /// <summary>
+        /// Return a version byte
+        /// </summary>
         private void SetVersion()
         {
             RowVersion = new byte[0];
@@ -80,9 +92,17 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="debtDescription"></param>
         public void AddNewContract(int contractNumber, int typeDebt, string debtDescription)
         {
+            //create contract
             var fact = new Contract(contractNumber, typeDebt, debtDescription, this);
-
+            
+            //base configuration
+            fact.AddContraDetailConfig(null, FileAccessType.FTP,true,false); 
+            
+            //add contract to list contract list of organization
             Contracts.Add(fact);
+
+            //add contract configuration details to list contract configuration details list of organization
+            ContractDetails = fact.ContractDetailsConfigs;
         }
 
 
@@ -113,7 +133,12 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="contractNumber"></param>
         /// <param name="typeDebt"></param>
         /// <param name="debtDescription"></param>
-        private void UpdateExistingContractById(string id, int contractNumber, int typeDebt, string debtDescription, bool active = true, bool deleted = false)
+        private void UpdateExistingContractById(string id,
+                                                int contractNumber,
+                                                int typeDebt,
+                                                string debtDescription,
+                                                bool active = true,
+                                                bool deleted = false)
         {
             Contract contract = null;
             var foundIt = false;
@@ -126,15 +151,23 @@ namespace RN_Process.Api.DataAccess.Entities
             if (contract == null)
             {
                 contract = new Contract(contractNumber, typeDebt, debtDescription, this);
-                //Id = ObjectId.GenerateNewId().ToString();
+                contract.AddContraDetailConfig(null, FileAccessType.FTP, true, false);
             }
             else
             {
+                //add update contract ?
                 foundIt = true;
                 contract.ModifiedDate = DateTime.UtcNow;
                 contract.ModifiedBy = "System-- need change for user";
                 contract.Active = active;
                 contract.Deleted = deleted;
+
+                var config = contract.ContractDetailsConfigs.Where(temp => temp.ContractId == contract.Id);
+                foreach (var item in config)
+                {
+                    contract.UpdateContractConfigurationById(item.Id, item.CommunicationType, active, deleted);
+                }
+              
             }
 
             if (foundIt == false) Contracts.Add(contract);
@@ -156,5 +189,8 @@ namespace RN_Process.Api.DataAccess.Entities
             else
                 UpdateExistingContractById(match.Id, match.ContractNumber, match.TypeDebt, match.DebtDescription, false, true);
         }
+
+
+
     }
 }

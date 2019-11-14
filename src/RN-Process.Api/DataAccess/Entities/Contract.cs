@@ -42,10 +42,11 @@ namespace RN_Process.Api.DataAccess.Entities
         public virtual string OrgCode { get; private set; }
         public string OrganizationId { get; private set; }
 
-        public virtual ICollection<ContractDetailConfig> ContractDetailConfigs
+   
+        public virtual ICollection<ContractDetailConfig> ContractDetailsConfigs
         {
             get { return _configMapping ??= new List<ContractDetailConfig>(); }
-            set => _configMapping = value;
+            protected set => _configMapping = value;
         }
 
         private void SetCustomer(Organization organization)
@@ -70,31 +71,50 @@ namespace RN_Process.Api.DataAccess.Entities
 
 
         /// <summary>
+        /// Add or update contract
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="fileType"></param>
+        /// <param name="active"></param>
+        /// <param name="deleted"></param>
+        public void AddContraDetailConfig(string id, FileAccessType fileType, bool active, bool deleted)
+        {
+            if (!string.IsNullOrEmpty(id))
+                UpdateContractConfigurationById(id, fileType, active, deleted);
+            else
+                AddNewContractConfiguration(fileType);
+        }
+
+        /// <summary>
+        /// Add new configuration
+        /// </summary>
+        /// <param name="fileType"></param>
+        private void AddNewContractConfiguration(FileAccessType fileType)
+        {
+            var fact = ContractAddNewEmptyContractConfiguratiom(fileType);
+            ContractDetailsConfigs.Add(fact);
+        }
+
+
+        /// <summary>
         /// </summary>
         /// <param name="contr"></param>
-        public void UpdateContractConfigurationById(string id, bool active = true, bool deleted = false)
+        public void UpdateContractConfigurationById(string id, FileAccessType fileType, bool active = true, bool deleted = false)
         {
 
             ContractDetailConfig config = null;
             var foundIt = false;
+
             if (!string.IsNullOrEmpty(id))
             {
-                config = ContractDetailConfigs
-                    .FirstOrDefault(temp => temp.ContractId == Id
-                                            && temp.Contract.OrganizationId == Id
-                                            && temp.Contract.OrgCode == OrgCode);
+                config = ContractDetailsConfigs.FirstOrDefault(temp => temp.Id.Equals(id)
+                                                           && temp.Contract.Id == this.Id
+                                                           && temp.Contract.OrgCode == OrgCode);
             }
 
             if (config == null)
             {
-                config = new ContractDetailConfig(FileAccessType.FTP,
-                    string.Empty, string.Empty, string.Empty,
-                    string.Empty, false, string.Empty,
-                    string.Empty, string.Empty, string.Empty,
-                    string.Empty, string.Empty, string.Empty,
-                    string.Empty,
-                    new List<string>() { "CLIENT_COLUMN1", "CLIENT_COLUMN2" },
-                    new List<string>() { "INTRUM_COLUMN1", "INTRUM_COLUMN2" }, this);
+                config = ContractAddNewEmptyContractConfiguratiom(fileType);
             }
             else
             {
@@ -105,7 +125,26 @@ namespace RN_Process.Api.DataAccess.Entities
                 config.Deleted = deleted;
             }
 
-            if (foundIt == false) ContractDetailConfigs.Add(config);
+            if (foundIt == false) ContractDetailsConfigs.Add(config);
         }
+
+        /// <summary>
+        /// Createan empty contract configuration when new contract is create
+        /// </summary>
+        /// <param name="fileType"></param>
+        /// <returns></returns>
+        private ContractDetailConfig ContractAddNewEmptyContractConfiguratiom(FileAccessType fileType)
+        {
+            return new ContractDetailConfig(fileType,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, false, string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty,
+                    new List<string>() { RnProcessConstant.ColumnsBaseIntrum },
+                    new List<string>() { RnProcessConstant.ColumnsBaseClient },
+                    this);
+        }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -46,19 +48,17 @@ namespace RN_Process.Api.DataAccess.Entities
             LinkToAccess = linkToAccess;
             LinkToAccessType = linkToAccessType;
             TypeOfResponse = typeOfResponse;
+            RequiredLogin = requiredLogin;
+            SetLogin(authenticationLogin);
+            SetPassword(authenticationPassword);
+            SetAuthenticationApp(authenticationCodeApp);
             PathToOriginFile = pathToOriginFile;
             PathToDestinationFile = pathToDestinationFile;
             PathToFileBackupAtClient = pathToFileBackupAtClient;
             PathToFileBackupAtHostServer = pathToFileBackupAtHostServer;
-            FileDelimiter = fileDeLimiter;
+            SetDelimiter(fileDeLimiter);
             SetFileHeaderColumns(fileHeaderColumns);
             SetAvailableFieldsColumns(availableFieldsColumns);
-
-            RequiredLogin = requiredLogin;
-            SetDelimiter(FileDelimiter);
-            SetLogin(authenticationLogin);
-            SetPassword(authenticationPassword);
-            SetAuthenticationApp(authenticationCodeApp);
             SetContract(contract);
 
             Active = true;
@@ -72,25 +72,26 @@ namespace RN_Process.Api.DataAccess.Entities
         public Contract Contract { get; set; }
 
         public string OrgCode { get; private set; }
-        public FileAccessType CommunicationType { get;private set; }
-        public string InternalHost { get;private set; }
-        public string LinkToAccess { get;private set; }
-        public string LinkToAccessType { get;private set; }
-        public string TypeOfResponse { get;private set; }
+
+        public FileAccessType CommunicationType { get; private set; }
+        public string InternalHost { get; private set; }
+        public string LinkToAccess { get; private set; }
+        public string LinkToAccessType { get; private set; }
+        public string TypeOfResponse { get; private set; }
 
 
-        public bool RequiredLogin { get;private set; }
-        public string AuthenticationLogin { get;private set; }
-        public byte[] AuthenticationPassword { get;private set; }
-        public string AuthenticationCodeApp { get;private set; }
+        public bool RequiredLogin { get; private set; }
+        public string AuthenticationLogin { get; private set; }
+        public byte[] AuthenticationPassword { get; private set; }
+        public string AuthenticationCodeApp { get; private set; }
 
-        public string PathToOriginFile { get;private set; }
-        public string PathToDestinationFile { get;private set; }
-        public string PathToFileBackupAtClient { get;private set; }
-        public string PathToFileBackupAtHostServer { get;private set; }
-        public string FileDelimiter { get;private set; }
-        public IList<string> FileHeaderColumns { get;private set; }
-        public IList<string> AvailableFieldsColumns { get;private set; }
+        public string PathToOriginFile { get; private set; }
+        public string PathToDestinationFile { get; private set; }
+        public string PathToFileBackupAtClient { get; private set; }
+        public string PathToFileBackupAtHostServer { get; private set; }
+        public string FileDelimiter { get; private set; }
+        public IList<string> FileHeaderColumns { get; private set; }
+        public IList<string> AvailableFieldsColumns { get; private set; }
 
 
         public ICollection<FileImport> FileImports
@@ -175,32 +176,75 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        //public void PasswordValidation(string currentPassword)
-        //{
-        //    Guard.Against.NullOrEmpty(currentPassword, nameof(currentPassword));
-        //    var encryptedPassword = CriptografiaHelper.PasswordCryptography(currentPassword);
+        public void PasswordValidation(string currentPassword)
+        {
+            Guard.Against.NullOrEmpty(currentPassword, nameof(currentPassword));
+            var encryptedPassword = CriptografiaHelper.PasswordCryptography(currentPassword);
 
-        //    if (!AuthenticationPassword.SequenceEqual(encryptedPassword))
-        //        throw new Exception("invalid password!");
+            if (!AuthenticationPassword.SequenceEqual(encryptedPassword))
+                throw new Exception("invalid password!");
+        }
+
+        public void ChangeAuthenticationPassword(string currentPassword, string newPassword)
+        {
+            PasswordValidation(currentPassword);
+            SetPassword(newPassword);
+        }
+
+        public void UpdateContractConfiguration(string id,
+                    FileAccessType communicationType,
+                    string internalHost,
+                    string linkToAccess,
+                    string linkToAccessType,
+                    string typeOfResponse,
+                      bool requiredLogin,
+                    string authenticationLogin,
+                    string authenticationPassword,
+                    string authenticationCodeApp,
+                    string pathToOriginFile,
+                    string pathToDestinationFile,
+                    string pathToFileBackupAtClient,
+                    string pathToFileBackupAtHostServer,
+                    string fileDeLimiter,
+                    IList<string> fileHeaderColumns,
+                    IList<string> availableFieldsColumns,
+                    bool active)
+        {
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                SetCommunicationType(communicationType);
+                InternalHost = internalHost;
+                LinkToAccess = linkToAccess;
+                LinkToAccessType = linkToAccessType;
+                TypeOfResponse = typeOfResponse;
+                RequiredLogin = requiredLogin;
+                SetLogin(authenticationLogin);
+                SetPassword(authenticationPassword);
+                SetAuthenticationApp(authenticationCodeApp);
+                PathToOriginFile = pathToOriginFile;
+                PathToDestinationFile = pathToDestinationFile;
+                PathToFileBackupAtClient = pathToFileBackupAtClient;
+                PathToFileBackupAtHostServer = pathToFileBackupAtHostServer;
+                SetDelimiter(fileDeLimiter);
+                SetFileHeaderColumns(fileHeaderColumns);
+                SetAvailableFieldsColumns(availableFieldsColumns);
+                this.Active = active;
+            }
+        }
+
+        //public Guid GenerateNewTokenToChangePassword()
+        //{
+        //    TokenAlteracaoDeSenha = Guid.NewGuid();
+        //    return TokenAlteracaoDeSenha;
         //}
 
-        //public void ChangeAuthenticationPassword(string currentPassword, string newPassword)
+        //public void ChangePassword(Guid token, string novaSenha)
         //{
-        //    PasswordValidation(currentPassword);
-        //    SetPassword(newPassword);
+        //    if (!TokenAlteracaoDeSenha.Equals(token))
+        //        throw new Exception("token para alteração de senha inválido!");
+        //    SetPassword(novaSenha);
+        //    GenerateNewTokenToChangePassword();
         //}
-        //    public Guid GenerateNewTokenToChangePassword()
-        //    {
-        //        TokenAlteracaoDeSenha = Guid.NewGuid();
-        //        return TokenAlteracaoDeSenha;
-        //    }
-
-        //    public void ChangePassword(Guid token, string novaSenha)
-        //    {
-        //        if (!TokenAlteracaoDeSenha.Equals(token))
-        //            throw new Exception("token para alteração de senha inválido!");
-        //        SetPassword(novaSenha);
-        //        GenerateNewTokenToChangePassword();
-        //    }
     }
 }

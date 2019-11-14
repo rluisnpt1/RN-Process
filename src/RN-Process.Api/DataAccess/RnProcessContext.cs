@@ -69,7 +69,7 @@ namespace RN_Process.Api.DataAccess
                 entity.ToTable("Contract");
 
                 entity.HasKey(x => x.Id);
-                entity.HasMany(x => x.ContractDetailConfigs)
+                entity.HasMany(x => x.ContractDetailsConfigs)
                     .WithOne(x => x.Contract);
 
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();

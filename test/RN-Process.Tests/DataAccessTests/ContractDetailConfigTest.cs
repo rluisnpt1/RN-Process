@@ -76,7 +76,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", "s"}, new List<string> {"ss", " "}));
+                new List<string> { "ss", "s" }, new List<string> { "ss", " " }));
             // Act            
 
             // Assert            
@@ -94,7 +94,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", "s"}, null));
+                new List<string> { "ss", "s" }, null));
 
             Assert.Contains("Value cannot be null. (Parameter 'availableFieldsColumns')", expect.Message);
         }
@@ -110,7 +110,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", "s"}, new List<string>()));
+                new List<string> { "ss", "s" }, new List<string>()));
 
 
             Assert.Contains(
@@ -128,7 +128,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", " "}, new List<string> {"cdb"}));
+                new List<string> { "ss", " " }, new List<string> { "cdb" }));
 
             // Act            
 
@@ -147,7 +147,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                null, new List<string> {"cdb"}));
+                null, new List<string> { "cdb" }));
 
             Assert.Contains("Value cannot be null. (Parameter 'fileHeaderColumns')", expect.Message);
         }
@@ -163,7 +163,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string>(), new List<string> {"cdb"}));
+                new List<string>(), new List<string> { "cdb" }));
 
             // Act            
 
@@ -205,29 +205,12 @@ namespace RN_Process.Tests.DataAccessTests
                 false, string.Empty,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, new List<string> {"cdb"}, new List<string> {"cdb"});
+                string.Empty, string.Empty, new List<string> { "cdb" }, new List<string> { "cdb" });
 
 
             // Assert
             Assert.NotNull(ex.FileDelimiter);
             Assert.Equal(",", ex.FileDelimiter);
-        }
-
-        [Fact]
-        public void WhenCreatedContractDetailConfig_IsValid()
-        {
-            // Act
-            // Assert
-            Assert.NotNull(SystemUnderTest);
-            Assert.NotNull(SystemUnderTest.Id);
-
-            Assert.IsType<string>(SystemUnderTest.Id);
-
-            Assert.Null(SystemUnderTest.ModifiedBy);
-            Assert.Null(SystemUnderTest.ModifiedDate);
-            Assert.True(SystemUnderTest.Active);
-            Assert.False(SystemUnderTest.Deleted);
-            Assert.NotNull(SystemUnderTest.RowVersion);
         }
 
         [Fact]
@@ -244,8 +227,8 @@ namespace RN_Process.Tests.DataAccessTests
                     false, "my login",
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    string.Empty, string.Empty, new List<string> {"cdb"},
-                    new List<string> {"ab"}));
+                    string.Empty, string.Empty, new List<string> { "cdb" },
+                    new List<string> { "ab" }));
 
             // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);
@@ -268,7 +251,7 @@ namespace RN_Process.Tests.DataAccessTests
                         string.Empty, string.Empty,
                         string.Empty, string.Empty, string.Empty,
                         string.Empty, string.Empty,
-                        new List<string> {"cdb"}, new List<string> {"cdb"},
+                        new List<string> { "cdb" }, new List<string> { "cdb" },
                         UnitTestUtility.GetContractOrganizationToTest())));
 
             // Assert
@@ -292,11 +275,54 @@ namespace RN_Process.Tests.DataAccessTests
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty,
-                    new List<string> {"cdb"}, new List<string> {"cdb"}));
+                    new List<string> { "cdb" }, new List<string> { "cdb" }));
 
             // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);
             Assert.Equal("password", ex.ParamName);
+        }
+
+
+        [Fact]
+        public void WhenCreatedContractDetailConfig_IsValid()
+        {
+            // Act
+            // Assert
+            Assert.NotNull(SystemUnderTest);
+            Assert.NotNull(SystemUnderTest.Id);
+
+            Assert.IsType<string>(SystemUnderTest.Id);
+
+            Assert.Null(SystemUnderTest.ModifiedBy);
+            Assert.Null(SystemUnderTest.ModifiedDate);
+            Assert.True(SystemUnderTest.Active);
+            Assert.False(SystemUnderTest.Deleted);
+            Assert.NotNull(SystemUnderTest.RowVersion);
+        }
+
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void Update_ContractConfiguration()
+        {
+            
+            SystemUnderTest.UpdateContractConfiguration(
+                SystemUnderTest.ContractId,
+                FileAccessType.FTP,
+                "LocalHost", "FTP:10.80.5.198", "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null,
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Origin",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Backup",
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
+                ",",
+                new List<string>
+                    {"CLI_NDIV", "CLI_CRED", "CLI_VAL1", "CLI_VAL2"},
+                new List<string>
+                    {"INTRUM_NDIV", "INTRUM_COD_CRED", "INTRUM_VAL1", "INTRUM_VAL2"},
+                true);
+
+            //assert contract created is the same in organization
+            Assert.Equal("FTP:10.80.5.198", SystemUnderTest.LinkToAccess);
         }
     }
 }
