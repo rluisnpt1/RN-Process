@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using RN_Process.Api.Models;
 using RN_Process.DataAccess;
+using RN_Process.DataAccess.FTP;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 
@@ -14,6 +17,8 @@ namespace RN_Process.Api.DataAccess.Entities
     {
         [BsonIgnore] private ICollection<FileImport> _fileImport;
 
+
+        #region Ctors
 
         /// <summary>
         ///     Runtime execution
@@ -53,23 +58,25 @@ namespace RN_Process.Api.DataAccess.Entities
             SetLogin(authenticationLogin);
             SetPassword(authenticationPassword);
             SetAuthenticationApp(authenticationCodeApp);
-            PathToOriginFile = pathToOriginFile;
+            SetDirectoryFileOrigem(pathToOriginFile);
             PathToDestinationFile = pathToDestinationFile;
-            PathToFileBackupAtClient = pathToFileBackupAtClient;
-            PathToFileBackupAtHostServer = pathToFileBackupAtHostServer;
+            SetBackupClientDirectory(pathToFileBackupAtClient);
+            SetBackupHostServer(pathToFileBackupAtHostServer);
             SetDelimiter(fileDeLimiter);
             SetFileHeaderColumns(fileHeaderColumns);
             SetAvailableFieldsColumns(availableFieldsColumns);
-      
+            SetDirectoriesSize();
 
             Active = true;
             Deleted = false;
             RowVersion = new byte[0];
         }
 
+
+        #endregion
+
         [BsonRepresentation(BsonType.ObjectId)]
         public string ContractId { get; private set; }
-
         public Contract Contract { get; set; }
         public string OrgCode { get; private set; }
 
@@ -79,7 +86,6 @@ namespace RN_Process.Api.DataAccess.Entities
         public string LinkToAccess { get; private set; }
         public string LinkToAccessType { get; private set; }
         public string TypeOfResponse { get; private set; }
-
 
         public bool RequiredLogin { get; private set; }
         public string AuthenticationLogin { get; private set; }
@@ -91,9 +97,11 @@ namespace RN_Process.Api.DataAccess.Entities
         public string PathToFileBackupAtClient { get; private set; }
         public string PathToFileBackupAtHostServer { get; private set; }
         public string FileDelimiter { get; private set; }
+
+        public int DirectoryHostServerSize { get; private set; }
+
         public IList<string> FileHeaderColumns { get; private set; }
         public IList<string> AvailableFieldsColumns { get; private set; }
-
 
         public ICollection<FileImport> FileImports
         {
@@ -101,13 +109,45 @@ namespace RN_Process.Api.DataAccess.Entities
             protected set => _fileImport = value;
         }
 
+        #region Sets
+
+        private void SetDirectoriesSize()
+        {
+            if (!string.IsNullOrEmpty(BaseWorkDirectoryHost))
+            {
+                var directoryInfo = new DirectoryInfo(BaseWorkDirectoryHost);
+                DirectoryHostServerSize = directoryInfo.GetDirectories().Length;
+            }
+        }
+
+
+        private void SetDirectoryFileOrigem(string pathToOriginFile)
+        {
+            PathToOriginFile = pathToOriginFile;
+        }
+
+        private void SetBackupHostServer(string pathToFileBackupAtHostServer)
+        {
+            var clientDir = "\\backup\\" + OrgCode.ToUpper() + "\\";
+
+            if (string.IsNullOrEmpty(pathToFileBackupAtHostServer))
+                PathToFileBackupAtClient = IntrumFile.CreateDirectory(PathToOriginFile + clientDir);
+            else
+                PathToFileBackupAtHostServer = IntrumFile.CreateDirectory(pathToFileBackupAtHostServer + clientDir);
+        }
+
         private void SetBaseWorkDirectoryHost(string baseWorkDirectoryHost)
         {
             var clientDir = "\\" + OrgCode.ToUpper() + "\\";
-            BaseWorkDirectoryHost = string.IsNullOrEmpty(baseWorkDirectoryHost)
-                ? IntrumFile.CreateDirectory(RnProcessConstant.BaseWorkFolder + clientDir) 
-                : IntrumFile.CreateDirectory(baseWorkDirectoryHost + clientDir);
 
+            BaseWorkDirectoryHost = string.IsNullOrEmpty(baseWorkDirectoryHost)
+                ? IntrumFile.CreateDirectory(RnProcessConstant.BaseWorkFolder + clientDir)
+                : IntrumFile.CreateDirectory(baseWorkDirectoryHost + clientDir);
+        }
+
+        private void SetBackupClientDirectory(string pathToFileBackupAtClient)
+        {
+            PathToFileBackupAtClient = pathToFileBackupAtClient;
         }
 
         private void SetAvailableFieldsColumns(IList<string> availableFieldsColumns)
@@ -202,36 +242,56 @@ namespace RN_Process.Api.DataAccess.Entities
             SetPassword(newPassword);
         }
 
-        public void UpdateContractConfiguration(string id,
-            FileAccessType communicationType, string internalHost, string linkToAccess, string linkToAccessType,
-            string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
-            string authenticationCodeApp, string pathToOriginFile, string pathToDestinationFile,
-            string pathToFileBackupAtClient,
-            string pathToFileBackupAtHostServer, string fileDeLimiter, IList<string> fileHeaderColumns,
-            IList<string> availableFieldsColumns,
-            bool active)
+        #endregion
+
+        public void CreateCommunicationType()
         {
-            if (!string.IsNullOrEmpty(id))
-            {
-                SetCommunicationType(communicationType);
-                InternalHost = internalHost;
-                LinkToAccess = linkToAccess;
-                LinkToAccessType = linkToAccessType;
-                TypeOfResponse = typeOfResponse;
-                RequiredLogin = requiredLogin;
-                SetLogin(authenticationLogin);
-                SetPassword(authenticationPassword);
-                SetAuthenticationApp(authenticationCodeApp);
-                PathToOriginFile = pathToOriginFile;
-                PathToDestinationFile = pathToDestinationFile;
-                PathToFileBackupAtClient = pathToFileBackupAtClient;
-                PathToFileBackupAtHostServer = pathToFileBackupAtHostServer;
-                SetDelimiter(fileDeLimiter);
-                SetFileHeaderColumns(fileHeaderColumns);
-                SetAvailableFieldsColumns(availableFieldsColumns);
-                Active = active;
-            }
+            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
+
+            if (!Directory.Exists(BaseWorkDirectoryHost)) throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
+            else
+                switch (CommunicationType)
+                {
+                    case FileAccessType.FTP:
+                        var ftpLogin = new FtpClient(AuthenticationLogin, Encoding.ASCII.GetString(AuthenticationPassword), LinkToAccess);
+                        CreateCommunicationWithFTP(ftpLogin);
+                        break;
+                    case FileAccessType.Email:
+                        break;
+                    case FileAccessType.WebServer:
+                        break;
+                    case FileAccessType.API:
+                        break;
+                    case FileAccessType.WebSite:
+                        break;
+                    case FileAccessType.DataBase:
+                        break;
+                    case FileAccessType.RemoteDesktop:
+                        break;
+                    case FileAccessType.ActiveDirectory:
+                        break;
+                    case FileAccessType.LocalMachine:
+                        CreateCommunicationWithLocalMachine();
+                        break;
+                }
         }
+
+        private void CreateCommunicationWithLocalMachine()
+        {
+            Guard.Against.NullOrWhiteSpace(PathToOriginFile,nameof(PathToOriginFile));
+            Guard.Against.NullOrWhiteSpace(PathToDestinationFile,nameof(PathToDestinationFile));
+            var fileProcessor = new FileProcessor(PathToOriginFile);
+            fileProcessor.Process();
+        }
+
+
+        private void CreateCommunicationWithFTP(FtpClient ftpLogin)
+        {
+            ftpLogin.CreateCredential("");
+            var stringData = ftpLogin.DirectoryListSimple(PathToOriginFile);
+
+        }
+
 
         //public Guid GenerateNewTokenToChangePassword()
         //{

@@ -44,14 +44,7 @@ namespace RN_Process.Tests.DataAccessTests
                 allDataInFile);
         }
 
-        [Fact]
-        public void FileImportTest_ConnectUsingCommunicationType_IsTrue()
-        {
-            var sut = UnitTestUtility.GetRealContractDetailConfigToTest();
-            SystemUnderTest.CreateCommunicationType(sut);
-
-            Assert.True(true);
-        }
+        
 
         [Fact]
         public void FileImportTestIsCreated_IsValid()

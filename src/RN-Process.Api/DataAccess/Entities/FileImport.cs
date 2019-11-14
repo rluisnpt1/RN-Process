@@ -106,35 +106,5 @@ namespace RN_Process.Api.DataAccess.Entities
             ContractDetailConfig = contractDetailConfig;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="contractDetailConfig"></param>
-        public void CreateCommunicationType(ContractDetailConfig contractDetailConfig)
-        {
-            switch (contractDetailConfig.CommunicationType)
-            {
-                case FileAccessType.FTP:
-                    var t = new FtpClient(contractDetailConfig.AuthenticationLogin
-                        , Encoding.ASCII.GetString(contractDetailConfig.AuthenticationPassword)
-                        , contractDetailConfig.LinkToAccess);
-                    t.CreateCredential("");
-                    var te = t.DirectoryListSimple(contractDetailConfig.PathToOriginFile);
-                    break;
-                case FileAccessType.Email:
-                    break;
-                case FileAccessType.WebServer:
-                    break;
-                case FileAccessType.API:
-                    break;
-                case FileAccessType.WebSite:
-                    break;
-                case FileAccessType.DataBase:
-                    break;
-                case FileAccessType.RemoteDesktop:
-                    break;
-                case FileAccessType.ActiveDirectory:
-                    break;
-            }
-        }
     }
 }

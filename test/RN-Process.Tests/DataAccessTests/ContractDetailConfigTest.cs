@@ -169,29 +169,6 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        [Trait("Category", "Unit")]
-        public void Update_ContractConfiguration()
-        {
-            SystemUnderTest.UpdateContractConfiguration(
-                SystemUnderTest.ContractId,
-                FileAccessType.FTP,
-                "LocalHost", "FTP:10.80.5.198", "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null,
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Origin",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Backup",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
-                ",",
-                new List<string>
-                    {"CLI_NDIV", "CLI_CRED", "CLI_VAL1", "CLI_VAL2"},
-                new List<string>
-                    {"INTRUM_NDIV", "INTRUM_COD_CRED", "INTRUM_VAL1", "INTRUM_VAL2"},
-                true);
-
-            //assert contract created is the same in organization
-            Assert.Equal("FTP:10.80.5.198", SystemUnderTest.LinkToAccess);
-        }
-
-        [Fact]
         public void WhenCreatedContractDetailConfig_Contract_isValid()
         {
             // Act
