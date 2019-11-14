@@ -40,7 +40,7 @@ namespace RN_Process.Tests
         public static ContractDetailConfig GetContractDetailConfigToTest()
         {
             return new ContractDetailConfig(
-                "FTP",
+                FileAccessType.FTP,
                 "LocalHost",
                 "FTP:10.80.5.198",
                 "ETL",

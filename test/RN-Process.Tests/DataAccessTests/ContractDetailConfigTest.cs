@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Shared.Enums;
 using Xunit;
 
 namespace RN_Process.Tests.DataAccessTests
@@ -25,7 +26,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         public ContractDetailConfig InitizerTest(
-            string communicationType,
+            FileAccessType communicationType,
             string internalHost,
             string linkToAccess,
             string linkToAccessType,
@@ -68,7 +69,7 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfListHasEmptyString()
         {
             // Arrange            
-            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest("FTP",
+            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
@@ -86,7 +87,7 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfNull()
         {
             // Arrange            
-            var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest("FTP",
+            var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
@@ -102,7 +103,7 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfZero()
         {
             // Arrange            
-            var expect = Assert.Throws<ArgumentException>(() => InitizerTest("FTP",
+            var expect = Assert.Throws<ArgumentException>(() => InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
@@ -120,7 +121,7 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfListHasEmptyString()
         {
-            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest("FTP",
+            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
@@ -139,7 +140,7 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfNull()
         {
             // Arrange            
-            var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest("FTP",
+            var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
@@ -155,7 +156,7 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfZero()
         {
             // Arrange            
-            var expect = Assert.Throws<ArgumentException>(() => InitizerTest("FTP",
+            var expect = Assert.Throws<ArgumentException>(() => InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
@@ -198,7 +199,7 @@ namespace RN_Process.Tests.DataAccessTests
             //arrange
 
             // Act
-            var ex = InitizerTest("FTP",
+            var ex = InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 false, string.Empty,
@@ -237,7 +238,7 @@ namespace RN_Process.Tests.DataAccessTests
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
-                InitizerTest("FTP",
+                InitizerTest(FileAccessType.FTP,
                     string.Empty, string.Empty,
                     string.Empty, string.Empty,
                     false, "my login",
@@ -260,7 +261,7 @@ namespace RN_Process.Tests.DataAccessTests
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
                 UnitTestUtility.GetContractDetailConfigToTest(
-                    new ContractDetailConfig("FTP",
+                    new ContractDetailConfig(FileAccessType.FTP,
                         string.Empty, string.Empty,
                         string.Empty, string.Empty,
                         true, string.Empty,
@@ -284,7 +285,7 @@ namespace RN_Process.Tests.DataAccessTests
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
-                InitizerTest("FTP",
+                InitizerTest(FileAccessType.FTP,
                     string.Empty, string.Empty,
                     string.Empty, string.Empty,
                     true, "my login",

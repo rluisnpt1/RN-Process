@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
+using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
@@ -67,31 +68,33 @@ namespace RN_Process.Api.DataAccess.Entities
             ContractNumber = contractNumber;
         }
 
-        
+
         /// <summary>
         /// </summary>
         /// <param name="contr"></param>
         public void UpdateContractConfigurationById(string id, bool active = true, bool deleted = false)
         {
-            
+
             ContractDetailConfig config = null;
             var foundIt = false;
             if (!string.IsNullOrEmpty(id))
             {
                 config = ContractDetailConfigs
-                    .FirstOrDefault(temp => temp.ContractId == Id 
+                    .FirstOrDefault(temp => temp.ContractId == Id
                                             && temp.Contract.OrganizationId == Id
                                             && temp.Contract.OrgCode == OrgCode);
             }
 
             if (config == null)
             {
-                config = new ContractDetailConfig(string.Empty,
+                config = new ContractDetailConfig(FileAccessType.FTP,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, false, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    string.Empty, new List<string>(), new List<string>(), this);
+                    string.Empty,
+                    new List<string>() { "CLIENT_COLUMN1", "CLIENT_COLUMN2" },
+                    new List<string>() { "INTRUM_COLUMN1", "INTRUM_COLUMN2" }, this);
             }
             else
             {

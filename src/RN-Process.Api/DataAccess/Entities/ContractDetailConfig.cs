@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
 using RN_Process.Shared.Commun;
+using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
@@ -23,7 +22,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
 
         public ContractDetailConfig(
-            string communicationType,
+            FileAccessType communicationType,
             string internalHost,
             string linkToAccess,
             string linkToAccessType,
@@ -67,11 +66,44 @@ namespace RN_Process.Api.DataAccess.Entities
             RowVersion = new byte[0];
         }
 
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ContractId { get; private set; }
+
+        public Contract Contract { get; set; }
+
+        public string OrgCode { get; private set; }
+        public FileAccessType CommunicationType { get;private set; }
+        public string InternalHost { get;private set; }
+        public string LinkToAccess { get;private set; }
+        public string LinkToAccessType { get;private set; }
+        public string TypeOfResponse { get;private set; }
+
+
+        public bool RequiredLogin { get;private set; }
+        public string AuthenticationLogin { get;private set; }
+        public byte[] AuthenticationPassword { get;private set; }
+        public string AuthenticationCodeApp { get;private set; }
+
+        public string PathToOriginFile { get;private set; }
+        public string PathToDestinationFile { get;private set; }
+        public string PathToFileBackupAtClient { get;private set; }
+        public string PathToFileBackupAtHostServer { get;private set; }
+        public string FileDelimiter { get;private set; }
+        public IList<string> FileHeaderColumns { get;private set; }
+        public IList<string> AvailableFieldsColumns { get;private set; }
+
+
+        public ICollection<FileImport> FileImports
+        {
+            get { return _fileImport ??= new List<FileImport>(); }
+            protected set => _fileImport = value;
+        }
+
         private void SetAvailableFieldsColumns(IList<string> availableFieldsColumns)
         {
             Guard.Against.Null(availableFieldsColumns, nameof(availableFieldsColumns));
             Guard.Against.Zero(availableFieldsColumns.Count, nameof(availableFieldsColumns));
-            if(availableFieldsColumns.Contains(" "))
+            if (availableFieldsColumns.Contains(" "))
                 throw new EncoderFallbackException("list can not have empty strings");
 
             AvailableFieldsColumns = availableFieldsColumns;
@@ -87,43 +119,10 @@ namespace RN_Process.Api.DataAccess.Entities
             FileHeaderColumns = fileHeaderColumns;
         }
 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string ContractId { get; private set; }
-
-        public Contract Contract { get; set; }
-
-        public  string OrgCode { get; private set; }
-        public string CommunicationType { get; set; }
-        public string InternalHost { get; set; }
-        public string LinkToAccess { get; set; }
-        public string LinkToAccessType { get; set; }
-        public string TypeOfResponse { get; set; }
-
-
-        public bool RequiredLogin { get; set; }
-        public string AuthenticationLogin { get; set; }
-        public byte[] AuthenticationPassword { get; set; }
-        public string AuthenticationCodeApp { get; set; }
-
-        public string PathToOriginFile { get; set; }
-        public string PathToDestinationFile { get; set; }
-        public string PathToFileBackupAtClient { get; set; }
-        public string PathToFileBackupAtHostServer { get; set; }
-        public string FileDelimiter { get; set; }
-        public IList<string> FileHeaderColumns { get; set; }
-        public IList<string> AvailableFieldsColumns { get; set; }
-
-
-        public ICollection<FileImport> FileImports
+        private void SetCommunicationType(FileAccessType communicationType)
         {
-            get { return _fileImport ??= new List<FileImport>(); }
-            protected set => _fileImport = value;
-        }
-
-        private void SetCommunicationType(string communicationType)
-        {
-            Guard.Against.NullOrEmpty(communicationType, nameof(communicationType));
-            Guard.Against.NullOrWhiteSpace(communicationType, nameof(communicationType));
+            Guard.Against.Null(communicationType, nameof(communicationType));
+            Guard.Against.NullOrEmpty(communicationType.ToString(), nameof(communicationType));
             CommunicationType = communicationType;
         }
 
