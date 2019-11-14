@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/test/RN-Process.Tests/ModelsTests/CsvFileProcessorShould.OutputProcessedOrderCsvData.approved.txt
+/test/RN-Process.Tests/ModelsTests/CsvFileProcessorShould.OutputProcessedOrderCsvData.received.txt

@@ -40,80 +40,23 @@ namespace RN_Process.Tests
 
         public static ContractDetailConfig GetContractDetailConfigToTest(string codorg)
         {
-            return new ContractDetailConfig(
-                FileAccessType.FTP,
-                "LocalHost",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\WorkDir\\",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                "ETL",
-                "FTP",
-                true,
-                "MYLogin@MyName",
-                "MyPass1234",
-                null,
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum\\Processados\\",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\Backup\\",
-                RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost",
-                ",",
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
-                GetContractOrganizationToTest()
-            );
+            return new ContractDetailConfig(GetContractOrganizationToTest(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum\\Processados\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\Backup\\", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
         }
         public static ContractDetailConfig GetContractDetailConfigToTest()
         {
-            return new ContractDetailConfig(
-                FileAccessType.FTP,
-                "LocalHost",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\WorkDir\\",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                "ETL",
-                "FTP",
-                true,
-                "MYLogin@MyName",
-                "MyPass1234",
-                null,
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum",
-                RnProcessConstant.BaseTestWorkFolder + "\\Destination",
-                RnProcessConstant.BaseTestWorkFolder + "\\Backup",
-                RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost",
-                ",",
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
-                GetContractOrganizationToTest()
-            );
+            return new ContractDetailConfig(GetContractOrganizationToTest(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", RnProcessConstant.BaseTestWorkFolder + "\\Destination", RnProcessConstant.BaseTestWorkFolder + "\\Backup", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
         }
 
 
         public static ContractDetailConfig GetRealContractDetailConfigToTest()
         {
-            return new ContractDetailConfig(
-                FileAccessType.FTP,
-                "LocalHost",
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "SFTP://IDCFTPGW.INTRUM.NET:22222",
-                "SFTP",
-                "FTP",
-                true,
-                "nowo",
-                "NX,CD[}?",
-                null,
-                "/to_intrum/",
-                "/from_intrum/",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
-                ",",
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"},
-                GetContractOrganizationToTest()
-            );
+            return new ContractDetailConfig(GetContractOrganizationToTest(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SFTP://IDCFTPGW.INTRUM.NET:22222", "SFTP", "FTP", true, "nowo", "NX,CD[}?", null, "/to_intrum/", "/from_intrum/", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost", ",", new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
         }
 
 

@@ -23,7 +23,7 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public ContractDetailConfig(FileAccessType communicationType,
+        public ContractDetailConfig(Contract contract, FileAccessType communicationType,
             string internalHost,
             string baseWorkDirectoryHost,
             string linkToAccess,
@@ -39,10 +39,10 @@ namespace RN_Process.Api.DataAccess.Entities
             string pathToFileBackupAtHostServer,
             string fileDeLimiter,
             IList<string> fileHeaderColumns,
-            IList<string> availableFieldsColumns,
-            Contract contract)
+            IList<string> availableFieldsColumns)
         {
             Id = ObjectId.GenerateNewId().ToString();
+            SetContract(contract);
             SetCommunicationType(communicationType);
             InternalHost = internalHost;
             SetBaseWorkDirectoryHost(baseWorkDirectoryHost);
@@ -60,7 +60,7 @@ namespace RN_Process.Api.DataAccess.Entities
             SetDelimiter(fileDeLimiter);
             SetFileHeaderColumns(fileHeaderColumns);
             SetAvailableFieldsColumns(availableFieldsColumns);
-            SetContract(contract);
+      
 
             Active = true;
             Deleted = false;
@@ -103,7 +103,6 @@ namespace RN_Process.Api.DataAccess.Entities
 
         private void SetBaseWorkDirectoryHost(string baseWorkDirectoryHost)
         {
-            Guard.Against.NullOrWhiteSpace(baseWorkDirectoryHost, nameof(baseWorkDirectoryHost));
             var clientDir = "\\" + OrgCode.ToUpper() + "\\";
             BaseWorkDirectoryHost = string.IsNullOrEmpty(baseWorkDirectoryHost)
                 ? IntrumFile.CreateDirectory(RnProcessConstant.BaseWorkFolder + clientDir) 

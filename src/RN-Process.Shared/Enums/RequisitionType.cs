@@ -11,6 +11,7 @@ namespace RN_Process.Shared.Enums
         [Description("WEB SITE")] WebSite,
         [Description("DATA BASE")] DataBase,
         [Description("REMOTE DESKTOP")] RemoteDesktop,
-        [Description("ACTIVE DIRECTORY")] ActiveDirectory
+        [Description("ACTIVE DIRECTORY")] ActiveDirectory,
+        [Description("LOCAL MACHINE")] LocalMachine
     }
 }

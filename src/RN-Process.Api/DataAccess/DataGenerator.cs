@@ -34,34 +34,15 @@ namespace RN_Process.Api.DataAccess
             context.Organizations.AddRange(listCustomer);
             context.Contracts.AddRange(listContract);
             context.ContractDetailConfigs.AddRange(
-                new ContractDetailConfig(
-                    FileAccessType.FTP,
-                    "LocalHost",
-                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                    "FTP:10.80.5.198",
-                    "ETL",
-                    "FTP",
-                    true,
-                    "MYLogin@MyName",
-                    "MyPass1234",
-                    null,
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Origin",
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination",
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Backup",
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost",
-                    ",",
-                    new List<string>
-                    {
-                        "NDIV", "COD_CRED", "VAL1", "VAL2",
-                        "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"
-                    },
-                    new List<string>
-                    {
-                        "NDIV", "COD_CRED", "VAL5", "VAL2",
-                        "VAL39", "VAL24", "VAL8", "DATA1", "DATA2", "DATA93"
-                    },
-                    listContract.FirstOrDefault()
-                )
+                new ContractDetailConfig(listContract.FirstOrDefault(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "FTP:10.80.5.198", "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Origin", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Destination", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Backup", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost", ",", new List<string>
+                {
+                    "NDIV", "COD_CRED", "VAL1", "VAL2",
+                    "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"
+                }, new List<string>
+                {
+                    "NDIV", "COD_CRED", "VAL5", "VAL2",
+                    "VAL39", "VAL24", "VAL8", "DATA1", "DATA2", "DATA93"
+                })
             );
             context.SaveChanges();
         }

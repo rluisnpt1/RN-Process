@@ -45,34 +45,17 @@ namespace RN_Process.Tests.DataAccessTests
             IList<string> availableFieldsColumns
         )
         {
-            return new ContractDetailConfig(
-                communicationType,
-                internalHost, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                linkToAccess,
-                linkToAccessType,
-                typeOfResponse,
-                requiredLogin,
-                authenticationLogin,
-                authenticationPassword,
-                authenticationCodeApp,
-                pathToOriginFile,
-                pathToDestinationFile,
-                pathToFileBackupAtClient,
-                pathToFileBackupAtHostServer,
-                fileDeLimiter,
-                fileHeaderColumns,
-                availableFieldsColumns,
-                UnitTestUtility.GetContractOrganizationToTest()
-            );
+            return new ContractDetailConfig(UnitTestUtility.GetContractOrganizationToTest(), communicationType, internalHost, baseWorkDir, linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword, authenticationCodeApp, pathToOriginFile, pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
         }
 
         [Fact]
         public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfListHasEmptyString()
         {
             // Arrange            
-            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest(FileAccessType.FTP,
-                string.Empty, 
+            var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest(
+                FileAccessType.FTP,
                 string.Empty,
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 string.Empty,
                 string.Empty,
                 string.Empty,
@@ -97,7 +80,8 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfNull()
         {
             // Arrange            
-            var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest(FileAccessType.FTP,
+            var expect = Assert.Throws<ArgumentNullException>(() => 
+                InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
@@ -113,7 +97,8 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfZero()
         {
             // Arrange            
-            var expect = Assert.Throws<ArgumentException>(() => InitizerTest(FileAccessType.FTP,
+            var expect = Assert.Throws<ArgumentException>(() => InitizerTest(
+                FileAccessType.FTP,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 true, "my login",
@@ -296,15 +281,7 @@ namespace RN_Process.Tests.DataAccessTests
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
                 UnitTestUtility.GetContractDetailConfigToTest(
-                    new ContractDetailConfig(FileAccessType.FTP,
-                        string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty,
-                        string.Empty, string.Empty,
-                        true, string.Empty,
-                        string.Empty, string.Empty,
-                        string.Empty, string.Empty, string.Empty,
-                        string.Empty, string.Empty,
-                        new List<string> {"cdb"}, new List<string> {"cdb"},
-                        UnitTestUtility.GetContractOrganizationToTest())));
+                    new ContractDetailConfig(UnitTestUtility.GetContractOrganizationToTest(), FileAccessType.FTP, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> {"cdb"}, new List<string> {"cdb"})));
 
             // Assert
             Assert.Equal("Required input 'AUTHENTICATIONLOGIN' was empty. (Parameter 'authenticationLogin')",

@@ -133,16 +133,7 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <returns></returns>
         private ContractDetailConfig ContractAddNewEmptyContractConfiguratiom(FileAccessType fileType)
         {
-            return new ContractDetailConfig(fileType,
-                string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty,
-                string.Empty,
-                string.Empty, false, string.Empty,
-                string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty,
-                string.Empty,
-                new List<string> {RnProcessConstant.ColumnsBaseIntrum},
-                new List<string> {RnProcessConstant.ColumnsBaseClient},
-                this);
+            return new ContractDetailConfig(this, fileType, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> {RnProcessConstant.ColumnsBaseIntrum}, new List<string> {RnProcessConstant.ColumnsBaseClient});
         }
     }
 }
