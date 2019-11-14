@@ -41,26 +41,26 @@ namespace RN_Process.Tests.DataAccessTests
             string pathToFileBackupAtHostServer,
             string fileDeLimiter,
             IList<string> fileHeaderColumns,
-            IList<string> AvailableFieldsColumns
+            IList<string> availableFieldsColumns
         )
         {
             return new ContractDetailConfig(
-                communicationType,
-                internalHost,
-                linkToAccess,
-                linkToAccessType,
-                typeOfResponse,
-                requiredLogin,
-                authenticationLogin,
-                authenticationPassword,
-                authenticationCodeApp,
-                pathToOriginFile,
-                pathToDestinationFile,
-                pathToFileBackupAtClient,
-                pathToFileBackupAtHostServer,
-                fileDeLimiter,
-                fileHeaderColumns,
-                AvailableFieldsColumns,
+                   communicationType,
+                   internalHost,
+                   linkToAccess,
+                   linkToAccessType,
+                   typeOfResponse,
+                   requiredLogin,
+                   authenticationLogin,
+                   authenticationPassword,
+                   authenticationCodeApp,
+                   pathToOriginFile,
+                   pathToDestinationFile,
+                   pathToFileBackupAtClient,
+                   pathToFileBackupAtHostServer,
+                   fileDeLimiter,
+                   fileHeaderColumns,
+                   availableFieldsColumns,
                 UnitTestUtility.GetContractOrganizationToTest()
             );
         }
@@ -70,13 +70,21 @@ namespace RN_Process.Tests.DataAccessTests
         {
             // Arrange            
             var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest(FileAccessType.FTP,
-                string.Empty, string.Empty,
-                string.Empty, string.Empty,
-                true, "my login",
-                string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty,
-                new List<string> { "ss", "s" }, new List<string> { "ss", " " }));
+                string.Empty, 
+                string.Empty,
+                string.Empty, 
+                string.Empty,
+                true, 
+                "my login",
+               "s",
+                string.Empty,
+                string.Empty, 
+                string.Empty, 
+                string.Empty,
+                string.Empty, 
+                string.Empty,
+                new List<string> { "ss", "s" }, 
+                new List<string> { "ss", " " }));
             // Act            
 
             // Assert            
@@ -91,7 +99,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
-                string.Empty, string.Empty,
+                "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 new List<string> { "ss", "s" }, null));
@@ -107,7 +115,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
-                string.Empty, string.Empty,
+                "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 new List<string> { "ss", "s" }, new List<string>()));
@@ -125,7 +133,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
-                string.Empty, string.Empty,
+                "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 new List<string> { "ss", " " }, new List<string> { "cdb" }));
@@ -144,7 +152,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
-                string.Empty, string.Empty,
+               "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 null, new List<string> { "cdb" }));
@@ -160,7 +168,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 true, "my login",
-                string.Empty, string.Empty,
+               "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
                 new List<string>(), new List<string> { "cdb" }));

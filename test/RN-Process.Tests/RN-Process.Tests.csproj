@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FtpTest.cs" />
+    <Compile Remove="IntrumFileTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.10.0-beta1" />
     <PackageReference Include="xunit" Version="2.4.0" />

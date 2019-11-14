@@ -241,7 +241,18 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.NotNull(SystemUnderTest.RowVersion);
         }
 
-        public FileImport InitializeTest(
+        [Fact]
+        public void FileImportTest_ConnectUsingCommunicationType_IsTrue()
+        {
+            var sut = UnitTestUtility.GetRealContractDetailConfigToTest();
+            SystemUnderTest.CreateCommunicationType(sut);
+
+            Assert.True(true);
+        }
+
+
+
+            public FileImport InitializeTest(
             string fileDescription,
             int fileSize,
             string fileFormat,

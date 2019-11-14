@@ -172,7 +172,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 Guard.Against.NullOrWhiteSpace(password, nameof(password));
             }
 
-            AuthenticationPassword = CriptografiaHelper.PasswordCryptography(password);
+            AuthenticationPassword = Encoding.ASCII.GetBytes(password);//CriptografiaHelper.PasswordCryptography(password);
         }
 
 

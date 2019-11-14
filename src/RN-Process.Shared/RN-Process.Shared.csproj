@@ -5,4 +5,8 @@
     <RootNamespace>RN_Process.Shared</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
+  </ItemGroup>
+
 </Project>
