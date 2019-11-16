@@ -1,6 +1,6 @@
 ﻿using System.IO.Abstractions;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Shared.FileWork
 {
     public class TextFileProcessor
     {

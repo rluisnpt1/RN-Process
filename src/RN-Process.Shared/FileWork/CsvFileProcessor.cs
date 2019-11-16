@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Shared.FileWork
 {
     public class CsvFileProcessor
     {

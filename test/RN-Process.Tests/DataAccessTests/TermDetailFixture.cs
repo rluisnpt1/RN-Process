@@ -8,9 +8,9 @@ using Xunit.Abstractions;
 
 namespace RN_Process.Tests.DataAccessTests
 {
-    public class TermDetailTest : IDisposable
+    public class TermDetailFixture : IDisposable
     {
-        public TermDetailTest(ITestOutputHelper testOutputHelper)
+        public TermDetailFixture(ITestOutputHelper testOutputHelper)
         {
             JsonWriterSettings.Defaults.Indent = true;
             _testOutputHelper = testOutputHelper;

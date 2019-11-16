@@ -5,7 +5,7 @@ using Xunit;
 
 namespace RN_Process.Tests.DataAccessTests
 {
-    public class OrganizationTest : IDisposable
+    public class OrganizationFixture : IDisposable
     {
         public void Dispose()
         {

@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text;
-using ApprovalTests;
 using ApprovalTests.Reporters;
-using RN_Process.Api.Models;
+using RN_Process.Shared.FileWork;
 using Xunit;
 
 namespace RN_Process.Tests.ModelsTests

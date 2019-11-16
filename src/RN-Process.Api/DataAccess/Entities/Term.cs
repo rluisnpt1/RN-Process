@@ -57,7 +57,7 @@ namespace RN_Process.Api.DataAccess.Entities
             TermNumber = termNumber;
         }
 
-        public void AddTerm(string id, int debtCode, TermsType termType, bool active = true, bool deleted = false)
+        public void AddTermDetail(string id, int debtCode, TermsType termType, bool active = true, bool deleted = false)
         {
             Guard.Against.Null(debtCode,nameof(debtCode));
             Guard.Against.Zero(debtCode,nameof(debtCode));

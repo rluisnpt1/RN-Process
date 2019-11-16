@@ -2,7 +2,7 @@
 using System.IO;
 using static System.Console;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Shared.FileWork
 {
     internal class FileProcessor
     {

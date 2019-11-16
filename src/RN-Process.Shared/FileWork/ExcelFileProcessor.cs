@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Abstractions;
-using System.Text;
 
-namespace RN_Process.Api.Models
+namespace RN_Process.Shared.FileWork
 {
     public class ExcelFileProcessor
     {

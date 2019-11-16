@@ -7,7 +7,7 @@ using Xunit;
 
 namespace RN_Process.Tests.DataAccessTests
 {
-    public class FileImportTest : IDisposable
+    public class FileImportFixture : IDisposable
     {
         public void Dispose()
         {

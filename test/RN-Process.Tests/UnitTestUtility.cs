@@ -9,11 +9,14 @@ namespace RN_Process.Tests
 {
     public static class UnitTestUtility
     {
+        //Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+        private const string BaseWorkdir = "C:\\TEMP\\WorkDir";
+
         public static Organization GetBancoPortugalOrganizationToTest()
         {
             return new Organization("Banco de portugal", "120@12");
-        }  
-        
+        }
+
         public static Organization GetNOWO_Organization_OrganizationToTest()
         {
             return new Organization("NOWO ORGANIZATION", "CB13");
@@ -25,17 +28,17 @@ namespace RN_Process.Tests
 
         public static Term GetContracuNICREtOrganizationToTest()
         {
-            return new Term(14533686,  GetUNICRE_OrganizationToTest());
-        }  
-        
+            return new Term(14533686, GetUNICRE_OrganizationToTest());
+        }
+
         public static Term GetTermOrganizationToTest()
         {
             return new Term(14533686, GetNOWO_Organization_OrganizationToTest());
-        }  
-        
+        }
+
         public static TermDetail GetTermBaseToTeste()
         {
-            return new TermDetail(54856, TermsType.Loan ,GetTermOrganizationToTest());
+            return new TermDetail(54856, TermsType.Loan, GetTermOrganizationToTest());
         }
 
         public static FileImport GetOneFileImportToTest()
@@ -59,46 +62,47 @@ namespace RN_Process.Tests
 
         public static TermDetailConfig GetTermDetailConfigToTest(string codorg)
         {
-            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum\\Processados\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\Backup\\", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
+            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir , BaseWorkdir, "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null, BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum", BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum\\Processados\\", BaseWorkdir + "\\backup\\SimulationCliente\\Backup\\", BaseWorkdir + "\\BackupToHost", ",", new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "DATA3"}, new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "DATA3"});
         }
         public static TermDetailConfig GetTermDetailConfigToTest()
         {
-            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", RnProcessConstant.BaseTestWorkFolder + "\\Destination", RnProcessConstant.BaseTestWorkFolder + "\\Backup", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
+            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir , BaseWorkdir, "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null, BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum", RnProcessConstant.BaseTestWorkFolder + "\\Destination", RnProcessConstant.BaseTestWorkFolder + "\\Backup", BaseWorkdir+ "\\BackupToHost", ",", new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"}, new List<string>
+                {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"});
         }
 
 
         public static TermDetailConfig GetRealTermDetailConfigToTest()
         {
-            return new TermDetailConfig(GetTermBaseToTeste(), 
+            return new TermDetailConfig(GetTermBaseToTeste(),
                 FileAccessType.FTP,
                 "LocalHost",
-                 "C:\\TEMP",
+                BaseWorkdir,
                  "SFTP://IDCFTPGW.INTRUM.NET:22222",
-                 "SFTP", "FTP", true, "nowo", "NX,CD[}?", null,
+                 "SFTP", "FTP", true, "nowo", "NX,CD[}?",
+                "", null,
                  "/to_intrum/",
                  "/from_intrum/",
                 "",
-                 "", ",", 
+                 "", ",",
                  new List<string>
                      {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
-        } 
+        }
         public static TermDetailConfig GetRealTermUnicreDetailConfigToTest()
         {
-            return new TermDetailConfig(GetTermBaseToTeste(), 
+            return new TermDetailConfig(GetTermBaseToTeste(),
                 FileAccessType.FTP,
                 "LocalHost",
-                 "C:\\TEMP",
+                 BaseWorkdir,
                  "SFTP://ftp.unicre.pt",
-                 "SFTP", "FTP", true, "logi", "ih3bb6", null,
+                 "SFTP", "FTP", true, "logi", "ih3bb6", "", null,
                  "/Da Unicre",
                  "/Para Unicre",
                 "",
-                 "", ",", 
+                 "", ",",
                  new List<string>
                      {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
@@ -108,11 +112,11 @@ namespace RN_Process.Tests
             return new TermDetailConfig(GetTermBaseToTeste(),
                 FileAccessType.WebSite,
                 "LocalHost",
-                "C:\\TEMP\\Workdir",
+                BaseWorkdir,
                 "https://assist.healthcare.com.pt/index.php?r=auth%2Flogin",
-                "AUTH", "INTERNAL RESPONSE", true, "intrum", "int2019#u", null,
+                "AUTH", "INTERNAL RESPONSE", true, "intrum", "int2019#u", "", null,
                 "https://assist.healthcare.com.pt/index.php?r=intrum%2Fdebts&export=csv", "", "",
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\BackupToHost", ",",
+                BaseWorkdir + "\\BackupToHost", ",",
                 new List<string>
                     {"NDIV", "COD_CRED",  "DATA2", "DATA3"},
                 new List<string>

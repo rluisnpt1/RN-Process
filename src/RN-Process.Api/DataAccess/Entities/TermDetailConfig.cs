@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RN_Process.Api.Models;
 using RN_Process.DataAccess;
 using RN_Process.DataAccess.FTP;
 using RN_Process.Shared.Commun;
@@ -37,6 +36,7 @@ namespace RN_Process.Api.DataAccess.Entities
             bool requiredLogin,
             string authenticationLogin,
             string authenticationPassword,
+            string hostKeyFingerPrint,
             string authenticationCodeApp,
             string pathToOriginFile,
             string pathToDestinationFile,
@@ -95,6 +95,7 @@ namespace RN_Process.Api.DataAccess.Entities
         public bool RequiredLogin { get; private set; }
         public string AuthenticationLogin { get; private set; }
         public byte[] AuthenticationPassword { get; private set; }
+        public byte[] HostKeyFingerPrint { get; private set; }
         public string AuthenticationCodeApp { get; private set; }
 
         public string PathToOriginFile { get; private set; }
@@ -285,8 +286,8 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             Guard.Against.NullOrWhiteSpace(PathToOriginFile,nameof(PathToOriginFile));
             Guard.Against.NullOrWhiteSpace(PathToDestinationFile,nameof(PathToDestinationFile));
-            var fileProcessor = new FileProcessor(PathToOriginFile);
-            fileProcessor.Process();
+            //var fileProcessor = new FileProcessor(PathToOriginFile);
+            //fileProcessor.Process();
         }
 
 

@@ -37,7 +37,6 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public virtual string OrgCode { get; private set; }
         public string Description { get; private set; }
-        public string Uri { get; set; }
 
         public virtual ICollection<Term> Terms
         {
@@ -97,7 +96,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Terms.Add(fact);
 
             //base configuration
-            fact.AddTerm(null, typeDebt, TermsType.Loan, true, false);
+            fact.AddTermDetail(null, typeDebt, TermsType.Loan, true, false);
 
             //add term configuration details to list term configuration details list of organization
             TermDetails = fact.TermDetails;
@@ -135,7 +134,7 @@ namespace RN_Process.Api.DataAccess.Entities
             if (term == null)
             {
                 term = new Term(termNumber, this);
-                term.AddTerm(null,debtCode, TermsType.Loan);
+                term.AddTermDetail(null,debtCode, TermsType.Loan);
             }
             else
             {

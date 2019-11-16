@@ -1,5 +1,6 @@
 ﻿using System.IO.Abstractions.TestingHelpers;
 using RN_Process.Api.Models;
+using RN_Process.Shared.FileWork;
 using Xunit;
 
 namespace RN_Process.Tests.ModelsTests

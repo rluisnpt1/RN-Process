@@ -6,7 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+
+    <PackageReference Include="CsvHelper" Version="12.2.1" />
+    <PackageReference Include="FileCache" Version="3.0.1" />
     <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
+    <PackageReference Include="System.IO.Abstractions" Version="7.0.7" />
   </ItemGroup>
 
 </Project>
