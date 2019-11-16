@@ -11,14 +11,14 @@ namespace RN_Process.Api.DataAccess.Entities
 {
     public class TermDetail : AuditableEntity<string>
     {
-        [BsonIgnore] private ICollection<ContractDetailConfig> _contractConfig;
+        [BsonIgnore] private ICollection<TermDetailConfig> _termConfig;
 
-        public TermDetail(int debtCode, TermsType name, Contract contract)
+        public TermDetail(int debtCode, TermsType name, Term term)
         {
             Id = ObjectId.GenerateNewId().ToString();
             SetDebtCode(debtCode);
             SerTermTypeName(name);
-            SetContract(contract);
+            SetTerm(term);
             Active = true;
             Deleted = false;
             RowVersion = new byte[0];
@@ -28,14 +28,14 @@ namespace RN_Process.Api.DataAccess.Entities
         public TermsType TermsType { get; private set; }
         public string OrgCode { get; private set; }
 
-        public string ContractId { get; private set; }
+        public string TermId { get; private set; }
 
-        public Contract Contract { get; set; }
+        public Term Term { get; set; }
 
-        public virtual ICollection<ContractDetailConfig> ContractDetailConfigs
+        public virtual ICollection<TermDetailConfig> TermDetailConfigs
         {
-            get { return _contractConfig ??= new List<ContractDetailConfig>(); }
-            protected set => _contractConfig = value;
+            get { return _termConfig ??= new List<TermDetailConfig>(); }
+            protected set => _termConfig = value;
         }
 
         private void SerTermTypeName(TermsType name)
@@ -50,17 +50,17 @@ namespace RN_Process.Api.DataAccess.Entities
             DebtCode = debtCode;
         }
 
-        private void SetContract(Contract contract)
+        private void SetTerm(Term term)
         {
-            Guard.Against.Null(contract, nameof(contract));
-            Contract = contract;
-            ContractId = contract.Id;
-            OrgCode = contract.OrgCode;
+            Guard.Against.Null(term, nameof(term));
+            Term = term;
+            TermId = term.Id;
+            OrgCode = term.OrgCode;
         }
 
 
         /// <summary>
-        ///     Add or update contract
+        ///     Add or update term
         /// </summary>
         /// <param name="id"></param>
         /// <param name="fileType"></param>
@@ -80,7 +80,7 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="fileType"></param>
         private void AddNewTermConfiguration(FileAccessType fileType)
         {
-            var fact = new ContractDetailConfig(this, fileType, 
+            var fact = new TermDetailConfig(this, fileType, 
                 string.Empty,
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), 
                 string.Empty, 
@@ -98,24 +98,24 @@ namespace RN_Process.Api.DataAccess.Entities
                 new List<string> { RnProcessConstant.ColumnsBaseIntrum },
                 new List<string> { RnProcessConstant.ColumnsBaseClient });
 
-            ContractDetailConfigs.Add(fact);
+            TermDetailConfigs.Add(fact);
         }
 
 
         public void UpdateTermConfigurationById(string id, FileAccessType fileType, bool active = true,
             bool deleted = false)
         {
-            ContractDetailConfig config = null;
+            TermDetailConfig config = null;
             var foundIt = false;
 
             if (!string.IsNullOrEmpty(id))
-                config = ContractDetailConfigs.FirstOrDefault(temp => temp.Id.Equals(id)
+                config = TermDetailConfigs.FirstOrDefault(temp => temp.Id.Equals(id)
                                                                       && temp.TermDetailId == Id
                                                                       && temp.TermDetail.OrgCode == OrgCode);
 
             if (config == null)
             {
-                config = new ContractDetailConfig(this, fileType,
+                config = new TermDetailConfig(this, fileType,
                     string.Empty,
                     Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     string.Empty,
@@ -142,12 +142,12 @@ namespace RN_Process.Api.DataAccess.Entities
                 config.Deleted = deleted;
             }
 
-            if (foundIt == false) ContractDetailConfigs.Add(config);
+            if (foundIt == false) TermDetailConfigs.Add(config);
         }
 
         
 
-        public void UpdateContractConfig(ContractDetailConfig item)
+        public void UpdateTermConfig(TermDetailConfig item)
         {
             throw new NotImplementedException();
         }

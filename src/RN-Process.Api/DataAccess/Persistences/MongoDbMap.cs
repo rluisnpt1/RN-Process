@@ -21,20 +21,20 @@ namespace RN_Process.Api.DataAccess.Persistences
             });
         }
 
-        public static void ContractConfigure()
+        public static void TermConfigure()
         {
-            BsonClassMap.RegisterClassMap<Contract>(map =>
+            BsonClassMap.RegisterClassMap<Term>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdMember(x => x.Id).SetIdGenerator(ObjectIdGenerator.Instance);
-                map.MapMember(x => x.ContractNumber).SetIsRequired(true);
+                map.MapMember(x => x.TermNumber).SetIsRequired(true);
             });
         }
 
-        public static void ContractDetailConfigConfigure()
+        public static void TermDetailConfigConfigure()
         {
-            BsonClassMap.RegisterClassMap<ContractDetailConfig>(map =>
+            BsonClassMap.RegisterClassMap<TermDetailConfig>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);

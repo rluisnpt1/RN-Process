@@ -36,7 +36,7 @@ namespace RN_Process.Tests
         {
             var organization = new BsonDocument
             {
-                {"contract", new BsonInt32(55)},
+                {"term", new BsonInt32(55)},
                 {"valor", new BsonDecimal128(6655)},
                 {"Date", new BsonDateTime(DateTime.UtcNow)},
                 {"IsDeleted", false},
@@ -54,14 +54,14 @@ namespace RN_Process.Tests
                 {"uniqcode", new BsonInt32(1)},
                 {"description", "Client Name"},
                 {
-                    "Contract", new BsonDocument
+                    "Term", new BsonDocument
                     {
-                        {"contractnumber", new BsonInt32(65645)},
+                        {"termnumber", new BsonInt32(65645)},
                         {"typedebt", new BsonInt32(856)},
                         {"debtdescription", "Consumo"},
 
                         {
-                            "ContractDetailConfig", new BsonDocument
+                            "TermDetailConfig", new BsonDocument
                             {
                                 {"codreference", "FTP"},
                                 {"internalhost", "Http://localhost"},
@@ -81,10 +81,10 @@ namespace RN_Process.Tests
         {
             var Organization = new BsonDocument
             {
-                {"contractValue", new BsonInt32(55665)}
+                {"termValue", new BsonInt32(55665)}
             };
 
-            _testOutputHelper.WriteLine(Organization["contractValue"].ToDecimal().ToString());
+            _testOutputHelper.WriteLine(Organization["termValue"].ToDecimal().ToString());
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace RN_Process.Tests
         {
             var Organization = new BsonDocument
             {
-                {"contractValue", new BsonInt32(55665)}
+                {"termValue", new BsonInt32(55665)}
             };
 
             var bson = Organization.ToBson();

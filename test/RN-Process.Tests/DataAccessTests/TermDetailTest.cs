@@ -48,7 +48,7 @@ namespace RN_Process.Tests.DataAccessTests
         {
             //act
             var ex = Assert.Throws<ArgumentException>(() =>
-                new TermDetail(0, TermsType.Loan, UnitTestUtility.GetContractOrganizationToTest()));
+                new TermDetail(0, TermsType.Loan, UnitTestUtility.GetTermOrganizationToTest()));
 
             //assert
             Assert.Contains("Required input 'DEBTCODE' cannot be zero", ex.Message);
@@ -73,13 +73,13 @@ namespace RN_Process.Tests.DataAccessTests
             SystemUnderTest.AddDetailConfig(null,FileAccessType.Email);
             
             //has configurations
-            Assert.Equal(3, SystemUnderTest.ContractDetailConfigs.Count);
+            Assert.Equal(3, SystemUnderTest.TermDetailConfigs.Count);
 
-            //has contract  the same
-            Assert.Same(SystemUnderTest.ContractId, SystemUnderTest.Contract.Id);
+            //has term  the same
+            Assert.Same(SystemUnderTest.TermId, SystemUnderTest.Term.Id);
 
-            //get contract from get 
-            var actualConfig = SystemUnderTest.ContractDetailConfigs.First();
+            //get term from get 
+            var actualConfig = SystemUnderTest.TermDetailConfigs.First();
 
             //assert configuration has term 
             Assert.Same(SystemUnderTest, actualConfig.TermDetail);

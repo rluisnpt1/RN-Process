@@ -8,24 +8,24 @@ using RN_Process.DataAccess.MongoDb;
 
 namespace RN_Process.Api.DataAccess.Repositories
 {
-    public interface IContractRepository : IRepositoryNoSql<Contract, string>
+    public interface ITermRepository : IRepositoryNoSql<Term, string>
     {
-        new Task SaveOneAsync(Contract entity);
+        new Task SaveOneAsync(Term entity);
         new Task<bool> RemoveOneAsync(string id, bool softDelete);
     }
 
-    public class ContractRepository : BaseMongoRepository<Contract, string>, IContractRepository
+    public class TermRepository : BaseMongoRepository<Term, string>, ITermRepository
     {
-        private readonly RnProcessMongoDbContext<Contract> _repository;
+        private readonly RnProcessMongoDbContext<Term> _repository;
 
-        public ContractRepository(IOptions<MongoDbSettings> settings) : base(settings)
+        public TermRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {
-            _repository = new RnProcessMongoDbContext<Contract>("Contracts", settings);
+            _repository = new RnProcessMongoDbContext<Term>("Terms", settings);
         }
 
-        public override async Task SaveOneAsync(Contract entity)
+        public override async Task SaveOneAsync(Term entity)
         {
-            var filter = Builders<Contract>.Filter.Eq("_id", entity.Id);
+            var filter = Builders<Term>.Filter.Eq("_id", entity.Id);
             var product = _repository.Collection.Find(filter).FirstOrDefaultAsync();
 
             //add new
@@ -40,8 +40,8 @@ namespace RN_Process.Api.DataAccess.Repositories
             }
             else
             {
-                var update = Builders<Contract>.Update
-                    .Set(x => x.ContractNumber, entity.ContractNumber)
+                var update = Builders<Term>.Update
+                    .Set(x => x.TermNumber, entity.TermNumber)
                     .Set(x => x.ModifiedBy, "new user need add")
                     .Set(x => x.ModifiedDate, DateTime.UtcNow)
                     .Set(x => x.RowVersion, entity.RowVersion);
@@ -52,7 +52,7 @@ namespace RN_Process.Api.DataAccess.Repositories
 
         public override async Task<bool> RemoveOneAsync(string id, bool softDelete)
         {
-            var filter = Builders<Contract>.Filter.Eq("_id", id);
+            var filter = Builders<Term>.Filter.Eq("_id", id);
             var product = _repository.Collection.Find(filter).FirstOrDefaultAsync();
 
             if (softDelete && product.Result != null)

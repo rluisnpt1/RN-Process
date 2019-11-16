@@ -23,19 +23,19 @@ namespace RN_Process.Tests
             return new Organization("UNICRE PORTO", "UNPOR");
         }
 
-        public static Contract GetContracuNICREtOrganizationToTest()
+        public static Term GetContracuNICREtOrganizationToTest()
         {
-            return new Contract(14533686,  GetUNICRE_OrganizationToTest());
+            return new Term(14533686,  GetUNICRE_OrganizationToTest());
         }  
         
-        public static Contract GetContractOrganizationToTest()
+        public static Term GetTermOrganizationToTest()
         {
-            return new Contract(14533686, GetNOWO_Organization_OrganizationToTest());
+            return new Term(14533686, GetNOWO_Organization_OrganizationToTest());
         }  
         
         public static TermDetail GetTermBaseToTeste()
         {
-            return new TermDetail(54856, TermsType.Loan ,GetContractOrganizationToTest());
+            return new TermDetail(54856, TermsType.Loan ,GetTermOrganizationToTest());
         }
 
         public static FileImport GetOneFileImportToTest()
@@ -47,33 +47,33 @@ namespace RN_Process.Tests
                 "retorno/copy/to",
                 StatusType.Processed,
                 false,
-                null, GetContractDetailConfigToTest(),
+                null, GetTermDetailConfigToTest(),
                 new List<BsonDocument>());
         }
 
-        public static ContractDetailConfig GetContractDetailConfigToTest(
-            ContractDetailConfig getContractDetailConfigToTest)
+        public static TermDetailConfig GetTermDetailConfigToTest(
+            TermDetailConfig getTermDetailConfigToTest)
         {
-            return getContractDetailConfigToTest;
+            return getTermDetailConfigToTest;
         }
 
-        public static ContractDetailConfig GetContractDetailConfigToTest(string codorg)
+        public static TermDetailConfig GetTermDetailConfigToTest(string codorg)
         {
-            return new ContractDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum\\Processados\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\Backup\\", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
+            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum\\Processados\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\Backup\\", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
                 {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
                 {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
         }
-        public static ContractDetailConfig GetContractDetailConfigToTest()
+        public static TermDetailConfig GetTermDetailConfigToTest()
         {
-            return new ContractDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", RnProcessConstant.BaseTestWorkFolder + "\\Destination", RnProcessConstant.BaseTestWorkFolder + "\\Backup", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
+            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\WorkDir\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", null, Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\backup\\SimulationCliente\\to_intrum", RnProcessConstant.BaseTestWorkFolder + "\\Destination", RnProcessConstant.BaseTestWorkFolder + "\\Backup", RnProcessConstant.BaseTestWorkFolder + "\\BackupToHost", ",", new List<string>
                 {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
                 {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
         }
 
 
-        public static ContractDetailConfig GetRealContractDetailConfigToTest()
+        public static TermDetailConfig GetRealTermDetailConfigToTest()
         {
-            return new ContractDetailConfig(GetTermBaseToTeste(), 
+            return new TermDetailConfig(GetTermBaseToTeste(), 
                 FileAccessType.FTP,
                 "LocalHost",
                  "C:\\TEMP",
@@ -87,9 +87,9 @@ namespace RN_Process.Tests
                      {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
         } 
-        public static ContractDetailConfig GetRealContractUnicreDetailConfigToTest()
+        public static TermDetailConfig GetRealTermUnicreDetailConfigToTest()
         {
-            return new ContractDetailConfig(GetTermBaseToTeste(), 
+            return new TermDetailConfig(GetTermBaseToTeste(), 
                 FileAccessType.FTP,
                 "LocalHost",
                  "C:\\TEMP",
@@ -103,9 +103,9 @@ namespace RN_Process.Tests
                      {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
         }
-        public static ContractDetailConfig GetRealContractDetailConfigWebSiteToTest()
+        public static TermDetailConfig GetRealTermDetailConfigWebSiteToTest()
         {
-            return new ContractDetailConfig(GetTermBaseToTeste(),
+            return new TermDetailConfig(GetTermBaseToTeste(),
                 FileAccessType.WebSite,
                 "LocalHost",
                 "C:\\TEMP\\Workdir",
@@ -120,12 +120,12 @@ namespace RN_Process.Tests
         }
 
 
-        public static List<Contract> GetManyContractOrganizationToTest()
+        public static List<Term> GetManyTermOrganizationToTest()
         {
-            var list = new List<Contract>();
+            var list = new List<Term>();
 
-            var listc = new Contract(14533686, GetBancoPortugalOrganizationToTest());
-            var listb = new Contract(14533686, GetBancoPortugalOrganizationToTest());
+            var listc = new Term(14533686, GetBancoPortugalOrganizationToTest());
+            var listb = new Term(14533686, GetBancoPortugalOrganizationToTest());
             list.Add(listc);
             list.Add(listb);
             return list;

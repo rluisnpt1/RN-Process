@@ -9,8 +9,8 @@ namespace RN_Process.Api.Interfaces
         DbSet<ReferencesType> ReferencesTypes { get; set; }
         DbSet<Reference> References { get; set; }
         DbSet<Organization> Organizations { get; set; }
-        DbSet<Contract> Contracts { get; set; }
-        DbSet<ContractDetailConfig> ContractDetailConfigs { get; set; }
+        DbSet<Term> Terms { get; set; }
+        DbSet<TermDetailConfig> TermDetailConfigs { get; set; }
         DbSet<FileImport> FileImports { get; set; }
 
         //EntityEntry<IEntity<T>> Entry<T>(object entity);

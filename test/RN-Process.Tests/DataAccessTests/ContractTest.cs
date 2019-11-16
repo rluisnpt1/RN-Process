@@ -10,9 +10,9 @@ using Xunit.Abstractions;
 
 namespace RN_Process.Tests.DataAccessTests
 {
-    public class ContractTest : IDisposable
+    public class TermTest : IDisposable
     {
-        public ContractTest(ITestOutputHelper testOutputHelper)
+        public TermTest(ITestOutputHelper testOutputHelper)
         {
             JsonWriterSettings.Defaults.Indent = true;
             _testOutputHelper = testOutputHelper;
@@ -27,28 +27,28 @@ namespace RN_Process.Tests.DataAccessTests
         private const int TypeDebt = 003344;
         private const string NameDebt = "need to pay";
 
-        private Contract _sut;
-        private Contract SystemUnderTest => _sut ??= _sut =UnitTestUtility.GetContractOrganizationToTest();
+        private Term _sut;
+        private Term SystemUnderTest => _sut ??= _sut =UnitTestUtility.GetTermOrganizationToTest();
 
-        private static Contract ContractInit(int contractNumber,Organization Organization)
+        private static Term TermInit(int termNumber,Organization Organization)
         {
-            return new Contract(contractNumber, Organization);
+            return new Term(termNumber, Organization);
         }
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void MongodbToDocument_Contract_Bson()
+        public void MongodbToDocument_Term_Bson()
         {
             var toBsonDocument = SystemUnderTest.ToBsonDocument();
-            Assert.Equal(BsonType.Int32, toBsonDocument["ContractNumber"].BsonType);
-            Assert.Equal(BsonType.Int32, toBsonDocument["ContractNumber"].BsonType);
+            Assert.Equal(BsonType.Int32, toBsonDocument["TermNumber"].BsonType);
+            Assert.Equal(BsonType.Int32, toBsonDocument["TermNumber"].BsonType);
 
             _testOutputHelper.WriteLine(toBsonDocument.ToJson());
         }
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void MongodbToDocument_ContractWithAnId_IsRepresentedAsObjectId()
+        public void MongodbToDocument_TermWithAnId_IsRepresentedAsObjectId()
         {
             var toBsonDocument = SystemUnderTest.ToBsonDocument();
 
@@ -59,14 +59,14 @@ namespace RN_Process.Tests.DataAccessTests
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenCreated_ContractIsValid()
+        public void WhenCreated_TermIsValid()
         {
             Assert.NotNull(SystemUnderTest);
             Assert.NotNull(SystemUnderTest.Id);
             Assert.NotNull(SystemUnderTest.Organization);
             Assert.NotNull(SystemUnderTest.OrganizationId);
 
-            Assert.NotEqual(0, SystemUnderTest.ContractNumber);
+            Assert.NotEqual(0, SystemUnderTest.TermNumber);
          
             //Assert.NotEqual(0, SystemUnderTest.TypeDebt);
             //Assert.NotEmpty(SystemUnderTest.DebtDescription);
@@ -84,24 +84,24 @@ namespace RN_Process.Tests.DataAccessTests
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenCreated_ContractNumber_IsValid()
+        public void WhenCreated_TermNumber_IsValid()
         {
-            Assert.NotEqual(0, SystemUnderTest.ContractNumber);
-            Assert.Equal(14533686, SystemUnderTest.ContractNumber);
+            Assert.NotEqual(0, SystemUnderTest.TermNumber);
+            Assert.Equal(14533686, SystemUnderTest.TermNumber);
         }
 
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenCreated_ContractNumberZero_ThenThrowException()
+        public void WhenCreated_TermNumberZero_ThenThrowException()
         {
             //act
             var ex = Assert.Throws<ArgumentException>(() =>
-                ContractInit(0, UnitTestUtility.GetBancoPortugalOrganizationToTest()));
+                TermInit(0, UnitTestUtility.GetBancoPortugalOrganizationToTest()));
 
             //assert
-            Assert.Contains("Required input 'CONTRACTNUMBER' cannot be zero", ex.Message);
-            Assert.Equal("ContractNumber", ex.ParamName);
+            Assert.Contains("Required input 'TERMNUMBER' cannot be zero", ex.Message);
+            Assert.Equal("TermNumber", ex.ParamName);
         }
         
     }

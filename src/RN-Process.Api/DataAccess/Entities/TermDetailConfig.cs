@@ -13,7 +13,7 @@ using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public sealed class ContractDetailConfig : AuditableEntity<string>
+    public class TermDetailConfig : AuditableEntity<string>
     {
         [BsonIgnore] private ICollection<FileImport> _fileImport;
 
@@ -23,12 +23,12 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <summary>
         ///     Runtime execution
         /// </summary>
-        private ContractDetailConfig()
+        private TermDetailConfig()
         {
         }
 
 
-        public ContractDetailConfig(TermDetail termDetail, FileAccessType communicationType,
+        public TermDetailConfig(TermDetail termDetail, FileAccessType communicationType,
             string internalHost,
             string baseWorkDirectoryHost,
             string linkToAccess,
@@ -76,8 +76,8 @@ namespace RN_Process.Api.DataAccess.Entities
         #endregion
 
         [BsonRepresentation(BsonType.ObjectId)]
-        //public string ContractId { get; private set; }
-        //public Contract Contract { get; set; }   
+        //public string TermId { get; private set; }
+        //public Term Term { get; set; }   
         
         public string TermDetailId { get; private set; }
         public TermDetail TermDetail { get; set; }

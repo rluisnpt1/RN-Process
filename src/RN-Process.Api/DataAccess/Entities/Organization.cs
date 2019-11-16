@@ -14,7 +14,7 @@ namespace RN_Process.Api.DataAccess.Entities
     {
         private static readonly DateTime DefaultDateTime = DateTime.UtcNow;
 
-        [BsonIgnore] private ICollection<Contract> _contract;
+        [BsonIgnore] private ICollection<Term> _term;
         [BsonIgnore] private ICollection<TermDetail> _termDetail;
 
         public Organization(string description, string orgCode)
@@ -39,10 +39,10 @@ namespace RN_Process.Api.DataAccess.Entities
         public string Description { get; private set; }
         public string Uri { get; set; }
 
-        public virtual ICollection<Contract> Contracts
+        public virtual ICollection<Term> Terms
         {
-            get { return _contract ??= new List<Contract>(); }
-            protected set => _contract = value;
+            get { return _term ??= new List<Term>(); }
+            protected set => _term = value;
         }
 
 
@@ -85,92 +85,92 @@ namespace RN_Process.Api.DataAccess.Entities
 
         /// <summary>
         /// </summary>
-        /// <param name="contractNumber"></param>
+        /// <param name="termNumber"></param>
         /// <param name="typeDebt"></param>
         /// <param name="debtDescription"></param>
-        public void AddNewContract(int contractNumber, int typeDebt)
+        public void AddNewTerm(int termNumber, int typeDebt)
         {
-            //create contract
-            var fact = new Contract(contractNumber, this);
+            //create term
+            var fact = new Term(termNumber, this);
 
-            //add contract to list contract list of organization
-            Contracts.Add(fact);
+            //add term to list term list of organization
+            Terms.Add(fact);
 
             //base configuration
             fact.AddTerm(null, typeDebt, TermsType.Loan, true, false);
 
-            //add contract configuration details to list contract configuration details list of organization
+            //add term configuration details to list term configuration details list of organization
             TermDetails = fact.TermDetails;
         }
 
 
         /// <summary>
-        ///     Add contract
+        ///     Add term
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="contractNumber"></param>
+        /// <param name="termNumber"></param>
         /// <param name="typeDebt"></param>
         /// <param name="debtDescription"></param>
-        public void AddContract(string id, int contractNumber, int typeDebt)
+        public void AddTerm(string id, int termNumber, int typeDebt)
         {
-            Guard.Against.Null(contractNumber, nameof(contractNumber));
-            Guard.Against.Zero(contractNumber, nameof(contractNumber));
+            Guard.Against.Null(termNumber, nameof(termNumber));
+            Guard.Against.Zero(termNumber, nameof(termNumber));
             Guard.Against.Null(typeDebt, nameof(typeDebt));
             Guard.Against.Zero(typeDebt, nameof(typeDebt));
 
             if (!string.IsNullOrEmpty(id))
-                UpdateExistingContractById(id, typeDebt, contractNumber);
+                UpdateExistingTermById(id, typeDebt, termNumber);
             else
-                AddNewContract(contractNumber, typeDebt);
+                AddNewTerm(termNumber, typeDebt);
         }
 
        
-        private void UpdateExistingContractById(string id, int debtCode, int contractNumber, bool active = true, bool deleted = false)
+        private void UpdateExistingTermById(string id, int debtCode, int termNumber, bool active = true, bool deleted = false)
         {
-            Contract contract = null;
+            Term term = null;
             var foundIt = false;
 
-            if (!string.IsNullOrEmpty(id)) contract = Contracts.FirstOrDefault(temp => temp.Id == id);
+            if (!string.IsNullOrEmpty(id)) term = Terms.FirstOrDefault(temp => temp.Id == id);
             //for 
-            if (contract == null)
+            if (term == null)
             {
-                contract = new Contract(contractNumber, this);
-                contract.AddTerm(null,debtCode, TermsType.Loan);
+                term = new Term(termNumber, this);
+                term.AddTerm(null,debtCode, TermsType.Loan);
             }
             else
             {
-                //add update contract ?
+                //add update term ?
                 foundIt = true;
-                contract.ModifiedDate = DateTime.UtcNow;
-                contract.ModifiedBy = "System-- need change for user";
-                contract.Active = active;
-                contract.Deleted = deleted;
+                term.ModifiedDate = DateTime.UtcNow;
+                term.ModifiedBy = "System-- need change for user";
+                term.Active = active;
+                term.Deleted = deleted;
 
-                var config = contract.TermDetails.Where(temp => temp.ContractId == contract.Id);
+                var config = term.TermDetails.Where(temp => temp.TermId == term.Id);
                 foreach (var item in config)
-                    contract.UpdateContractTermById(item.Id, item.DebtCode, item.TermsType, active, deleted);
+                    term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, active, deleted);
             }
 
-            if (foundIt == false) Contracts.Add(contract);
+            if (foundIt == false) Terms.Add(term);
         }
 
-        public void RemoveContracts(string id)//, bool softDelete)
+        public void RemoveTerms(string id)//, bool softDelete)
         {
             if (string.IsNullOrEmpty(id)) return;
 
-            var matchContract = Contracts.FirstOrDefault(fact => fact.Id == id);
+            var matchTerm = Terms.FirstOrDefault(fact => fact.Id == id);
 
-            if (matchContract == null) return;
+            if (matchTerm == null) return;
 
-            var match = matchContract.TermDetails.FirstOrDefault(x => x.Contract.Id == matchContract.Id);
+            var match = matchTerm.TermDetails.FirstOrDefault(x => x.Term.Id == matchTerm.Id);
 
             //if (!softDelete)
-            //    Contracts.Remove(matchContract);
+            //    Terms.Remove(matchTerm);
             //else
             
             if (match == null) return;
 
-            UpdateExistingContractById(matchContract.Id, match.DebtCode, matchContract.ContractNumber, false, true);
+            UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber, false, true);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace RN_Process.Tests.DataAccessTests
             StatusType status,
             bool fileMigrated,
             DateTime? fileMigratedOn,
-            ContractDetailConfig contractDetailConfig,
+            TermDetailConfig termDetailConfig,
            List<BsonDocument> allDataInFile)
         {
             return new FileImport(fileDescription,
@@ -38,7 +38,7 @@ namespace RN_Process.Tests.DataAccessTests
                 status,
                 fileMigrated,
                 fileMigratedOn,
-                contractDetailConfig,
+                termDetailConfig,
                 allDataInFile);
         }
 
@@ -63,9 +63,9 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.False(SystemUnderTest.FileMigrated);
             Assert.Null(SystemUnderTest.FileMigratedOn);
 
-            Assert.NotNull(SystemUnderTest.ContractDetailConfig);
-            Assert.NotNull(SystemUnderTest.ContractDetailConfigId);
-            Assert.NotEmpty(SystemUnderTest.ContractDetailConfigId);
+            Assert.NotNull(SystemUnderTest.TermDetailConfig);
+            Assert.NotNull(SystemUnderTest.TermDetailConfigId);
+            Assert.NotEmpty(SystemUnderTest.TermDetailConfigId);
 
             Assert.Null(SystemUnderTest.ModifiedBy);
             Assert.Null(SystemUnderTest.ModifiedDate);
@@ -86,7 +86,7 @@ namespace RN_Process.Tests.DataAccessTests
         //            StatusType.Processed,
         //            false,
         //            DateTime.UtcNow,
-        //            UnitTestUtility.GetContractDetailConfigToTest(),
+        //            UnitTestUtility.GetTermDetailConfigToTest(),
         //            new List<BsonDocument>());
         //    // Assert
         //    Assert.Equal(BsonType.Document, ex.AllDataInFile.BsonType);
@@ -104,7 +104,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     null));
             // Assert
             Assert.Equal("Value cannot be null. (Parameter 'allDataInFile')", ex.Message);
@@ -123,7 +123,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>()));
             // Assert
             Assert.Equal("Required input 'FILEDESCRIPTION' was empty. (Parameter 'fileDescription')", ex.Message);
@@ -143,7 +143,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>()));
             // Assert
             Assert.Equal("Value cannot be null. (Parameter 'fileDescription')", ex.Message);
@@ -162,7 +162,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>()));
             // Assert
             Assert.Equal("Required input 'FILEDESCRIPTION' was empty. (Parameter 'fileDescription')", ex.Message);
@@ -181,7 +181,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>()));
             // Assert
             Assert.Equal("Required input 'FILEFORMAT' was empty. (Parameter 'fileFormat')", ex.Message);
@@ -201,7 +201,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>()));
             // Assert
             Assert.Equal("Value cannot be null. (Parameter 'fileDescription')", ex.Message);
@@ -220,7 +220,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>()));
             // Assert
             Assert.Equal("Required input 'FILEFORMAT' was empty. (Parameter 'fileFormat')", ex.Message);
@@ -239,7 +239,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     DateTime.UtcNow,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>());
             // Assert
             Assert.Equal(DateTime.UtcNow.Date, ex.FileMigratedOn);
@@ -257,7 +257,7 @@ namespace RN_Process.Tests.DataAccessTests
                     StatusType.Processed,
                     false,
                     null,
-                    UnitTestUtility.GetContractDetailConfigToTest(),
+                    UnitTestUtility.GetTermDetailConfigToTest(),
                     new List<BsonDocument>()));
             // Assert
             Assert.Equal("Required input 'FILESIZE' cannot be zero. (Parameter 'fileSize')", ex.Message);

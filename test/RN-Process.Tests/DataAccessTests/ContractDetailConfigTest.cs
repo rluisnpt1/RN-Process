@@ -11,11 +11,11 @@ using Xunit.Abstractions;
 
 namespace RN_Process.Tests.DataAccessTests
 {
-    public class ContractDetailConfigTest : IDisposable
+    public class TermDetailConfigTest : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public ContractDetailConfigTest(ITestOutputHelper testOutputHelper)
+        public TermDetailConfigTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -24,14 +24,14 @@ namespace RN_Process.Tests.DataAccessTests
             _sut = null;
         }
 
-        private ContractDetailConfig _sut;
+        private TermDetailConfig _sut;
 
-        private ContractDetailConfig SystemUnderTest =>_sut ??= _sut = UnitTestUtility.GetContractDetailConfigToTest();
+        private TermDetailConfig SystemUnderTest =>_sut ??= _sut = UnitTestUtility.GetTermDetailConfigToTest();
              
             
         
 
-        public ContractDetailConfig InitizerTest(
+        public TermDetailConfig InitizerTest(
             FileAccessType communicationType,
             string internalHost,
             string baseWorkDir,
@@ -51,11 +51,11 @@ namespace RN_Process.Tests.DataAccessTests
             IList<string> availableFieldsColumns
         )
         {
-            return new ContractDetailConfig(UnitTestUtility.GetTermBaseToTeste(), communicationType, internalHost, baseWorkDir, linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword, authenticationCodeApp, pathToOriginFile, pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
+            return new TermDetailConfig(UnitTestUtility.GetTermBaseToTeste(), communicationType, internalHost, baseWorkDir, linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword, authenticationCodeApp, pathToOriginFile, pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
         }
 
         [Fact]
-        public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfListHasEmptyString()
+        public void TermDetailConfigTest_AvailableFields_ThrowExceptionIfListHasEmptyString()
         {
             // Arrange            
             var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest(
@@ -83,7 +83,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfNull()
+        public void TermDetailConfigTest_AvailableFields_ThrowExceptionIfNull()
         {
             // Arrange            
             var expect = Assert.Throws<ArgumentNullException>(() =>
@@ -100,7 +100,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfZero()
+        public void TermDetailConfigTest_AvailableFields_ThrowExceptionIfZero()
         {
             // Arrange            
             var expect = Assert.Throws<ArgumentException>(() => InitizerTest(
@@ -120,7 +120,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfListHasEmptyString()
+        public void TermDetailConfigTest_FileHeaderColumns_ThrowExceptionIfListHasEmptyString()
         {
             var expect = Assert.Throws<EncoderFallbackException>(() => InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty, string.Empty,
@@ -138,7 +138,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfNull()
+        public void TermDetailConfigTest_FileHeaderColumns_ThrowExceptionIfNull()
         {
             // Arrange            
             var expect = Assert.Throws<ArgumentNullException>(() => InitizerTest(FileAccessType.FTP,
@@ -154,7 +154,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void ContractDetailConfigTest_FileHeaderColumns_ThrowExceptionIfZero()
+        public void TermDetailConfigTest_FileHeaderColumns_ThrowExceptionIfZero()
         {
             // Arrange            
             var expect = Assert.Throws<ArgumentException>(() => InitizerTest(FileAccessType.FTP,
@@ -175,10 +175,10 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void ContractConfigWhenCreated_TermDetailIsValid()
+        public void TermConfigWhenCreated_TermDetailIsValid()
         {
             // Act
-            var expect = UnitTestUtility.GetContractDetailConfigToTest();
+            var expect = UnitTestUtility.GetTermDetailConfigToTest();
 
             // Assert
             Assert.NotNull(SystemUnderTest.TermDetail);
@@ -187,7 +187,7 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void ContractConfigWhenCreated_then_termDetailId_IsValid()
+        public void TermConfigWhenCreated_then_termDetailId_IsValid()
         {
             // Act
             // Assert
@@ -196,7 +196,7 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void WhenCreatedContractDetailConfig_delimiter_IsEqualCommaIfNull()
+        public void WhenCreatedTermDetailConfig_delimiter_IsEqualCommaIfNull()
         {
             //arrange
 
@@ -217,7 +217,7 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void ContractConfigWhenCreated_termDetail_IsValid()
+        public void TermConfigWhenCreated_termDetail_IsValid()
         {
             // Act
             // Assert
@@ -235,7 +235,7 @@ namespace RN_Process.Tests.DataAccessTests
 
         [Fact]
         public void
-            ContractConfigWhenCreated_RequiredLoginIsFalse_And_HasOthersLogin_ThrowException_requiredPassword()
+            TermConfigWhenCreated_RequiredLoginIsFalse_And_HasOthersLogin_ThrowException_requiredPassword()
         {
             //arrange
 
@@ -257,14 +257,14 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void WhenCreatedContractDetailConfig_RequiredloginIsTrueLoginNull_ThrowException()
+        public void WhenCreatedTermDetailConfig_RequiredloginIsTrueLoginNull_ThrowException()
         {
             //arrange
 
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
-                UnitTestUtility.GetContractDetailConfigToTest(
-                    new ContractDetailConfig(UnitTestUtility.GetTermBaseToTeste(), FileAccessType.FTP, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> { "cdb" }, new List<string> { "cdb" })));
+                UnitTestUtility.GetTermDetailConfigToTest(
+                    new TermDetailConfig(UnitTestUtility.GetTermBaseToTeste(), FileAccessType.FTP, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> { "cdb" }, new List<string> { "cdb" })));
 
             // Assert
             Assert.Equal("Required input 'AUTHENTICATIONLOGIN' was empty. (Parameter 'authenticationLogin')",
@@ -274,7 +274,7 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void WhenCreatedContractDetailConfig_RequiredloginIsTruePasswordEmpty_ThrowExceptionWhen()
+        public void WhenCreatedTermDetailConfig_RequiredloginIsTruePasswordEmpty_ThrowExceptionWhen()
         {
             //arrange
 

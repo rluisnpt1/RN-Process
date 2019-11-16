@@ -18,7 +18,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public FileImport(string fileDescription, int fileSize, string fileFormat, string fileLocationOrigin,
             string locationToCopy, StatusType status, bool fileMigrated, DateTime? fileMigratedOn,
-            ContractDetailConfig contractDetailConfig, List<BsonDocument> allDataInFile)
+            TermDetailConfig termDetailConfig, List<BsonDocument> allDataInFile)
         {
             Id = ObjectId.GenerateNewId().ToString();
 
@@ -34,7 +34,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Active = true;
             Deleted = false;
 
-            SetContractDetailConfig(contractDetailConfig);
+            SetTermDetailConfig(termDetailConfig);
         }
 
         public virtual string OrgCode { get; private set; }
@@ -54,9 +54,9 @@ namespace RN_Process.Api.DataAccess.Entities
 
 
         [BsonRepresentation(BsonType.ObjectId)]
-        public string ContractDetailConfigId { get; set; }
+        public string TermDetailConfigId { get; set; }
 
-        public virtual ContractDetailConfig ContractDetailConfig { get; set; }
+        public virtual TermDetailConfig TermDetailConfig { get; set; }
 
         private void SetAllDatafromFile(List<BsonDocument> allDataInFile)
         {
@@ -99,12 +99,12 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        private void SetContractDetailConfig(ContractDetailConfig contractDetailConfig)
+        private void SetTermDetailConfig(TermDetailConfig termDetailConfig)
         {
-            Guard.Against.Null(contractDetailConfig, nameof(contractDetailConfig));
-            ContractDetailConfigId = contractDetailConfig.Id;
-            OrgCode = contractDetailConfig.OrgCode;
-            ContractDetailConfig = contractDetailConfig;
+            Guard.Against.Null(termDetailConfig, nameof(termDetailConfig));
+            TermDetailConfigId = termDetailConfig.Id;
+            OrgCode = termDetailConfig.OrgCode;
+            TermDetailConfig = termDetailConfig;
         }
 
     }

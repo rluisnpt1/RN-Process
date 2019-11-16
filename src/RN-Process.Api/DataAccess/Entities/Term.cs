@@ -9,20 +9,20 @@ using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class Contract : AuditableEntity<string>
+    public class Term : AuditableEntity<string>
     {
-        //[BsonIgnore] private ICollection<ContractDetailConfig> _configMapping;
+        //[BsonIgnore] private ICollection<TermDetailConfig> _configMapping;
         [BsonIgnore] private ICollection<TermDetail> _termDetail;
 
         //Runtime execution
-        protected Contract()
+        protected Term()
         {
         }
 
-        public Contract(int contractNumber, Organization organization)
+        public Term(int termNumber, Organization organization)
         {
             Id = ObjectId.GenerateNewId().ToString();
-            SetContractNumber(contractNumber);
+            SetTermNumber(termNumber);
             SetCustomer(organization);
             Active = true;
             Deleted = false;
@@ -31,7 +31,7 @@ namespace RN_Process.Api.DataAccess.Entities
         public virtual Organization Organization { get; set; }
 
 
-        public int ContractNumber { get; private set; }
+        public int TermNumber { get; private set; }
 
         public virtual string OrgCode { get; private set; }
         public string OrganizationId { get; private set; }
@@ -51,10 +51,10 @@ namespace RN_Process.Api.DataAccess.Entities
 
         }
 
-        private void SetContractNumber(int contractNumber)
+        private void SetTermNumber(int termNumber)
         {
-            Guard.Against.Zero(contractNumber, nameof(ContractNumber));
-            ContractNumber = contractNumber;
+            Guard.Against.Zero(termNumber, nameof(TermNumber));
+            TermNumber = termNumber;
         }
 
         public void AddTerm(string id, int debtCode, TermsType termType, bool active = true, bool deleted = false)
@@ -63,7 +63,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Guard.Against.Zero(debtCode,nameof(debtCode));
 
             if (!string.IsNullOrWhiteSpace(id))
-                UpdateContractTermById(id, debtCode, termType, active, deleted);
+                UpdateTermTermById(id, debtCode, termType, active, deleted);
             else
                 AddNewTermDetails(debtCode, termType);
         }
@@ -76,15 +76,15 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public void UpdateContractTermById(string id, int debtCode, TermsType term, bool active, bool deleted)
+        public void UpdateTermTermById(string id, int debtCode, TermsType term, bool active, bool deleted)
         {
             TermDetail termdet = null;
             var foundIt = false;
 
             if (!string.IsNullOrEmpty(id))
                 termdet = TermDetails.FirstOrDefault(temp => temp.Id.Equals(id)
-                                                             && temp.Contract.Id == Id
-                                                             && temp.Contract.OrgCode == OrgCode);
+                                                             && temp.Term.Id == Id
+                                                             && temp.Term.OrgCode == OrgCode);
 
             if (termdet == null)
             {
@@ -98,9 +98,9 @@ namespace RN_Process.Api.DataAccess.Entities
                 termdet.Active = active;
                 termdet.Deleted = deleted;
                 
-                var config = termdet.ContractDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
+                var config = termdet.TermDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
                 foreach (var item in config)
-                    termdet.UpdateContractConfig(item);
+                    termdet.UpdateTermConfig(item);
             }
 
             if (foundIt == false) TermDetails.Add(termdet);
@@ -114,7 +114,7 @@ namespace RN_Process.Api.DataAccess.Entities
             var match = TermDetails.FirstOrDefault(fact => fact.Id == id);
 
             if (match == null) return;
-            UpdateContractTermById(match.Id, match.DebtCode, match.TermsType, false, true);
+            UpdateTermTermById(match.Id, match.DebtCode, match.TermsType, false, true);
         }
     }
 }

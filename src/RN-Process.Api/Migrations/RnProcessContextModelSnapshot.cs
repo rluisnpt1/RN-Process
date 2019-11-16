@@ -19,12 +19,12 @@ namespace RN_Process.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Contract", b =>
+            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Term", b =>
             {
                 b.Property<string>("Id")
                     .HasColumnType("nvarchar(450)");
 
-                b.Property<int>("ContractNumber")
+                b.Property<int>("TermNumber")
                     .HasColumnType("int");
 
                 b.Property<string>("CreatedBy")
@@ -59,10 +59,10 @@ namespace RN_Process.Api.Migrations
 
                 b.HasIndex("OrganizationId");
 
-                b.ToTable("Contract");
+                b.ToTable("Term");
             });
 
-            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.ContractDetailConfig", b =>
+            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.TermDetailConfig", b =>
             {
                 b.Property<string>("Id")
                     .HasColumnType("nvarchar(450)");
@@ -79,7 +79,7 @@ namespace RN_Process.Api.Migrations
                 b.Property<string>("CodReference")
                     .HasColumnType("nvarchar(max)");
 
-                b.Property<string>("ContractId")
+                b.Property<string>("TermId")
                     .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("CreatedBy")
@@ -134,9 +134,9 @@ namespace RN_Process.Api.Migrations
 
                 b.HasKey("Id");
 
-                b.HasIndex("ContractId");
+                b.HasIndex("TermId");
 
-                b.ToTable("ContractDetailConfig");
+                b.ToTable("TermDetailConfig");
             });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Organization", b =>
@@ -184,7 +184,7 @@ namespace RN_Process.Api.Migrations
                 b.Property<string>("AllDataInFile")
                     .HasColumnType("nvarchar(max)");
 
-                b.Property<string>("ContractDetailConfigId")
+                b.Property<string>("TermDetailConfigId")
                     .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("CreatedBy")
@@ -232,7 +232,7 @@ namespace RN_Process.Api.Migrations
 
                 b.HasKey("Id");
 
-                b.HasIndex("ContractDetailConfigId");
+                b.HasIndex("TermDetailConfigId");
 
                 b.ToTable("FileImport");
             });
@@ -308,25 +308,25 @@ namespace RN_Process.Api.Migrations
                 b.ToTable("ReferencesType");
             });
 
-            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Contract", b =>
+            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Term", b =>
             {
                 b.HasOne("RN_Process.Api.DataAccess.Entities.Organization", "Organization")
-                    .WithMany("Contracts")
+                    .WithMany("Terms")
                     .HasForeignKey("OrganizationId");
             });
 
-            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.ContractDetailConfig", b =>
+            modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.TermDetailConfig", b =>
             {
-                b.HasOne("RN_Process.Api.DataAccess.Entities.Contract", "Contract")
-                    .WithMany("ContractDetailConfigs")
-                    .HasForeignKey("ContractId");
+                b.HasOne("RN_Process.Api.DataAccess.Entities.Term", "Term")
+                    .WithMany("TermDetailConfigs")
+                    .HasForeignKey("TermId");
             });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.FileImport", b =>
             {
-                b.HasOne("RN_Process.Api.DataAccess.Entities.ContractDetailConfig", "ContractDetailConfig")
+                b.HasOne("RN_Process.Api.DataAccess.Entities.TermDetailConfig", "TermDetailConfig")
                     .WithMany("FileImports")
-                    .HasForeignKey("ContractDetailConfigId");
+                    .HasForeignKey("TermDetailConfigId");
             });
 
             modelBuilder.Entity("RN_Process.Api.DataAccess.Entities.Reference", b =>

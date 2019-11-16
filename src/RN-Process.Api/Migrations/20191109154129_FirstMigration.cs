@@ -37,7 +37,7 @@ namespace RN_Process.Api.Migrations
                 constraints: table => { table.PrimaryKey("PK_ReferencesType", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                "Contract",
+                "Term",
                 table => new
                 {
                     Id = table.Column<string>(),
@@ -46,16 +46,16 @@ namespace RN_Process.Api.Migrations
                     CreatedBy = table.Column<string>(maxLength: 250, nullable: true),
                     ModifiedBy = table.Column<string>(maxLength: 250, nullable: true),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    ContractNumber = table.Column<int>(),
+                    TermNumber = table.Column<int>(),
                     TypeDebt = table.Column<int>(),
                     DebtDescription = table.Column<string>(nullable: true),
                     OrganizationId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Contract", x => x.Id);
+                    table.PrimaryKey("PK_Term", x => x.Id);
                     table.ForeignKey(
-                        "FK_Contract_Organization_OrganizationId",
+                        "FK_Term_Organization_OrganizationId",
                         x => x.OrganizationId,
                         "Organization",
                         "Id",
@@ -87,7 +87,7 @@ namespace RN_Process.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                "ContractDetailConfig",
+                "TermDetailConfig",
                 table => new
                 {
                     Id = table.Column<string>(),
@@ -110,15 +110,15 @@ namespace RN_Process.Api.Migrations
                     PathToFileBackupAtClient = table.Column<string>(nullable: true),
                     PathToFileBackupAtHostServer = table.Column<string>(nullable: true),
                     FileDeLimiter = table.Column<string>(),
-                    ContractId = table.Column<string>(nullable: true)
+                    TermId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ContractDetailConfig", x => x.Id);
+                    table.PrimaryKey("PK_TermDetailConfig", x => x.Id);
                     table.ForeignKey(
-                        "FK_ContractDetailConfig_Contract_ContractId",
-                        x => x.ContractId,
-                        "Contract",
+                        "FK_TermDetailConfig_Term_TermId",
+                        x => x.TermId,
+                        "Term",
                         "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -142,33 +142,33 @@ namespace RN_Process.Api.Migrations
                     FileMigrated = table.Column<bool>(),
                     FileMigratedOn = table.Column<DateTime>(nullable: true),
                     AllDataInFile = table.Column<string>(nullable: true),
-                    ContractDetailConfigId = table.Column<string>(nullable: true)
+                    TermDetailConfigId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileImport", x => x.Id);
                     table.ForeignKey(
-                        "FK_FileImport_ContractDetailConfig_ContractDetailConfigId",
-                        x => x.ContractDetailConfigId,
-                        "ContractDetailConfig",
+                        "FK_FileImport_TermDetailConfig_TermDetailConfigId",
+                        x => x.TermDetailConfigId,
+                        "TermDetailConfig",
                         "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                "IX_Contract_OrganizationId",
-                "Contract",
+                "IX_Term_OrganizationId",
+                "Term",
                 "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                "IX_ContractDetailConfig_ContractId",
-                "ContractDetailConfig",
-                "ContractId");
+                "IX_TermDetailConfig_TermId",
+                "TermDetailConfig",
+                "TermId");
 
             migrationBuilder.CreateIndex(
-                "IX_FileImport_ContractDetailConfigId",
+                "IX_FileImport_TermDetailConfigId",
                 "FileImport",
-                "ContractDetailConfigId");
+                "TermDetailConfigId");
 
             migrationBuilder.CreateIndex(
                 "IX_Reference_ReferencesTypeId",
@@ -185,13 +185,13 @@ namespace RN_Process.Api.Migrations
                 "Reference");
 
             migrationBuilder.DropTable(
-                "ContractDetailConfig");
+                "TermDetailConfig");
 
             migrationBuilder.DropTable(
                 "ReferencesType");
 
             migrationBuilder.DropTable(
-                "Contract");
+                "Term");
 
             migrationBuilder.DropTable(
                 "Organization");

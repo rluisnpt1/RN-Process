@@ -25,81 +25,81 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void RemoveOrganizationContractByInvalidId_TheContractsAreNotRemoved()
+        public void RemoveOrganizationTermByInvalidId_TheTermsAreNotRemoved()
         {
-            SystemUnderTest.AddContract(null, 99, 6651);
-            SystemUnderTest.AddContract(null, 95, 6652);
+            SystemUnderTest.AddTerm(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 95, 6652);
 
 
-            SystemUnderTest.RemoveContracts("21");
+            SystemUnderTest.RemoveTerms("21");
 
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+            Assert.Equal(2, SystemUnderTest.Terms.Count);
         }
 
         [Fact]
-        public void RemoveOrganizationContractNullId_TheContractsAreNotRemoved()
+        public void RemoveOrganizationTermNullId_TheTermsAreNotRemoved()
         {
-            SystemUnderTest.AddContract(null, 99, 6651);
-            SystemUnderTest.AddContract(null, 95, 6652);
+            SystemUnderTest.AddTerm(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 95, 6652);
 
 
-            SystemUnderTest.RemoveContracts(null);
+            SystemUnderTest.RemoveTerms(null);
 
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+            Assert.Equal(2, SystemUnderTest.Terms.Count);
         }
 
         //[Fact]
-        //public void RemoveOrganizationContractWhithSoftDeleteFalseById_ThenActiveContract_ShouldBeFalse()
+        //public void RemoveOrganizationTermWhithSoftDeleteFalseById_ThenActiveTerm_ShouldBeFalse()
         //{
-        //    SystemUnderTest.AddContract(null, 99, 6651);
-        //    SystemUnderTest.AddContract(null, 95, 6652);
-        //    var actual21 = SystemUnderTest.Contracts.First();
+        //    SystemUnderTest.AddTerm(null, 99, 6651);
+        //    SystemUnderTest.AddTerm(null, 95, 6652);
+        //    var actual21 = SystemUnderTest.Terms.First();
 
         //    //not softdelete
-        //    SystemUnderTest.RemoveContracts(actual21.Id, false);
+        //    SystemUnderTest.RemoveTerms(actual21.Id, false);
 
-        //    Assert.False(SystemUnderTest.Contracts.Contains(actual21),
-        //        "Should 'not contain' the contract softdelete = false.");
+        //    Assert.False(SystemUnderTest.Terms.Contains(actual21),
+        //        "Should 'not contain' the term softdelete = false.");
 
-        //    Assert.Equal(1, SystemUnderTest.Contracts.Count);
+        //    Assert.Equal(1, SystemUnderTest.Terms.Count);
         //    Assert.True(SystemUnderTest.Active);
         //    Assert.False(SystemUnderTest.Deleted);
         //}
 
         /// <summary>
-        ///     When Contract is disable all configuration should also be desable
+        ///     When Term is disable all configuration should also be desable
         /// </summary>
         [Fact]
-        public void RemoveOrganizationContractWhithSoftDeleteTrueById_ThenConfigurationDetailRelated_ShouldNotBeActive()
+        public void RemoveOrganizationTermWhithSoftDeleteTrueById_ThenConfigurationDetailRelated_ShouldNotBeActive()
         {
-            SystemUnderTest.AddContract(null, 99, 6651);
-            SystemUnderTest.AddContract(null, 95, 6652);
+            SystemUnderTest.AddTerm(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 95, 6652);
 
-            var contract = SystemUnderTest.Contracts.First();
-            var config = contract.TermDetails.FirstOrDefault(x => x.ContractId == contract.Id);
+            var term = SystemUnderTest.Terms.First();
+            var config = term.TermDetails.FirstOrDefault(x => x.TermId == term.Id);
 
             //softdelete
-            SystemUnderTest.RemoveContracts(contract.Id);
+            SystemUnderTest.RemoveTerms(term.Id);
 
-            Assert.True(SystemUnderTest.Contracts.Contains(contract),
-                "Should 'contain' the contract softdelete = true.");
+            Assert.True(SystemUnderTest.Terms.Contains(term),
+                "Should 'contain' the term softdelete = true.");
 
             //
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+            Assert.Equal(2, SystemUnderTest.Terms.Count);
             Assert.Equal(1, SystemUnderTest.TermDetails.Count);
 
-            //contract                        
-            Assert.False(contract.Active);
-            Assert.True(contract.Deleted);
-            Assert.NotNull(contract.ModifiedBy);
-            Assert.NotNull(contract.ModifiedDate);
+            //term                        
+            Assert.False(term.Active);
+            Assert.True(term.Deleted);
+            Assert.NotNull(term.ModifiedBy);
+            Assert.NotNull(term.ModifiedDate);
 
             //configuration 
             Assert.False(config.Active);
             Assert.True(config.Deleted);
             Assert.NotNull(config.ModifiedBy);
             Assert.NotNull(config.ModifiedDate);
-            Assert.Same(config.ContractId, contract.Id);
+            Assert.Same(config.TermId, term.Id);
 
             //organization
             Assert.True(SystemUnderTest.Active);
@@ -107,18 +107,18 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         [Fact]
-        public void RemoveOrganizationContractWhithSoftDeleteTrueById_ThenContractIsRemoved()
+        public void RemoveOrganizationTermWhithSoftDeleteTrueById_ThenTermIsRemoved()
         {
-            SystemUnderTest.AddContract(null, 99, 6651);
-            SystemUnderTest.AddContract(null, 95, 6652);
-            var actual21 = SystemUnderTest.Contracts.First();
+            SystemUnderTest.AddTerm(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 95, 6652);
+            var actual21 = SystemUnderTest.Terms.First();
 
-            SystemUnderTest.RemoveContracts(actual21.Id);
+            SystemUnderTest.RemoveTerms(actual21.Id);
 
-            Assert.True(SystemUnderTest.Contracts.Contains(actual21),
-                "Should not contain this contract after.");
+            Assert.True(SystemUnderTest.Terms.Contains(actual21),
+                "Should not contain this term after.");
 
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
+            Assert.Equal(2, SystemUnderTest.Terms.Count);
             Assert.False(actual21.Active);
             Assert.True(actual21.Deleted);
         }
@@ -263,30 +263,30 @@ namespace RN_Process.Tests.DataAccessTests
         }
 
         /// <summary>
-        ///     When contract is
+        ///     When term is
         /// </summary>
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenOrganizationAddContract_TheContractTermIsCreated()
+        public void WhenOrganizationAddTerm_TheTermTermIsCreated()
         {
             //act
-            SystemUnderTest.AddContract(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 99, 6651);
 
-            //has contract
-            Assert.Equal(1, SystemUnderTest.Contracts.Count);
+            //has term
+            Assert.Equal(1, SystemUnderTest.Terms.Count);
 
             //has detail
             Assert.Equal(1, SystemUnderTest.TermDetails.Count);
 
-            //get contract from organization
-            var actualActual = SystemUnderTest.Contracts.First();
+            //get term from organization
+            var actualActual = SystemUnderTest.Terms.First();
             var actualTerm = SystemUnderTest.TermDetails.First();
 
-            //assert contract created is the same in organization
+            //assert term created is the same in organization
             Assert.Same(SystemUnderTest.Id, actualActual.OrganizationId);
             Assert.Same(SystemUnderTest, actualActual.Organization);
             Assert.Same(SystemUnderTest.OrgCode, actualActual.OrgCode);
-            Assert.Same(actualActual.Id, actualTerm.ContractId);
+            Assert.Same(actualActual.Id, actualTerm.TermId);
 
             //organization exist
             Assert.Equal(SystemUnderTest.OrgCode, actualTerm.OrgCode);
@@ -298,37 +298,37 @@ namespace RN_Process.Tests.DataAccessTests
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenOrganizationAddContract_ThenContractIsAddedToCollection_StringBasedContract()
+        public void WhenOrganizationAddTerm_ThenTermIsAddedToCollection_StringBasedTerm()
         {
             //act
 
-            SystemUnderTest.AddContract(null, 99, 665);
+            SystemUnderTest.AddTerm(null, 99, 665);
 
-            Assert.Equal(1, SystemUnderTest.Contracts.Count);
-            //get contract from organization
-            var actual = SystemUnderTest.Contracts.First();
+            Assert.Equal(1, SystemUnderTest.Terms.Count);
+            //get term from organization
+            var actual = SystemUnderTest.Terms.First();
 
-            //assert contract created is the same in organization
+            //assert term created is the same in organization
             Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
             Assert.Same(SystemUnderTest, actual.Organization);
         }
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenOrganizationAddContract_ThenContractIsAddedToCollection_andTerms_isNotnull_StringBasedContract()
+        public void WhenOrganizationAddTerm_ThenTermIsAddedToCollection_andTerms_isNotnull_StringBasedTerm()
         {
             //act
 
-            SystemUnderTest.AddContract(null, 99, 665);
+            SystemUnderTest.AddTerm(null, 99, 665);
 
-            Assert.Equal(1, SystemUnderTest.Contracts.Count);
-            //get contract from organization
-            var actual = SystemUnderTest.Contracts.First();
+            Assert.Equal(1, SystemUnderTest.Terms.Count);
+            //get term from organization
+            var actual = SystemUnderTest.Terms.First();
 
             //exist terms
-            var termesInCollection = SystemUnderTest.Contracts.Where(x => x.TermDetails.Count > 0);
+            var termesInCollection = SystemUnderTest.Terms.Where(x => x.TermDetails.Count > 0);
 
-            //assert contract created is the same in organization
+            //assert term created is the same in organization
             Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
             Assert.Same(SystemUnderTest, actual.Organization);
             Assert.Single(termesInCollection);
@@ -337,23 +337,23 @@ namespace RN_Process.Tests.DataAccessTests
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenOrganizationAddContractIsCalledWithNonZeroIdThenContractIsModified_DateRangeContract()
+        public void WhenOrganizationAddTermIsCalledWithNonZeroIdThenTermIsModified_DateRangeTerm()
         {
             //act
 
-            SystemUnderTest.AddContract(null, 99, 6651);
-            SystemUnderTest.AddContract(null, 99, 665);
-            SystemUnderTest.AddContract(null, 1233, 665);
+            SystemUnderTest.AddTerm(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 99, 665);
+            SystemUnderTest.AddTerm(null, 1233, 665);
 
             //Update Existent
-            var actual21 = SystemUnderTest.Contracts.Take(1).First();
-            SystemUnderTest.AddContract(actual21.Id, 99, 34455);
+            var actual21 = SystemUnderTest.Terms.Take(1).First();
+            SystemUnderTest.AddTerm(actual21.Id, 99, 34455);
 
-            Assert.Equal(3, SystemUnderTest.Contracts.Count);
-            //get contract from organization
-            var actual = SystemUnderTest.Contracts.First();
+            Assert.Equal(3, SystemUnderTest.Terms.Count);
+            //get term from organization
+            var actual = SystemUnderTest.Terms.First();
 
-            //assert contract created is the same in organization
+            //assert term created is the same in organization
             Assert.Equal(actual21.Id, actual.Id);
             Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
             Assert.Same(SystemUnderTest, actual.Organization);
@@ -361,18 +361,18 @@ namespace RN_Process.Tests.DataAccessTests
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenOrganizationAddContractTwice_TheContractIsEqualTwo()
+        public void WhenOrganizationAddTermTwice_TheTermIsEqualTwo()
         {
             //act
 
-            SystemUnderTest.AddContract(null, 99, 6651);
-            SystemUnderTest.AddContract(null, 99, 665);
+            SystemUnderTest.AddTerm(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 99, 665);
 
-            Assert.Equal(2, SystemUnderTest.Contracts.Count);
-            //get contract from organization
-            var actual = SystemUnderTest.Contracts.First();
+            Assert.Equal(2, SystemUnderTest.Terms.Count);
+            //get term from organization
+            var actual = SystemUnderTest.Terms.First();
 
-            //assert contract created is the same in organization
+            //assert term created is the same in organization
             Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
             Assert.Same(SystemUnderTest, actual.Organization);
         }

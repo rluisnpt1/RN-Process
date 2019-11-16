@@ -15,8 +15,8 @@ namespace RN_Process.Api.DataAccess
         public DbSet<ReferencesType> ReferencesTypes { get; set; }
         public DbSet<Reference> References { get; set; }
         public DbSet<Organization> Organizations { get; set; }
-        public DbSet<Contract> Contracts { get; set; }
-        public DbSet<ContractDetailConfig> ContractDetailConfigs { get; set; }
+        public DbSet<Term> Terms { get; set; }
+        public DbSet<TermDetailConfig> TermDetailConfigs { get; set; }
         public DbSet<FileImport> FileImports { get; set; }
 
 
@@ -29,8 +29,8 @@ namespace RN_Process.Api.DataAccess
 
         private void CleanupOrphanedPersonFacts()
         {
-            var deleteThese = Contracts.Local.Where(pf => pf.Organization == null).ToList();
-            foreach (var deleteThis in deleteThese) Contracts.Remove(deleteThis);
+            var deleteThese = Terms.Local.Where(pf => pf.Organization == null).ToList();
+            foreach (var deleteThis in deleteThese) Terms.Remove(deleteThis);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -57,29 +57,29 @@ namespace RN_Process.Api.DataAccess
                 entity.ToTable("Organization");
                 entity.HasKey(x => x.Id);
 
-                entity.HasMany(x => x.Contracts)
+                entity.HasMany(x => x.Terms)
                     .WithOne(x => x.Organization);
 
                 entity.Property(x => x.OrgCode).IsUnicode();
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
 
-            modelBuilder.Entity<Contract>(entity =>
+            modelBuilder.Entity<Term>(entity =>
             {
-                entity.ToTable("Contract");
+                entity.ToTable("Term");
 
                 entity.HasKey(x => x.Id);
                 entity.HasMany(x => x.TermDetails)
-                    .WithOne(x => x.Contract);
+                    .WithOne(x => x.Term);
 
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
 
-            modelBuilder.Entity<ContractDetailConfig>(entity =>
+            modelBuilder.Entity<TermDetailConfig>(entity =>
             {
-                entity.ToTable("ContractDetailConfig");
+                entity.ToTable("TermDetailConfig");
                 entity.HasKey(x => x.Id);
-                entity.HasMany(x => x.FileImports).WithOne(x => x.ContractDetailConfig);
+                entity.HasMany(x => x.FileImports).WithOne(x => x.TermDetailConfig);
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
             modelBuilder.Entity<FileImport>(entity =>
