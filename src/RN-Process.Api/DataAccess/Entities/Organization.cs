@@ -15,8 +15,7 @@ namespace RN_Process.Api.DataAccess.Entities
         private static readonly DateTime DefaultDateTime = DateTime.UtcNow;
 
         [BsonIgnore] private ICollection<Contract> _contract;
-
-        [BsonIgnore] private ICollection<ContractDetailConfig> _contractConfig;
+        [BsonIgnore] private ICollection<TermDetail> _termDetail;
 
         public Organization(string description, string orgCode)
         {
@@ -46,10 +45,11 @@ namespace RN_Process.Api.DataAccess.Entities
             protected set => _contract = value;
         }
 
-        public virtual ICollection<ContractDetailConfig> ContractDetails
+
+        public virtual ICollection<TermDetail> TermDetails
         {
-            get { return _contractConfig ??= new List<ContractDetailConfig>(); }
-            protected set => _contractConfig = value;
+            get { return _termDetail ??= new List<TermDetail>(); }
+            protected set => _termDetail = value;
         }
 
         /// <summary>
@@ -88,19 +88,19 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="contractNumber"></param>
         /// <param name="typeDebt"></param>
         /// <param name="debtDescription"></param>
-        public void AddNewContract(int contractNumber, int typeDebt, string debtDescription)
+        public void AddNewContract(int contractNumber, int typeDebt)
         {
             //create contract
-            var fact = new Contract(contractNumber, typeDebt, debtDescription, this);
-
-            //base configuration
-            fact.AddContraDetailConfig(null, FileAccessType.FTP, true, false);
+            var fact = new Contract(contractNumber, this);
 
             //add contract to list contract list of organization
             Contracts.Add(fact);
 
+            //base configuration
+            fact.AddTerm(null, typeDebt, TermsType.Loan, true, false);
+
             //add contract configuration details to list contract configuration details list of organization
-            ContractDetails = fact.ContractDetailsConfigs;
+            TermDetails = fact.TermDetails;
         }
 
 
@@ -111,7 +111,7 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="contractNumber"></param>
         /// <param name="typeDebt"></param>
         /// <param name="debtDescription"></param>
-        public void AddContract(string id, int contractNumber, int typeDebt, string debtDescription)
+        public void AddContract(string id, int contractNumber, int typeDebt)
         {
             Guard.Against.Null(contractNumber, nameof(contractNumber));
             Guard.Against.Zero(contractNumber, nameof(contractNumber));
@@ -119,34 +119,23 @@ namespace RN_Process.Api.DataAccess.Entities
             Guard.Against.Zero(typeDebt, nameof(typeDebt));
 
             if (!string.IsNullOrEmpty(id))
-                UpdateExistingContractById(id, contractNumber, typeDebt, debtDescription);
+                UpdateExistingContractById(id, typeDebt, contractNumber);
             else
-                AddNewContract(contractNumber, typeDebt, debtDescription);
+                AddNewContract(contractNumber, typeDebt);
         }
 
-        /// <summary>
-        ///     Update existing contract by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="contractNumber"></param>
-        /// <param name="typeDebt"></param>
-        /// <param name="debtDescription"></param>
-        private void UpdateExistingContractById(string id,
-            int contractNumber,
-            int typeDebt,
-            string debtDescription,
-            bool active = true,
-            bool deleted = false)
+       
+        private void UpdateExistingContractById(string id, int debtCode, int contractNumber, bool active = true, bool deleted = false)
         {
             Contract contract = null;
             var foundIt = false;
 
-            if (!string.IsNullOrEmpty(id)) contract = Contracts.Where(temp => temp.Id == id).FirstOrDefault();
+            if (!string.IsNullOrEmpty(id)) contract = Contracts.FirstOrDefault(temp => temp.Id == id);
             //for 
             if (contract == null)
             {
-                contract = new Contract(contractNumber, typeDebt, debtDescription, this);
-                contract.AddContraDetailConfig(null, FileAccessType.FTP, true, false);
+                contract = new Contract(contractNumber, this);
+                contract.AddTerm(null,debtCode, TermsType.Loan);
             }
             else
             {
@@ -157,27 +146,31 @@ namespace RN_Process.Api.DataAccess.Entities
                 contract.Active = active;
                 contract.Deleted = deleted;
 
-                var config = contract.ContractDetailsConfigs.Where(temp => temp.ContractId == contract.Id);
+                var config = contract.TermDetails.Where(temp => temp.ContractId == contract.Id);
                 foreach (var item in config)
-                    contract.UpdateContractConfigurationById(item.Id, item.CommunicationType, active, deleted);
+                    contract.UpdateContractTermById(item.Id, item.DebtCode, item.TermsType, active, deleted);
             }
 
             if (foundIt == false) Contracts.Add(contract);
         }
 
-        public void RemoveContract(string id, bool softDelete)
+        public void RemoveContracts(string id)//, bool softDelete)
         {
             if (string.IsNullOrEmpty(id)) return;
 
-            var match = Contracts.FirstOrDefault(fact => fact.Id == id);
+            var matchContract = Contracts.FirstOrDefault(fact => fact.Id == id);
 
+            if (matchContract == null) return;
+
+            var match = matchContract.TermDetails.FirstOrDefault(x => x.Contract.Id == matchContract.Id);
+
+            //if (!softDelete)
+            //    Contracts.Remove(matchContract);
+            //else
+            
             if (match == null) return;
 
-            if (!softDelete)
-                Contracts.Remove(match);
-            else
-                UpdateExistingContractById(match.Id, match.ContractNumber, match.TypeDebt, match.DebtDescription, false,
-                    true);
+            UpdateExistingContractById(matchContract.Id, match.DebtCode, matchContract.ContractNumber, false, true);
         }
     }
 }

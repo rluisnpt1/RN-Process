@@ -11,56 +11,44 @@ namespace RN_Process.Api.DataAccess.Entities
 {
     public class Contract : AuditableEntity<string>
     {
-        [BsonIgnore] private ICollection<ContractDetailConfig> _configMapping;
-
+        //[BsonIgnore] private ICollection<ContractDetailConfig> _configMapping;
+        [BsonIgnore] private ICollection<TermDetail> _termDetail;
 
         //Runtime execution
         protected Contract()
         {
         }
 
-
-        public Contract(int contractNumber, int typeDebt, string debtDescription, Organization organization)
+        public Contract(int contractNumber, Organization organization)
         {
             Id = ObjectId.GenerateNewId().ToString();
             SetContractNumber(contractNumber);
-            SetTypeDebt(typeDebt);
             SetCustomer(organization);
             Active = true;
             Deleted = false;
-            DebtDescription = debtDescription;
-            CreatedDate = DateTime.UtcNow;
         }
 
         public virtual Organization Organization { get; set; }
 
 
         public int ContractNumber { get; private set; }
-        public int TypeDebt { get; private set; }
-        public string DebtDescription { get; }
 
         public virtual string OrgCode { get; private set; }
         public string OrganizationId { get; private set; }
 
 
-        public virtual ICollection<ContractDetailConfig> ContractDetailsConfigs
+        public virtual ICollection<TermDetail> TermDetails
         {
-            get { return _configMapping ??= new List<ContractDetailConfig>(); }
-            protected set => _configMapping = value;
+            get; private set;
         }
-
         private void SetCustomer(Organization organization)
         {
             Guard.Against.Null(organization, nameof(organization));
             OrganizationId = organization.Id;
             OrgCode = organization.OrgCode;
             Organization = organization;
-        }
+            TermDetails = new List<TermDetail>();
 
-        private void SetTypeDebt(int typeDebt)
-        {
-            Guard.Against.Zero(typeDebt, nameof(typeDebt));
-            TypeDebt = typeDebt;
         }
 
         private void SetContractNumber(int contractNumber)
@@ -69,71 +57,64 @@ namespace RN_Process.Api.DataAccess.Entities
             ContractNumber = contractNumber;
         }
 
-
-        /// <summary>
-        ///     Add or update contract
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="fileType"></param>
-        /// <param name="active"></param>
-        /// <param name="deleted"></param>
-        public void AddContraDetailConfig(string id, FileAccessType fileType, bool active, bool deleted)
+        public void AddTerm(string id, int debtCode, TermsType termType, bool active = true, bool deleted = false)
         {
-            if (!string.IsNullOrEmpty(id))
-                UpdateContractConfigurationById(id, fileType, active, deleted);
+            Guard.Against.Null(debtCode,nameof(debtCode));
+            Guard.Against.Zero(debtCode,nameof(debtCode));
+
+            if (!string.IsNullOrWhiteSpace(id))
+                UpdateContractTermById(id, debtCode, termType, active, deleted);
             else
-                AddNewContractConfiguration(fileType);
+                AddNewTermDetails(debtCode, termType);
         }
 
-        /// <summary>
-        ///     Add new configuration
-        /// </summary>
-        /// <param name="fileType"></param>
-        private void AddNewContractConfiguration(FileAccessType fileType)
+        private void AddNewTermDetails(int debtCode, TermsType termType)
         {
-            var fact = ContractAddNewEmptyContractConfiguratiom(fileType);
-            ContractDetailsConfigs.Add(fact);
+            var fact = new TermDetail(debtCode, termType, this);
+
+            TermDetails.Add(fact);
         }
 
 
-        /// <summary>
-        /// </summary>
-        /// <param name="contr"></param>
-        public void UpdateContractConfigurationById(string id, FileAccessType fileType, bool active = true,
-            bool deleted = false)
+        public void UpdateContractTermById(string id, int debtCode, TermsType term, bool active, bool deleted)
         {
-            ContractDetailConfig config = null;
+            TermDetail termdet = null;
             var foundIt = false;
 
             if (!string.IsNullOrEmpty(id))
-                config = ContractDetailsConfigs.FirstOrDefault(temp => temp.Id.Equals(id)
-                                                                       && temp.Contract.Id == Id
-                                                                       && temp.Contract.OrgCode == OrgCode);
+                termdet = TermDetails.FirstOrDefault(temp => temp.Id.Equals(id)
+                                                             && temp.Contract.Id == Id
+                                                             && temp.Contract.OrgCode == OrgCode);
 
-            if (config == null)
+            if (termdet == null)
             {
-                config = ContractAddNewEmptyContractConfiguratiom(fileType);
+                termdet = new TermDetail(debtCode, term, this);
             }
             else
             {
                 foundIt = true;
-                config.ModifiedDate = DateTime.UtcNow;
-                config.ModifiedBy = "System-- need change for user";
-                config.Active = active;
-                config.Deleted = deleted;
+                termdet.ModifiedDate = DateTime.UtcNow;
+                termdet.ModifiedBy = "System-- need change for user";
+                termdet.Active = active;
+                termdet.Deleted = deleted;
+                
+                var config = termdet.ContractDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
+                foreach (var item in config)
+                    termdet.UpdateContractConfig(item);
             }
 
-            if (foundIt == false) ContractDetailsConfigs.Add(config);
+            if (foundIt == false) TermDetails.Add(termdet);
         }
 
-        /// <summary>
-        ///     Createan empty contract configuration when new contract is create
-        /// </summary>
-        /// <param name="fileType"></param>
-        /// <returns></returns>
-        private ContractDetailConfig ContractAddNewEmptyContractConfiguratiom(FileAccessType fileType)
+
+        public void RemoveTermDetail(string id)
         {
-            return new ContractDetailConfig(this, fileType, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> {RnProcessConstant.ColumnsBaseIntrum}, new List<string> {RnProcessConstant.ColumnsBaseClient});
+            if (string.IsNullOrEmpty(id)) return;
+
+            var match = TermDetails.FirstOrDefault(fact => fact.Id == id);
+
+            if (match == null) return;
+            UpdateContractTermById(match.Id, match.DebtCode, match.TermsType, false, true);
         }
     }
 }

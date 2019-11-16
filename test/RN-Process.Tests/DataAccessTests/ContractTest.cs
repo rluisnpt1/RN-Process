@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Shared.Enums;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -25,12 +28,11 @@ namespace RN_Process.Tests.DataAccessTests
         private const string NameDebt = "need to pay";
 
         private Contract _sut;
-        private Contract SystemUnderTest => _sut ?? UnitTestUtility.GetContractOrganizationToTest();
+        private Contract SystemUnderTest => _sut ??= _sut =UnitTestUtility.GetContractOrganizationToTest();
 
-        private static Contract ContractInit(int contractNumber, int typeDebt, string nameDebt,
-            Organization Organization)
+        private static Contract ContractInit(int contractNumber,Organization Organization)
         {
-            return new Contract(contractNumber, typeDebt, nameDebt, Organization);
+            return new Contract(contractNumber, Organization);
         }
 
         [Fact]
@@ -65,8 +67,9 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.NotNull(SystemUnderTest.OrganizationId);
 
             Assert.NotEqual(0, SystemUnderTest.ContractNumber);
-            Assert.NotEqual(0, SystemUnderTest.TypeDebt);
-            Assert.NotEmpty(SystemUnderTest.DebtDescription);
+         
+            //Assert.NotEqual(0, SystemUnderTest.TypeDebt);
+            //Assert.NotEmpty(SystemUnderTest.DebtDescription);
 
 
             Assert.NotNull(SystemUnderTest.CreatedBy);
@@ -94,46 +97,12 @@ namespace RN_Process.Tests.DataAccessTests
         {
             //act
             var ex = Assert.Throws<ArgumentException>(() =>
-                ContractInit(0, TypeDebt, NameDebt, UnitTestUtility.GetBancoPortugalOrganizationToTest()));
+                ContractInit(0, UnitTestUtility.GetBancoPortugalOrganizationToTest()));
 
             //assert
             Assert.Contains("Required input 'CONTRACTNUMBER' cannot be zero", ex.Message);
             Assert.Equal("ContractNumber", ex.ParamName);
         }
-
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenCreated_DataCriation_ThenThrowException()
-        {
-            //arrange
-            var expect = DateTime.UtcNow;
-            //act
-            var ex = Assert.Throws<Exception>(() =>
-                UnitTestUtility.DateTimeAssertAreEqual(expect, SystemUnderTest.CreatedDate, TimeSpan.MinValue));
-
-            //assert
-            Assert.Contains("Expected Date: " + expect, ex.Message);
-        }
-
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenCreated_TypeDebt_IsValid()
-        {
-            Assert.NotEqual(0, SystemUnderTest.TypeDebt);
-            Assert.Equal(5546, SystemUnderTest.TypeDebt);
-        }
-
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenCreated_TypeDebtNumberZero_ThenThrowException()
-        {
-            //act
-            var ex = Assert.Throws<ArgumentException>(() =>
-                ContractInit(14533686, 0, NameDebt, UnitTestUtility.GetBancoPortugalOrganizationToTest()));
-
-            //assert
-            Assert.Contains("Required input 'TYPEDEBT' cannot be zero", ex.Message);
-            Assert.Equal("typeDebt", ex.ParamName);
-        }
+        
     }
 }

@@ -28,7 +28,7 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public ContractDetailConfig(Contract contract, FileAccessType communicationType,
+        public ContractDetailConfig(TermDetail termDetail, FileAccessType communicationType,
             string internalHost,
             string baseWorkDirectoryHost,
             string linkToAccess,
@@ -47,7 +47,7 @@ namespace RN_Process.Api.DataAccess.Entities
             IList<string> availableFieldsColumns)
         {
             Id = ObjectId.GenerateNewId().ToString();
-            SetContract(contract);
+            SetTermDetail(termDetail);
             SetCommunicationType(communicationType);
             InternalHost = internalHost;
             SetBaseWorkDirectoryHost(baseWorkDirectoryHost);
@@ -76,8 +76,13 @@ namespace RN_Process.Api.DataAccess.Entities
         #endregion
 
         [BsonRepresentation(BsonType.ObjectId)]
-        public string ContractId { get; private set; }
-        public Contract Contract { get; set; }
+        //public string ContractId { get; private set; }
+        //public Contract Contract { get; set; }   
+        
+        public string TermDetailId { get; private set; }
+        public TermDetail TermDetail { get; set; }
+
+
         public string OrgCode { get; private set; }
 
         public FileAccessType CommunicationType { get; private set; }
@@ -184,12 +189,12 @@ namespace RN_Process.Api.DataAccess.Entities
             FileDelimiter = result;
         }
 
-        private void SetContract(Contract contract)
+        private void SetTermDetail(TermDetail term)
         {
-            Guard.Against.Null(contract, nameof(contract));
-            ContractId = contract.Id;
-            OrgCode = contract.OrgCode;
-            Contract = contract;
+            Guard.Against.Null(term, nameof(TermDetail));
+            TermDetailId = term.Id;
+            OrgCode = term.OrgCode;
+            TermDetail = term;
         }
 
         private void SetAuthenticationApp(string authenticationCodeApp)

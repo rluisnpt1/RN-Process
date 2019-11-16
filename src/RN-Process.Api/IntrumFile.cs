@@ -16,8 +16,8 @@ namespace RN_Process.Api
         /// <returns></returns>
         public static string CreateDirectory(string path)
         {
-            if (!Directory.Exists(path)) return "";
-            Console.WriteLine($"Begin process of {path}");
+            if (Directory.Exists(path)) return path;
+                 Console.WriteLine($"Begin process of {path}");
             return Directory.CreateDirectory(path).FullName;
         }
 

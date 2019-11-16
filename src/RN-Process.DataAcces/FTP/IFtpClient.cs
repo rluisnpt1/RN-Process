@@ -13,8 +13,9 @@ namespace RN_Process.DataAccess.FTP
         string[] GetFileList(string directory);
         void UploadFile(string remoteFile, string localFile);
 
-        void DownloadFiles(string remoteFile, string localFile);
+        //void DownloadFiles(string remoteFile, string localFile);
         void DownloadFtpDirectory(string remoteFtpDirUrl, string targetDirt);
+        void DownloadFiles(string pathTofileToGetfile, string localTosaveData, string filename);
         string GetFileCreatedDateTime(string fileName);
         string GetFileSize(string fileName);
         void Rename(string currentFileNameAndPath, string newFileName);

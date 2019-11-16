@@ -21,7 +21,7 @@ namespace RN_Process.WebUi.Controllers
 
         public IActionResult Index()
         {
-            var ct = new Contract(5454, 55, "Consumo", new Organization("Banco BB", "ADFF"));
+            var ct = new Contract(5454, new Organization("Banco BB", "ADFF"));
             var ss = _productService.SaveOneAsync(ct);
             var s2 = _productService.GetAllAsync();
 

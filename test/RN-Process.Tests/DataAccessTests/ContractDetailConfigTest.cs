@@ -1,14 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
+using WinSCP;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace RN_Process.Tests.DataAccessTests
 {
     public class ContractDetailConfigTest : IDisposable
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public ContractDetailConfigTest(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
         public void Dispose()
         {
             _sut = null;
@@ -16,14 +26,10 @@ namespace RN_Process.Tests.DataAccessTests
 
         private ContractDetailConfig _sut;
 
-        private ContractDetailConfig SystemUnderTest
-        {
-            get
-            {
-                _sut ??= _sut = UnitTestUtility.GetContractDetailConfigToTest();
-                return _sut;
-            }
-        }
+        private ContractDetailConfig SystemUnderTest =>_sut ??= _sut = UnitTestUtility.GetContractDetailConfigToTest();
+             
+            
+        
 
         public ContractDetailConfig InitizerTest(
             FileAccessType communicationType,
@@ -45,7 +51,7 @@ namespace RN_Process.Tests.DataAccessTests
             IList<string> availableFieldsColumns
         )
         {
-            return new ContractDetailConfig(UnitTestUtility.GetContractOrganizationToTest(), communicationType, internalHost, baseWorkDir, linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword, authenticationCodeApp, pathToOriginFile, pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
+            return new ContractDetailConfig(UnitTestUtility.GetTermBaseToTeste(), communicationType, internalHost, baseWorkDir, linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword, authenticationCodeApp, pathToOriginFile, pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
         }
 
         [Fact]
@@ -68,8 +74,8 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty,
                 string.Empty,
                 string.Empty,
-                new List<string> {"ss", "s"},
-                new List<string> {"ss", " "}));
+                new List<string> { "ss", "s" },
+                new List<string> { "ss", " " }));
             // Act            
 
             // Assert            
@@ -80,7 +86,7 @@ namespace RN_Process.Tests.DataAccessTests
         public void ContractDetailConfigTest_AvailableFields_ThrowExceptionIfNull()
         {
             // Arrange            
-            var expect = Assert.Throws<ArgumentNullException>(() => 
+            var expect = Assert.Throws<ArgumentNullException>(() =>
                 InitizerTest(FileAccessType.FTP,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
@@ -88,7 +94,7 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", "s"}, null));
+                new List<string> { "ss", "s" }, null));
 
             Assert.Contains("Value cannot be null. (Parameter 'availableFieldsColumns')", expect.Message);
         }
@@ -105,7 +111,7 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", "s"}, new List<string>()));
+                new List<string> { "ss", "s" }, new List<string>()));
 
 
             Assert.Contains(
@@ -123,7 +129,7 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", " "}, new List<string> {"cdb"}));
+                new List<string> { "ss", " " }, new List<string> { "cdb" }));
 
             // Act            
 
@@ -142,7 +148,7 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                null, new List<string> {"cdb"}));
+                null, new List<string> { "cdb" }));
 
             Assert.Contains("Value cannot be null. (Parameter 'fileHeaderColumns')", expect.Message);
         }
@@ -158,7 +164,7 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string>(), new List<string> {"cdb"}));
+                new List<string>(), new List<string> { "cdb" }));
 
             // Act            
 
@@ -169,24 +175,24 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void WhenCreatedContractDetailConfig_Contract_isValid()
+        public void ContractConfigWhenCreated_TermDetailIsValid()
         {
             // Act
             var expect = UnitTestUtility.GetContractDetailConfigToTest();
 
             // Assert
-            Assert.NotNull(SystemUnderTest.Contract);
-            Assert.Equal(expect.Contract.ContractNumber, SystemUnderTest.Contract.ContractNumber);
+            Assert.NotNull(SystemUnderTest.TermDetail);
+            Assert.Equal(expect.TermDetail.DebtCode, SystemUnderTest.TermDetail.DebtCode);
         }
 
 
         [Fact]
-        public void WhenCreatedContractDetailConfig_ContractId_IsValid()
+        public void ContractConfigWhenCreated_then_termDetailId_IsValid()
         {
             // Act
             // Assert
-            Assert.NotNull(SystemUnderTest.Contract);
-            Assert.NotNull(SystemUnderTest.Contract.Id);
+            Assert.NotNull(SystemUnderTest.TermDetail);
+            Assert.NotNull(SystemUnderTest.TermDetail.Id);
         }
 
         [Fact]
@@ -201,7 +207,7 @@ namespace RN_Process.Tests.DataAccessTests
                 false, string.Empty,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, new List<string> {"cdb"}, new List<string> {"cdb"});
+                string.Empty, string.Empty, new List<string> { "cdb" }, new List<string> { "cdb" });
 
 
             // Assert
@@ -211,7 +217,7 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void WhenCreatedContractDetailConfig_IsValid()
+        public void ContractConfigWhenCreated_termDetail_IsValid()
         {
             // Act
             // Assert
@@ -229,7 +235,7 @@ namespace RN_Process.Tests.DataAccessTests
 
         [Fact]
         public void
-            WhenCreatedContractDetailConfig_RequiredloginIsFalse_LoginIsNotNUll_ThrowException_requiredPassword()
+            ContractConfigWhenCreated_RequiredLoginIsFalse_And_HasOthersLogin_ThrowException_requiredPassword()
         {
             //arrange
 
@@ -241,8 +247,8 @@ namespace RN_Process.Tests.DataAccessTests
                     false, "my login",
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    string.Empty, string.Empty, new List<string> {"cdb"},
-                    new List<string> {"ab"}));
+                    string.Empty, string.Empty, new List<string> { "cdb" },
+                    new List<string> { "ab" }));
 
             // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);
@@ -258,7 +264,7 @@ namespace RN_Process.Tests.DataAccessTests
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
                 UnitTestUtility.GetContractDetailConfigToTest(
-                    new ContractDetailConfig(UnitTestUtility.GetContractOrganizationToTest(), FileAccessType.FTP, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> {"cdb"}, new List<string> {"cdb"})));
+                    new ContractDetailConfig(UnitTestUtility.GetTermBaseToTeste(), FileAccessType.FTP, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> { "cdb" }, new List<string> { "cdb" })));
 
             // Assert
             Assert.Equal("Required input 'AUTHENTICATIONLOGIN' was empty. (Parameter 'authenticationLogin')",
@@ -281,11 +287,69 @@ namespace RN_Process.Tests.DataAccessTests
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty,
-                    new List<string> {"cdb"}, new List<string> {"cdb"}));
+                    new List<string> { "cdb" }, new List<string> { "cdb" }));
 
             // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);
             Assert.Equal("password", ex.ParamName);
         }
+
+
+        [Fact]
+        public void CreateCommunicationToDownloadFilesFromWebSite()
+        {
+
+
+            try
+            {
+                // Setup session options
+                SessionOptions sessionOptions = new SessionOptions
+                {
+                    Protocol = Protocol.Sftp,
+                    HostName = "ftp.unicre.pt",
+                    UserName = "logi",
+                    Password = "ih3bb6",
+                    SshHostKeyFingerprint = "ssh-rsa 2048 4e:fd:4f:a3:e3:68:7e:f0:53:91:0d:8d:5f:17:f3:d5"
+                };
+
+                using (Session session = new Session())
+                {
+                    // Connect
+                    session.Open(sessionOptions);
+
+                    const string remotePath = "/Da Unicre";
+                    const string localPath = @"C:\TEMP\WorkDir\";
+
+                    // Get list of files in the directory
+                    RemoteDirectoryInfo directoryInfo = session.ListDirectory(remotePath);
+
+                    // Select the most recent file
+                    RemoteFileInfo latest =
+                        directoryInfo.Files
+                            .Where(file => !file.IsDirectory)
+                            .OrderByDescending(file => file.LastWriteTime)
+                            .FirstOrDefault();
+
+                    // Any file at all?
+                    if (latest == null)
+                    {
+                        throw new Exception("No file found");
+                    }
+
+                    // Download the selected file
+                    session.GetFiles(
+                        RemotePath.EscapeFileMask(latest.FullName), localPath).Check();
+                }
+
+                //  return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: {0}", e);
+                //return 1;
+            }
+        }
     }
+
+
 }

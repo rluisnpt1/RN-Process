@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -17,7 +18,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public FileImport(string fileDescription, int fileSize, string fileFormat, string fileLocationOrigin,
             string locationToCopy, StatusType status, bool fileMigrated, DateTime? fileMigratedOn,
-            ContractDetailConfig contractDetailConfig, BsonDocument allDataInFile)
+            ContractDetailConfig contractDetailConfig, List<BsonDocument> allDataInFile)
         {
             Id = ObjectId.GenerateNewId().ToString();
 
@@ -49,7 +50,7 @@ namespace RN_Process.Api.DataAccess.Entities
         public DateTime? FileMigratedOn { get; set; }
 
 
-        public BsonDocument AllDataInFile { get; set; }
+        public List<BsonDocument> AllDataInFile { get; set; }
 
 
         [BsonRepresentation(BsonType.ObjectId)]
@@ -57,7 +58,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public virtual ContractDetailConfig ContractDetailConfig { get; set; }
 
-        private void SetAllDatafromFile(BsonDocument allDataInFile)
+        private void SetAllDatafromFile(List<BsonDocument> allDataInFile)
         {
             Guard.Against.Null(allDataInFile, nameof(allDataInFile));
 
@@ -101,7 +102,7 @@ namespace RN_Process.Api.DataAccess.Entities
         private void SetContractDetailConfig(ContractDetailConfig contractDetailConfig)
         {
             Guard.Against.Null(contractDetailConfig, nameof(contractDetailConfig));
-            ContractDetailConfigId = contractDetailConfig.ContractId;
+            ContractDetailConfigId = contractDetailConfig.Id;
             OrgCode = contractDetailConfig.OrgCode;
             ContractDetailConfig = contractDetailConfig;
         }
