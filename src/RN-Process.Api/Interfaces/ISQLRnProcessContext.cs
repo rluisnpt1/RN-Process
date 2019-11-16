@@ -6,10 +6,9 @@ namespace RN_Process.Api.Interfaces
 {
     internal interface ISQLRnProcessContext
     {
-        DbSet<ReferencesType> ReferencesTypes { get; set; }
-        DbSet<Reference> References { get; set; }
-        DbSet<Organization> Organizations { get; set; }
+       DbSet<Organization> Organizations { get; set; }
         DbSet<Term> Terms { get; set; }
+        DbSet<TermDetail> TermDetails { get; set; }
         DbSet<TermDetailConfig> TermDetailConfigs { get; set; }
         DbSet<FileImport> FileImports { get; set; }
 

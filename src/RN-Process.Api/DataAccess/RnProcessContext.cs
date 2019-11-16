@@ -12,10 +12,9 @@ namespace RN_Process.Api.DataAccess
         {
         }
 
-        public DbSet<ReferencesType> ReferencesTypes { get; set; }
-        public DbSet<Reference> References { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Term> Terms { get; set; }
+        public DbSet<TermDetail> TermDetails { get; set; }
         public DbSet<TermDetailConfig> TermDetailConfigs { get; set; }
         public DbSet<FileImport> FileImports { get; set; }
 
@@ -35,23 +34,7 @@ namespace RN_Process.Api.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ReferencesType>(entity =>
-            {
-                entity.ToTable("ReferencesType");
-                entity.HasKey(x => x.Id);
-                entity.HasMany(x => x.References)
-                    .WithOne(x => x.ReferencesType);
-
-                entity.Property(x => x.UniqCode).IsUnicode();
-                entity.Property(x => x.RowVersion).IsConcurrencyToken();
-            });
-            modelBuilder.Entity<Reference>(entity =>
-            {
-                entity.ToTable("Reference");
-                entity.HasKey(x => x.Id);
-                entity.Property(x => x.UniqCode).IsUnicode();
-                entity.Property(x => x.RowVersion).IsConcurrencyToken();
-            });
+           
             modelBuilder.Entity<Organization>(entity =>
             {
                 entity.ToTable("Organization");
@@ -71,6 +54,17 @@ namespace RN_Process.Api.DataAccess
                 entity.HasKey(x => x.Id);
                 entity.HasMany(x => x.TermDetails)
                     .WithOne(x => x.Term);
+
+                entity.Property(x => x.RowVersion).IsConcurrencyToken();
+            });  
+            
+            modelBuilder.Entity<TermDetail>(entity =>
+            {
+                entity.ToTable("TermDetail");
+
+                entity.HasKey(x => x.Id);
+                entity.HasMany(x => x.TermDetailConfigs)
+                    .WithOne(x => x.TermDetail);
 
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });

@@ -98,9 +98,9 @@ namespace RN_Process.Api.DataAccess.Entities
                 termdet.Active = active;
                 termdet.Deleted = deleted;
                 
-                var config = termdet.TermDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
-                foreach (var item in config)
-                    termdet.UpdateTermConfig(item);
+                //var config = termdet.TermDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
+                //foreach (var item in config)
+                //    termdet.UpdateTermConfig(item);
             }
 
             if (foundIt == false) TermDetails.Add(termdet);

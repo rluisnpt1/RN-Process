@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using RN_Process.Api.DataAccess.Entities;
-using RN_Process.Shared.Enums;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -28,9 +25,9 @@ namespace RN_Process.Tests.DataAccessTests
         private const string NameDebt = "need to pay";
 
         private Term _sut;
-        private Term SystemUnderTest => _sut ??= _sut =UnitTestUtility.GetTermOrganizationToTest();
+        private Term SystemUnderTest => _sut ??= _sut = UnitTestUtility.GetTermOrganizationToTest();
 
-        private static Term TermInit(int termNumber,Organization Organization)
+        private static Term TermInit(int termNumber, Organization Organization)
         {
             return new Term(termNumber, Organization);
         }
@@ -67,7 +64,7 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.NotNull(SystemUnderTest.OrganizationId);
 
             Assert.NotEqual(0, SystemUnderTest.TermNumber);
-         
+
             //Assert.NotEqual(0, SystemUnderTest.TypeDebt);
             //Assert.NotEmpty(SystemUnderTest.DebtDescription);
 
@@ -103,6 +100,5 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.Contains("Required input 'TERMNUMBER' cannot be zero", ex.Message);
             Assert.Equal("TermNumber", ex.ParamName);
         }
-        
     }
 }

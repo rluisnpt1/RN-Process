@@ -9,7 +9,7 @@ using Xunit;
 namespace RN_Process.Tests
 {
     //[TestFixture]
-    public class StaticWebDriverFactoryTests : IDisposable
+    public class StaticWebDriverFactoryTests //: IDisposable
     {
         private IWebDriver Driver { get; set; }
         private readonly PlatformType thisPlatformType = PlatformType.Windows;
@@ -30,19 +30,19 @@ namespace RN_Process.Tests
         //[TestCase(Browser.InternetExplorer)]
         //[TestCase(Browser.Edge)]
         //[TestCase(Browser.Chrome)]
-        [Fact]
-        public void LocalWebDriverCanBeLaunchedAndLoadExampleDotCom()
-        {
+        //[Fact]
+        //public void LocalWebDriverCanBeLaunchedAndLoadExampleDotCom()
+        //{
 
-            Driver = StaticWebDriverFactory.GetLocalWebDriver(Browser.Chrome);
-            Driver.Url = "https://example.com/";
-            Driver.Title.Should().Be("Example Domain");
-        }
+        //    Driver = StaticWebDriverFactory.GetLocalWebDriver(Browser.Chrome);
+        //    Driver.Url = "https://example.com/";
+        //    Driver.Title.Should().Be("Example Domain");
+        //}
 
-        public void Dispose()
-        {
-            Driver?.Quit();
-        }
+        //public void Dispose()
+        //{
+        //    Driver?.Quit();
+        //}
 
         //[Test]
         //[TestCase(Browser.Safari)]
