@@ -65,14 +65,15 @@ namespace RN_Process.Api.DataAccess.Entities
             if (!string.IsNullOrWhiteSpace(id))
                 UpdateTermTermById(id, debtCode, termType, active, deleted);
             else
-                AddNewTermDetails(debtCode, termType);
+                AddNewTermDetails(debtCode, termType, FileAccessType.API);
         }
 
-        private void AddNewTermDetails(int debtCode, TermsType termType)
+        private void AddNewTermDetails(int debtCode, TermsType termType, FileAccessType fileAccessType)
         {
             var fact = new TermDetail(debtCode, termType, this);
 
             TermDetails.Add(fact);
+            fact.AddDetailConfig(null, fileAccessType);
         }
 
 

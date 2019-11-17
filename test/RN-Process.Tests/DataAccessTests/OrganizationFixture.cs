@@ -279,22 +279,34 @@ namespace RN_Process.Tests.DataAccessTests
             //has detail
             Assert.Equal(1, SystemUnderTest.TermDetails.Count);
 
+
+
             //get term from organization
-            var actualActual = SystemUnderTest.Terms.First();
-            var actualTerm = SystemUnderTest.TermDetails.First();
+            var actualActualTerm = SystemUnderTest.Terms.First();
+            var actualTermDetail = SystemUnderTest.TermDetails.First();
+            var actualTermConfig = actualTermDetail.TermDetailConfigs.First();
+
 
             //assert term created is the same in organization
-            Assert.Same(SystemUnderTest.Id, actualActual.OrganizationId);
-            Assert.Same(SystemUnderTest, actualActual.Organization);
-            Assert.Same(SystemUnderTest.OrgCode, actualActual.OrgCode);
-            Assert.Same(actualActual.Id, actualTerm.TermId);
+            Assert.Same(SystemUnderTest.Id, actualActualTerm.OrganizationId);
+            Assert.Same(SystemUnderTest, actualActualTerm.Organization);
+            Assert.Same(SystemUnderTest.OrgCode, actualActualTerm.OrgCode);
+            Assert.Same(actualActualTerm.Id, actualTermDetail.TermId);
 
             //organization exist
-            Assert.Equal(SystemUnderTest.OrgCode, actualTerm.OrgCode);
+            Assert.Equal(SystemUnderTest.OrgCode, actualTermDetail.OrgCode);
+           
             //term exist
-            Assert.Equal(1, actualActual.TermDetails.Count);
-            Assert.True(actualTerm.Active);
-            Assert.False(actualTerm.Deleted);
+            Assert.Equal(1, actualActualTerm.TermDetails.Count);
+            Assert.True(actualTermDetail.Active);
+            Assert.False(actualTermDetail.Deleted);
+
+            //llist Configuration exist in termdetail
+            Assert.Equal(1, actualTermDetail.TermDetailConfigs.Count);
+
+            Assert.Same(actualTermConfig.TermDetailId, actualTermDetail.Id);
+            Assert.True(actualTermConfig.Active);
+            Assert.False(actualTermConfig.Deleted);
         }
 
         [Fact]
