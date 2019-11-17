@@ -57,27 +57,27 @@ namespace RN_Process.Api.DataAccess.Entities
             TermNumber = termNumber;
         }
 
-        public void AddTermDetail(string id, int debtCode, TermsType termType, bool active = true, bool deleted = false)
+        public void AddTermDetail(string id, int debtCode, TermsType termType, TermDetailConfig detailConfig, bool active = true)
         {
             Guard.Against.Null(debtCode, nameof(debtCode));
             Guard.Against.Zero(debtCode, nameof(debtCode));
 
             if (!string.IsNullOrWhiteSpace(id))
-                UpdateTermTermById(id, debtCode, termType, active, deleted);
+                UpdateTermTermById(id, debtCode, termType, detailConfig, active);
             else
-                AddNewTermDetails(debtCode, termType, FileAccessType.API);
+                AddNewTermDetails(debtCode, termType, detailConfig);
         }
 
-        private void AddNewTermDetails(int debtCode, TermsType termType, FileAccessType fileAccessType)
+        private void AddNewTermDetails(int debtCode, TermsType termType, TermDetailConfig detailConfig)
         {
             var fact = new TermDetail(debtCode, termType, this);
 
             TermDetails.Add(fact);
-            fact.AddDetailConfig(null, fileAccessType);
+            fact.AddDetailConfig(detailConfig);
         }
 
 
-        public void UpdateTermTermById(string id, int debtCode, TermsType term, bool active, bool deleted)
+        public void UpdateTermTermById(string id, int debtCode, TermsType term, TermDetailConfig detailConfig, bool active)
         {
             TermDetail termdet = null;
             var foundIt = false;
@@ -97,25 +97,20 @@ namespace RN_Process.Api.DataAccess.Entities
                 termdet.ModifiedDate = DateTime.UtcNow;
                 termdet.ModifiedBy = "System-- need change for user";
                 termdet.Active = active;
-                termdet.Deleted = deleted;
+                termdet.Deleted = !active;
 
-                var config = termdet.TermDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
-                foreach (var item in config)
-                    termdet.UpdateTermConfigurationById(item.Id, item.CommunicationType, false, true);
+                var config = termdet.TermDetailConfigs.FirstOrDefault(temp => temp.TermDetailId == termdet.Id);
+                if (config != null)
+                {
+                    config.Active = termdet.Active;
+                    config.Deleted = termdet.Deleted;
+
+                    termdet.UpdateTermConfiguration(config, config.Active);
+                }
             }
 
             if (foundIt == false) TermDetails.Add(termdet);
         }
 
-
-        public void RemoveTermDetail(string id)
-        {
-            if (string.IsNullOrEmpty(id)) return;
-
-            var match = TermDetails.FirstOrDefault(fact => fact.Id == id);
-
-            if (match == null) return;
-            UpdateTermTermById(match.Id, match.DebtCode, match.TermsType, false, true);
-        }
     }
 }

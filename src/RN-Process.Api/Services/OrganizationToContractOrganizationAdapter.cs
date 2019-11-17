@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Models;
@@ -45,21 +46,27 @@ namespace RN_Process.Api.Services
 
                 var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
 
-                var config = new DueDetailConfiguration();
-                config.Id = configTemp.Id;
-                config.CommunicationType = configTemp.CommunicationType;
-                config.LinkToAccess = configTemp.LinkToAccess;
-                config.LinkToAccessType = configTemp.LinkToAccessType;
-                config.TypeOfResponse = configTemp.TypeOfResponse;
-                config.RequiredLogin = configTemp.RequiredLogin;
-                config.AuthenticationLogin = configTemp.AuthenticationLogin;
-                config.AuthenticationPassword = configTemp.AuthenticationPassword.Length > 0 ? Encoding.ASCII.GetString(configTemp.AuthenticationPassword) : "";
-                config.HostkeyFingerPrint = configTemp.HostKeyFingerPrint.Length > 0 ? Encoding.ASCII.GetString(configTemp.HostKeyFingerPrint) : "";
-                config.AuthenticationCodeApp = configTemp.AuthenticationCodeApp;
-                config.PathToOriginFile = configTemp.PathToOriginFile;
-                config.PathToDestinationFile = configTemp.PathToDestinationFile;
-                config.PathToFileBackupAtClient = configTemp.PathToFileBackupAtClient;
-                config.FileDelimiter = configTemp.FileDelimiter;
+                var config = new DueDetailConfiguration
+                {
+                    Id = configTemp.Id,
+                    CommunicationType = configTemp.CommunicationType,
+                    LinkToAccess = configTemp.LinkToAccess,
+                    LinkToAccessType = configTemp.LinkToAccessType,
+                    TypeOfResponse = configTemp.TypeOfResponse,
+                    RequiredLogin = configTemp.RequiredLogin,
+                    AuthenticationLogin = configTemp.AuthenticationLogin,
+                    AuthenticationPassword = configTemp.AuthenticationPassword.Length > 0
+                        ? Encoding.ASCII.GetString(configTemp.AuthenticationPassword)
+                        : "",
+                    HostkeyFingerPrint = configTemp.HostKeyFingerPrint.Length > 0
+                        ? Encoding.ASCII.GetString(configTemp.HostKeyFingerPrint)
+                        : "",
+                    AuthenticationCodeApp = configTemp.AuthenticationCodeApp,
+                    PathToOriginFile = configTemp.PathToOriginFile,
+                    PathToDestinationFile = configTemp.PathToDestinationFile,
+                    PathToFileBackupAtClient = configTemp.PathToFileBackupAtClient,
+                    FileDelimiter = configTemp.FileDelimiter
+                };
                 toValue.DueDetailConfigs.Add(config);
             }
         }
@@ -86,5 +93,38 @@ namespace RN_Process.Api.Services
             }
         }
 
+
+        public void Adapt(ContractOrganization fromValue, string description, string codOrg)
+        {
+            Guard.Against.Null(fromValue, nameof(ContractOrganization));
+            Guard.Against.NullOrWhiteSpace(description, nameof(description));
+            Guard.Against.NullOrWhiteSpace(codOrg, nameof(codOrg));
+
+
+            var newOrg = new Organization(description, codOrg);
+
+            AdaptDueDetail(fromValue,newOrg);
+        }
+
+        private void AdaptDueDetail(ContractOrganization fromValue, Organization newOrg)
+        {
+            foreach (var item in fromValue.DueDetails)
+            {
+                if (fromValue.IsDeleted == false)
+                {
+                    //newOrg.AddTerm(item.Id,fromValue.ContractNumber,item.DebtCode,item.TermsType);
+
+                    foreach (var newOrgTermDetail in newOrg.TermDetails)
+                    {
+                      //  newOrgTermDetail.TermDetailConfigs.Select(x => newOrgTermDetail.AddDetailConfig(x) )
+
+                    }
+                }else if (fromValue.IsDeleted == true && !string.IsNullOrWhiteSpace(item.Id))
+                {
+                    newOrg.RemoveTerms(item.Id);
+                }
+            }
+        }
+   
     }
 }

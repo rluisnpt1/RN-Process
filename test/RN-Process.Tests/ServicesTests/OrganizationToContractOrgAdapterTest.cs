@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Models;
 using RN_Process.Api.Services;
 using Xunit;
@@ -40,6 +41,21 @@ namespace RN_Process.Tests.ServicesTests
 
             // Assert
             UnitTestUtility.AssertAreEqual(fromValue, toValue);
+        }
+
+
+        [Fact]
+        public void AdaptContractOrgnizationToOrganization()
+        {
+            // Arrange
+            var fromValue = UnitTestUtility.GetContractOrganizationModel();
+            // Act
+            SystemUnderTest.Adapt(fromValue,fromValue.Description,fromValue.CodOrg);
+
+            var toValue = new Organization(fromValue.Description, fromValue.CodOrg);
+
+            // Assert
+            UnitTestUtility.AssertAreEqual(fromValue,toValue);
         }
     }
 }

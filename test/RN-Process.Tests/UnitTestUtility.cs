@@ -24,6 +24,7 @@ namespace RN_Process.Tests
         {
             return new Organization("NOWO ORGANIZATION", "CB13");
         }
+
         public static Organization GetUNICRE_OrganizationToTest()
         {
             return new Organization("UNICRE PORTO", "UNPOR");
@@ -63,65 +64,59 @@ namespace RN_Process.Tests
             return getTermDetailConfigToTest;
         }
 
-        public static TermDetailConfig GetTermDetailConfigToTest(string codorg)
-        {
-            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir , BaseWorkdir, "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null, BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum", BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum\\Processados\\", BaseWorkdir + "\\backup\\SimulationCliente\\Backup\\", BaseWorkdir + "\\BackupToHost", ",", new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "DATA3"}, new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "DATA3"});
-        }
+        //public static TermDetailConfig GetTermDetailConfigToTest(string codorg)
+        //{
+        //    return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir, BaseWorkdir,
+        //        "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null,
+        //        BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum",
+        //        BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum\\Processados\\",
+        //        BaseWorkdir + "\\backup\\SimulationCliente\\Backup\\", BaseWorkdir + "\\BackupToHost", ",",
+        //        new List<string>
+        //            {"NDIV", "COD_CRED", "VAL1", "DATA3"}, new List<string>
+        //            {"NDIV", "COD_CRED", "VAL1", "DATA3"});
+        //}
+
         public static TermDetailConfig GetTermDetailConfigToTest()
         {
-            return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir , BaseWorkdir, "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null, BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum", RnProcessConstant.BaseTestWorkFolder + "\\Destination", RnProcessConstant.BaseTestWorkFolder + "\\Backup", BaseWorkdir+ "\\BackupToHost", ",", new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"}, new List<string>
-                {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"});
+            return new TermDetailConfig(null, 
+                GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir,
+                "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null,
+                BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum",
+                RnProcessConstant.BaseTestWorkFolder + "\\Destination",
+                RnProcessConstant.BaseTestWorkFolder + "\\Backup", BaseWorkdir + "\\BackupToHost", ",", new List<string>
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"}, new List<string>
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"});
         }
 
 
-        public static TermDetailConfig GetRealTermDetailConfigToTest()
-        {
-            return new TermDetailConfig(GetTermBaseToTeste(),
-                FileAccessType.FTP,
-                "LocalHost",
-                BaseWorkdir,
-                 "SFTP://IDCFTPGW.INTRUM.NET:22222",
-                 "SFTP", "FTP", true, "nowo", "NX,CD[}?",
-                "", null,
-                 "/to_intrum/",
-                 "/from_intrum/",
-                "",
-                 "", ",",
-                 new List<string>
-                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
-        }
         public static TermDetailConfig GetRealTermUnicreDetailConfigToTest()
         {
-            return new TermDetailConfig(GetTermBaseToTeste(),
+            return new TermDetailConfig("", GetTermBaseToTeste(),
                 FileAccessType.FTP,
                 "LocalHost",
-                 BaseWorkdir,
-                 "SFTP://ftp.unicre.pt",
-                 "SFTP", "FTP", true, "logi", "ih3bb6", "", null,
-                 "/Da Unicre",
-                 "/Para Unicre",
+                "SFTP://ftp.unicre.pt",
+                "SFTP", "FTP", true, "logi", "ih3bb6", "", null,
+                "/Da Unicre",
+                "/Para Unicre",
                 "",
-                 "", ",",
-                 new List<string>
-                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"}, new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "VAL3", "VAL4", "VAL5", "DATA1", "DATA2", "DATA3"});
+                "", ",",
+                new List<string>
+                    {"NDIV", "COD_CRED", "VAL1"},
+                new List<string>
+                    {"NDIV", "COD_CRED", "VAL1"});
         }
+
         public static TermDetailConfig GetRealTermDetailConfigWebSiteToTest()
         {
-            return new TermDetailConfig(GetTermBaseToTeste(),
+            return new TermDetailConfig("", GetTermBaseToTeste(),
                 FileAccessType.WebSite,
                 "LocalHost",
-                BaseWorkdir,
                 "https://assist.healthcare.com.pt/index.php?r=auth%2Flogin",
                 "AUTH", "INTERNAL RESPONSE", true, "intrum", "int2019#u", "", null,
                 "https://assist.healthcare.com.pt/index.php?r=intrum%2Fdebts&export=csv", "", "",
                 BaseWorkdir + "\\BackupToHost", ",",
                 new List<string>
-                    {"NDIV", "COD_CRED",  "DATA2", "DATA3"},
+                    {"NDIV", "COD_CRED", "DATA2", "DATA3"},
                 new List<string>
                     {"NDIV", "COD_CRED", "DATA2", "DATA3"});
         }
@@ -139,7 +134,7 @@ namespace RN_Process.Tests
         }
 
         /// <summary>
-        /// From Entity to Model
+        ///     From Entity to Model
         /// </summary>
         /// <param name="expected"></param>
         /// <param name="actual"></param>
@@ -159,13 +154,15 @@ namespace RN_Process.Tests
             expected.TermDetails.Should().HaveCount(actual.DueDetails.Count);
             expected.TermDetails.Count.Should().Be(1);
             expected.TermDetails.Select(x => x.Id).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.Id));
-            expected.TermDetails.Select(x => x.DebtCode).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.DebtCode));
-            expected.TermDetails.Select(x => x.TermsType).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.TermsType));
+            expected.TermDetails.Select(x => x.DebtCode).Should()
+                .BeEquivalentTo(actual.DueDetails.Select(x => x.DebtCode));
+            expected.TermDetails.Select(x => x.TermsType).Should()
+                .BeEquivalentTo(actual.DueDetails.Select(x => x.TermsType));
 
 
             expected.TermDetails.Select(x => x.TermDetailConfigs).Should().NotBeNullOrEmpty();
             expected.TermDetails.Select(x => x.TermDetailConfigs).Should().HaveCount(actual.DueDetailConfigs.Count);
-            
+
             DateTimeAssertAreEqual(expected.CreatedDate, actual.CreatedDate, TimeSpan.FromMinutes(0.1));
             DateTimeAssertAreEqual(expected.ModifiedDate, actual.ChangedDate, TimeSpan.FromMinutes(0.1));
 
@@ -175,18 +172,18 @@ namespace RN_Process.Tests
         }
 
         /// <summary>
-        /// From Model To Entity
+        ///     From Model To Entity
         /// </summary>
         /// <param name="expected"></param>
         /// <param name="actual"></param>
         public static void AssertAreEqual(ContractOrganization expected, Organization actual)
         {
-            //Assert.Equal(expected.Id, actual.Id);
-            //Assert.Equal(expected.Name, actual.Name);
-            //Assert.Equal(expected.Status, actual.Status);
-            //Assert.Equal<int>(expected.CreationCount, actual.CreationCount);
-            //Assert.Equal<int>(expected.ModificationCount, actual.ModificationCount);
-            //DateTimeAssertAreEqual(expected., actual.TimeStamp, TimeSpan.FromMinutes(0.1));
+            expected.Id.Should().NotBeNullOrEmpty();
+            expected.Id.Should().BeEquivalentTo(actual.Id);
+            expected.CodOrg.Should().BeEquivalentTo(actual.OrgCode);
+            expected.Description.Should().BeEquivalentTo(actual.Description);
+
+            expected.DueId.Should().BeEquivalentTo(actual.Terms.Select(x => x.Id).FirstOrDefault());
         }
 
         /// <summary>
@@ -218,11 +215,45 @@ namespace RN_Process.Tests
                     $"Expected Date: {expectedDate}, Actual Date: {actualDate} \nExpected Delta: {maximumDelta}, Actual Delta in seconds- {totalSecondsDifference}");
         }
 
+        public static TermDetailConfig TermDetailIdNull()
+        {
+           return new TermDetailConfig(null, GetTermBaseToTeste(), FileAccessType.LocalMachine,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, false, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty, string.Empty,
+                new List<string> { "" }, new List<string> { "" });
+        }
+
         public static Organization GetCompleteOrganization()
         {
-            var  info = new Organization("Banco de Portual","BBP234");
-            info.AddTerm(null,1423123,45632,TermsType.Leasing);
+            var info = new Organization("Banco de Portual", "BBP234");
+            info.AddTerm(null, 1423123, 45632, TermsType.Leasing, TermDetailIdNull());
             return info;
+        }
+
+        public static ContractOrganization GetContractOrganizationModel()
+        {
+            var infoModel = new ContractOrganization();
+            infoModel.AddDueDetail(556698, TermsType.Leasing);
+
+            infoModel.AddDueDetailConfigs(null,FileAccessType.FTP,
+                "SFTP://ftp.unicre.pt",
+                "C://Desktop",
+                "",
+                true,
+                "logi",
+                "ih3bb6",
+                "",
+                null,
+                BaseWorkdir,
+                "SFTP",
+                "FTP",
+                ",",
+                new List<string> { "NDIV", "COD_CRED", "VAL1" },
+                RnProcessConstant.AvailableColumnsIntrum
+                );
+            return infoModel;
         }
     }
 }

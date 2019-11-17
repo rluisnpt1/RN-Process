@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -82,7 +83,7 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public void AddNewTerm(int termNumber, int typeDebt, TermsType termsType)
+        public void AddNewTerm(int termNumber, int typeDebt, TermsType termsType, TermDetailConfig detailConfig)
         {
             //create term
             var fact = new Term(termNumber, this);
@@ -91,7 +92,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Terms.Add(fact);
 
             //base configuration
-            fact.AddTermDetail(null, typeDebt,termsType , true, false);
+            fact.AddTermDetail(null, typeDebt, termsType, detailConfig);
 
             //add term configuration details to list term configuration details list of organization
             TermDetails = fact.TermDetails;
@@ -106,7 +107,7 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="typeDebt"></param>
         /// <param name="termsType"></param>
         /// <param name="debtDescription"></param>
-        public void AddTerm(string id, int termNumber, int typeDebt, TermsType termsType)
+        public void AddTerm(string id, int termNumber, int typeDebt, TermsType termsType, TermDetailConfig detailConfig)
         {
             Guard.Against.Null(termNumber, nameof(termNumber));
             Guard.Against.Zero(termNumber, nameof(termNumber));
@@ -114,13 +115,14 @@ namespace RN_Process.Api.DataAccess.Entities
             Guard.Against.Zero(typeDebt, nameof(typeDebt));
 
             if (!string.IsNullOrEmpty(id))
-                UpdateExistingTermById(id, typeDebt, termNumber, termsType);
+                UpdateExistingTermById(id, typeDebt, termNumber, termsType, detailConfig);
             else
-                AddNewTerm(termNumber, typeDebt, termsType);
+                AddNewTerm(termNumber, typeDebt, termsType, detailConfig);
         }
 
-       
-        private void UpdateExistingTermById(string id, int debtCode, int termNumber, TermsType termsType,bool active = true, bool deleted = false)
+
+        private void UpdateExistingTermById(string id, int debtCode, int termNumber,
+            TermsType termsType, TermDetailConfig detailConfig, bool active = true)
         {
             Term term = null;
             var foundIt = false;
@@ -130,7 +132,7 @@ namespace RN_Process.Api.DataAccess.Entities
             if (term == null)
             {
                 term = new Term(termNumber, this);
-                term.AddTermDetail(null,debtCode, termsType);
+                term.AddTermDetail(null, debtCode, termsType, detailConfig);
             }
             else
             {
@@ -139,11 +141,14 @@ namespace RN_Process.Api.DataAccess.Entities
                 term.ModifiedDate = DateTime.UtcNow;
                 term.ModifiedBy = "System-- need change for user";
                 term.Active = active;
-                term.Deleted = deleted;
+                term.Deleted = !active;
 
                 var config = term.TermDetails.Where(temp => temp.TermId == term.Id);
                 foreach (var item in config)
-                    term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, active, deleted);
+                {
+                    var first = item.TermDetailConfigs.First(x => x.TermDetailId == item.Id);
+                    term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, first, active);
+                }
             }
 
             if (foundIt == false) Terms.Add(term);
@@ -160,9 +165,14 @@ namespace RN_Process.Api.DataAccess.Entities
             //if (!softDelete)
             //    Terms.Remove(matchTerm);
             //else
-            
+
             if (match == null) return;
-            UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber, match.TermsType, active: false, deleted: true);
+
+            var first = match.TermDetailConfigs.First(x => x.TermDetailId == match.Id);
+            UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber,
+                    match.TermsType, first, false);
+
+
         }
     }
 }

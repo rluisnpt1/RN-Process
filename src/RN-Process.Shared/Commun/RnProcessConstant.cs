@@ -13,7 +13,7 @@ namespace RN_Process.Shared.Commun
 
 
         public static readonly string BaseTestWorkFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        public static readonly string BaseWorkFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        public static readonly string BaseWorkFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
 
         public static readonly string[] AvailableColumnsIntrum =

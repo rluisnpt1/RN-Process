@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson.IO;
 using RN_Process.Api.DataAccess.Entities;
@@ -55,25 +56,28 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.Equal("debtCode", ex.ParamName);
         }
 
-     
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void TermWhenCreated_TypeDebt_IsValid()
-        {
-            Assert.NotEqual(0, SystemUnderTest.DebtCode);
-            Assert.Equal(54856, SystemUnderTest.DebtCode);
-        }
-
         [Fact]
         [Trait("Category", "Unit")]
         public void TermWhenCreated_AddDetails_Configuration()
         {
-            SystemUnderTest.AddDetailConfig(null,FileAccessType.FTP);
-            SystemUnderTest.AddDetailConfig(null,FileAccessType.API);
-            SystemUnderTest.AddDetailConfig(null,FileAccessType.Email);
-            
+            var teste1 = new TermDetailConfig(null, SystemUnderTest, FileAccessType.LocalMachine,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, false, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty, string.Empty,
+                new List<string> {""}, new List<string> {""});
+            var teste2 = new TermDetailConfig(null, SystemUnderTest, FileAccessType.Email,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, false, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty, string.Empty,
+                new List<string> {""}, new List<string> {""});
+
+            SystemUnderTest.AddDetailConfig(teste1);
+            SystemUnderTest.AddDetailConfig(teste2);
+
             //has configurations
-            Assert.Equal(3, SystemUnderTest.TermDetailConfigs.Count);
+            Assert.Equal(2, SystemUnderTest.TermDetailConfigs.Count);
 
             //has term  the same
             Assert.Same(SystemUnderTest.TermId, SystemUnderTest.Term.Id);
@@ -90,7 +94,15 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.NotNull(actualConfig.BaseWorkDirectoryHost);
             Assert.True(actualConfig.Active);
             Assert.False(actualConfig.Deleted);
+        }
 
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void TermWhenCreated_TypeDebt_IsValid()
+        {
+            Assert.NotEqual(0, SystemUnderTest.DebtCode);
+            Assert.Equal(54856, SystemUnderTest.DebtCode);
         }
     }
 }

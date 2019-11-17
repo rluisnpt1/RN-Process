@@ -51,7 +51,7 @@ namespace RN_Process.Tests.DataAccessTests
             IList<string> availableFieldsColumns
         )
         {
-            return new TermDetailConfig(UnitTestUtility.GetTermBaseToTeste(), communicationType, internalHost, baseWorkDir, linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword, "",authenticationCodeApp, pathToOriginFile, pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
+            return new TermDetailConfig("", UnitTestUtility.GetTermBaseToTeste(), communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword, "",authenticationCodeApp, pathToOriginFile, pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
         }
 
         [Fact]
@@ -264,7 +264,7 @@ namespace RN_Process.Tests.DataAccessTests
             // Act
             var ex = Assert.Throws<ArgumentException>(() =>
                 UnitTestUtility.GetTermDetailConfigToTest(
-                    new TermDetailConfig(UnitTestUtility.GetTermBaseToTeste(), FileAccessType.FTP, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, "", string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> { "cdb" }, new List<string> { "cdb" })));
+                    new TermDetailConfig("", UnitTestUtility.GetTermBaseToTeste(), FileAccessType.FTP, string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, "", string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, new List<string> { "cdb" }, new List<string> { "cdb" })));
 
             // Assert
             Assert.Equal("Required input 'AUTHENTICATIONLOGIN' was empty. (Parameter 'authenticationLogin')",

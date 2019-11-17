@@ -14,6 +14,7 @@ namespace RN_Process.Api.DataAccess.Entities
 {
     public class TermDetailConfig : AuditableEntity<string>
     {
+        private static string BaseWorkDir ="C:\\TEMP\\WorkDir"; //Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         [BsonIgnore] private ICollection<FileImport> _fileImport;
 
 
@@ -27,9 +28,8 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public TermDetailConfig(TermDetail termDetail, FileAccessType communicationType,
+        public TermDetailConfig(string id, TermDetail termDetail, FileAccessType communicationType,
             string internalHost,
-            string baseWorkDirectoryHost,
             string linkToAccess,
             string linkToAccessType,
             string typeOfResponse,
@@ -46,11 +46,11 @@ namespace RN_Process.Api.DataAccess.Entities
             IList<string> fileHeaderColumns,
             IList<string> availableFieldsColumns)
         {
-            Id = ObjectId.GenerateNewId().ToString();
+            Id = string.IsNullOrWhiteSpace(id) ? ObjectId.GenerateNewId().ToString() : id;
             SetTermDetail(termDetail);
             SetCommunicationType(communicationType);
             InternalHost = internalHost;
-            SetBaseWorkDirectoryHost(baseWorkDirectoryHost);
+            SetBaseWorkDirectoryHost();
             LinkToAccess = linkToAccess;
             LinkToAccessType = linkToAccessType;
             TypeOfResponse = typeOfResponse;
@@ -123,7 +123,9 @@ namespace RN_Process.Api.DataAccess.Entities
             if (!string.IsNullOrEmpty(BaseWorkDirectoryHost))
             {
                 var directoryInfo = new DirectoryInfo(BaseWorkDirectoryHost);
-                DirectoryHostServerSize = directoryInfo.GetDirectories().Length;
+
+                if (directoryInfo.Parent != null)
+                    DirectoryHostServerSize = directoryInfo.Parent.GetDirectories().Length;
             }
         }
 
@@ -135,7 +137,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         private void SetBackupHostServer(string pathToFileBackupAtHostServer)
         {
-            var clientDir = "\\backup\\" + OrgCode.ToUpper() + "\\";
+            var clientDir = $"\\backup\\{OrgCode.ToUpper()}";
 
             if (string.IsNullOrEmpty(pathToFileBackupAtHostServer))
                 PathToFileBackupAtClient = IntrumFile.CreateDirectory(PathToOriginFile + clientDir);
@@ -143,13 +145,11 @@ namespace RN_Process.Api.DataAccess.Entities
                 PathToFileBackupAtHostServer = IntrumFile.CreateDirectory(pathToFileBackupAtHostServer + clientDir);
         }
 
-        private void SetBaseWorkDirectoryHost(string baseWorkDirectoryHost)
+        private void SetBaseWorkDirectoryHost()
         {
-            var clientDir = "\\" + OrgCode.ToUpper() + "\\";
+            var clientDir = $"\\ToProcess\\{OrgCode.ToUpper()}";
 
-            BaseWorkDirectoryHost = string.IsNullOrEmpty(baseWorkDirectoryHost)
-                ? IntrumFile.CreateDirectory(RnProcessConstant.BaseWorkFolder + clientDir)
-                : IntrumFile.CreateDirectory(baseWorkDirectoryHost + clientDir);
+            BaseWorkDirectoryHost = IntrumFile.CreateDirectory(BaseWorkDir + clientDir);
         }
 
         private void SetBackupClientDirectory(string pathToFileBackupAtClient)

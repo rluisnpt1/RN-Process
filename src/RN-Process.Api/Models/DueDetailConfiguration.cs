@@ -16,6 +16,25 @@ namespace RN_Process.Api.Models
             AvailableFieldsColumns = RnProcessConstant.AvailableColumnsIntrum.ToList();
         }
 
+        public DueDetailConfiguration(string id,FileAccessType communicationType, string linkToAccess, string linkToAccessType, string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword, string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient, string fileDelimiter, IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
+        {
+            Id = id;
+            CommunicationType = communicationType;
+            LinkToAccess = linkToAccess;
+            LinkToAccessType = linkToAccessType;
+            TypeOfResponse = typeOfResponse;
+            RequiredLogin = requiredLogin;
+            AuthenticationLogin = authenticationLogin;
+            AuthenticationPassword = authenticationPassword;
+            HostkeyFingerPrint = hostkeyFingerPrint;
+            AuthenticationCodeApp = authenticationCodeApp;
+            PathToOriginFile = pathToOriginFile;
+            PathToDestinationFile = pathToDestinationFile;
+            PathToFileBackupAtClient = pathToFileBackupAtClient;
+            FileDelimiter = fileDelimiter;
+            FileHeaderColumns = fileHeaderColumns;
+            AvailableFieldsColumns = availableFieldsColumns;
+        }
         /// <summary>
         /// Type communication has been agreed 
         /// </summary>

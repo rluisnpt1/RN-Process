@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -59,79 +60,35 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        /// <summary>
-        ///     Add or update term
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="fileType"></param>
-        /// <param name="active"></param>
-        /// <param name="deleted"></param>
-        public void AddDetailConfig(string id, FileAccessType fileType, bool active = true, bool deleted = false)
+        public void AddDetailConfig(TermDetailConfig termConfig, bool active = true)
         {
-            if (!string.IsNullOrWhiteSpace(id))
-                UpdateTermConfigurationById(id, fileType, active, deleted);
+            if (!string.IsNullOrWhiteSpace(termConfig.Id))
+                UpdateTermConfiguration(termConfig, active);
             else
-                AddNewTermConfiguration(fileType);
+                AddNewTermDetailConfig(termConfig);
         }
 
-        /// <summary>
-        ///     Add new configuration
-        /// </summary>
-        /// <param name="fileType"></param>
-        private void AddNewTermConfiguration(FileAccessType fileType)
+        public void AddNewTermDetailConfig(TermDetailConfig config)
         {
-            var fact = new TermDetailConfig(this, fileType, 
-                string.Empty,
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), 
-                string.Empty, 
-                string.Empty,
-                string.Empty, 
-                false, 
-                string.Empty, 
-                string.Empty, "", 
-                string.Empty, 
-                string.Empty, 
-                string.Empty, 
-                string.Empty,
-                string.Empty, 
-                string.Empty, 
-                new List<string> { RnProcessConstant.ColumnsBaseIntrum },
-                new List<string> { RnProcessConstant.ColumnsBaseClient });
+            var fact = CreateConfiguration(config);
 
             TermDetailConfigs.Add(fact);
         }
 
-
-        public void UpdateTermConfigurationById(string id, FileAccessType fileType, bool active = true,
-            bool deleted = false)
+   
+        public void UpdateTermConfiguration(TermDetailConfig termsDetailConfig, bool active = true)
         {
             TermDetailConfig config = null;
             var foundIt = false;
 
-            if (!string.IsNullOrEmpty(id))
-                config = TermDetailConfigs.FirstOrDefault(temp => temp.Id.Equals(id)
-                                                                      && temp.TermDetailId == Id
-                                                                      && temp.TermDetail.OrgCode == OrgCode);
+            if (!string.IsNullOrEmpty(termsDetailConfig.Id))
+                config = TermDetailConfigs.FirstOrDefault(temp => temp.Id.Equals(termsDetailConfig.Id)
+                                                                  && temp.TermDetailId == Id
+                                                                  && temp.TermDetail.OrgCode == OrgCode);
 
             if (config == null)
             {
-                config = new TermDetailConfig(this, fileType,
-                    string.Empty,
-                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                    string.Empty,
-                    string.Empty,
-                    string.Empty,
-                    false,
-                    string.Empty,
-                    string.Empty, "",
-                    string.Empty,
-                    string.Empty,
-                    string.Empty,
-                    string.Empty,
-                    string.Empty,
-                    string.Empty,
-                    new List<string> { RnProcessConstant.ColumnsBaseIntrum },
-                    new List<string> { RnProcessConstant.ColumnsBaseClient });
+                config = CreateConfiguration(termsDetailConfig);
             }
             else
             {
@@ -139,11 +96,40 @@ namespace RN_Process.Api.DataAccess.Entities
                 config.ModifiedDate = DateTime.UtcNow;
                 config.ModifiedBy = "System-- need change for user";
                 config.Active = active;
-                config.Deleted = deleted;
+                config.Deleted = !active;
             }
 
             if (foundIt == false) TermDetailConfigs.Add(config);
         }
+
+        private TermDetailConfig CreateConfiguration(TermDetailConfig config)
+        {
+            var password = Encoding.ASCII.GetString(config.AuthenticationPassword);
+            var fingerPrint = Encoding.ASCII.GetString(config.HostKeyFingerPrint);
+
+            var fact = new TermDetailConfig(
+                ObjectId.GenerateNewId().ToString(), 
+                this,
+                config.CommunicationType,
+                config.InternalHost,
+                config.LinkToAccess,
+                config.LinkToAccessType,
+                config.TypeOfResponse,
+                config.RequiredLogin,
+                config.AuthenticationLogin,
+                password,
+                fingerPrint,
+                config.AuthenticationCodeApp,
+                config.PathToOriginFile,
+                config.PathToDestinationFile,
+                config.PathToFileBackupAtClient,
+                config.PathToFileBackupAtHostServer,
+                config.FileDelimiter,
+                config.FileHeaderColumns,
+                config.AvailableFieldsColumns);
+            return fact;
+        }
+
 
     }
 }
