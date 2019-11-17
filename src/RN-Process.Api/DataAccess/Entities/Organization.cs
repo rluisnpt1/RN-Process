@@ -114,13 +114,13 @@ namespace RN_Process.Api.DataAccess.Entities
             Guard.Against.Zero(typeDebt, nameof(typeDebt));
 
             if (!string.IsNullOrEmpty(id))
-                UpdateExistingTermById(id, typeDebt, termNumber);
+                UpdateExistingTermById(id, typeDebt, termNumber, termsType);
             else
                 AddNewTerm(termNumber, typeDebt, termsType);
         }
 
        
-        private void UpdateExistingTermById(string id, int debtCode, int termNumber, bool active = true, bool deleted = false)
+        private void UpdateExistingTermById(string id, int debtCode, int termNumber, TermsType termsType,bool active = true, bool deleted = false)
         {
             Term term = null;
             var foundIt = false;
@@ -130,7 +130,7 @@ namespace RN_Process.Api.DataAccess.Entities
             if (term == null)
             {
                 term = new Term(termNumber, this);
-                term.AddTermDetail(null,debtCode, TermsType.Loan);
+                term.AddTermDetail(null,debtCode, termsType);
             }
             else
             {
@@ -155,17 +155,14 @@ namespace RN_Process.Api.DataAccess.Entities
 
             var matchTerm = Terms.FirstOrDefault(fact => fact.Id == id);
 
-            if (matchTerm == null) return;
-
-            var match = matchTerm.TermDetails.FirstOrDefault(x => x.Term.Id == matchTerm.Id);
+            var match = matchTerm?.TermDetails.FirstOrDefault(x => x.Term.Id == matchTerm.Id);
 
             //if (!softDelete)
             //    Terms.Remove(matchTerm);
             //else
             
             if (match == null) return;
-
-            UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber, false, true);
+            UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber, match.TermsType, active: false, deleted: true);
         }
     }
 }

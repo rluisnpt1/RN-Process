@@ -59,8 +59,8 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public void AddTermDetail(string id, int debtCode, TermsType termType, bool active = true, bool deleted = false)
         {
-            Guard.Against.Null(debtCode,nameof(debtCode));
-            Guard.Against.Zero(debtCode,nameof(debtCode));
+            Guard.Against.Null(debtCode, nameof(debtCode));
+            Guard.Against.Zero(debtCode, nameof(debtCode));
 
             if (!string.IsNullOrWhiteSpace(id))
                 UpdateTermTermById(id, debtCode, termType, active, deleted);
@@ -98,10 +98,10 @@ namespace RN_Process.Api.DataAccess.Entities
                 termdet.ModifiedBy = "System-- need change for user";
                 termdet.Active = active;
                 termdet.Deleted = deleted;
-                
-                //var config = termdet.TermDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
-                //foreach (var item in config)
-                //    termdet.UpdateTermConfig(item);
+
+                var config = termdet.TermDetailConfigs.Where(temp => temp.TermDetailId == termdet.Id);
+                foreach (var item in config)
+                    termdet.UpdateTermConfigurationById(item.Id, item.CommunicationType, false, true);
             }
 
             if (foundIt == false) TermDetails.Add(termdet);

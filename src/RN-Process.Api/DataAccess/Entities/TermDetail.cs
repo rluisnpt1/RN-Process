@@ -145,11 +145,5 @@ namespace RN_Process.Api.DataAccess.Entities
             if (foundIt == false) TermDetailConfigs.Add(config);
         }
 
-        
-
-        public void UpdateTermConfig(TermDetailConfig item)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
