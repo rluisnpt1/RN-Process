@@ -28,18 +28,18 @@ namespace RN_Process.Tests.ServicesTests
             _sut = new OrganizationToContractOrganizationAdapter();
 
 
-       // [Fact]
-        //public void AdaptOrganizationToContractOrgnization()
-        //{
-        //    // Arrange
-        //    var fromValue = UnitTestUtility.GetCompleteOrganization();
-        //    var toValue = new ContractOrganization();
+        [Fact]
+        public void AdaptOrganizationToContractOrgnization()
+        {
+            // Arrange
+            var fromValue = UnitTestUtility.GetCompleteOrganization();
+            var toValue = new ContractOrganization();
 
-        //    // Act
-        //    SystemUnderTest.Adapt(fromValue, toValue);
+            // Act
+            SystemUnderTest.Adapt(fromValue, toValue);
 
-        //    // Assert
-        //    UnitTestUtility.AssertAreEqual(fromValue, toValue);
-        //}
+            // Assert
+            UnitTestUtility.AssertAreEqual(fromValue, toValue);
+        }
     }
 }

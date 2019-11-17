@@ -57,6 +57,7 @@ namespace RN_Process.Api.DataAccess.Entities
             RequiredLogin = requiredLogin;
             SetLogin(authenticationLogin);
             SetPassword(authenticationPassword);
+            SetHostKeyFingerPrint(hostKeyFingerPrint);
             SetAuthenticationApp(authenticationCodeApp);
             SetDirectoryFileOrigem(pathToOriginFile);
             PathToDestinationFile = pathToDestinationFile;
@@ -72,7 +73,7 @@ namespace RN_Process.Api.DataAccess.Entities
             RowVersion = new byte[0];
         }
 
-
+      
         #endregion
 
         [BsonRepresentation(BsonType.ObjectId)]
@@ -232,6 +233,10 @@ namespace RN_Process.Api.DataAccess.Entities
                 Encoding.ASCII.GetBytes(password); //CriptografiaHelper.PasswordCryptography(password);
         }
 
+        private void SetHostKeyFingerPrint(string hostKeyFingerPrint)
+        {
+           HostKeyFingerPrint = Encoding.ASCII.GetBytes(hostKeyFingerPrint);
+        }
 
         public void PasswordValidation(string currentPassword)
         {

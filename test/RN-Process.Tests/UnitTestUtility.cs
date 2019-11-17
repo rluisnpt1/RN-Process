@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using MongoDB.Bson;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Api.Models;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 
@@ -135,35 +138,56 @@ namespace RN_Process.Tests
             return list;
         }
 
-        ///// <summary>
-        ///// From Entity to Model
-        ///// </summary>
-        ///// <param name="expected"></param>
-        ///// <param name="actual"></param>
-        //public static void AssertAreEqual(ManagerTask expected, ManagerTaskModel actual)
-        //{
-        //    Assert.Equal(expected.Id, actual.Id);
-        //    Assert.Equal<string>(expected.Name, actual.Name);
-        //    Assert.Equal<string>(expected.Status, actual.Status);
-        //    Assert.Equal<int>(expected.CreationCount, actual.CreationCount);
-        //    Assert.Equal<int>(expected.ModificationCount, actual.ModificationCount);
-        //    DateTimeAssertAreEqual(expected.TimeStamp, actual.TimeStamp, TimeSpan.FromMinutes(0.1));
-        //}
+        /// <summary>
+        /// From Entity to Model
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        public static void AssertAreEqual(Organization expected, ContractOrganization actual)
+        {
+            expected.Id.Should().NotBeNullOrEmpty();
+            expected.Id.Should().BeEquivalentTo(actual.Id);
+            expected.OrgCode.Should().BeEquivalentTo(actual.CodOrg);
+            expected.Description.Should().BeEquivalentTo(actual.Description);
 
-        ///// <summary>
-        ///// From Model To Entity
-        ///// </summary>
-        ///// <param name="expected"></param>
-        ///// <param name="actual"></param>
-        //public static void AssertAreEqual(ManagerTaskModel expected, ManagerTask actual)
-        //{
-        //    Assert.Equal(expected.Id, actual.Id);
-        //    Assert.Equal(expected.Name, actual.Name);
-        //    Assert.Equal(expected.Status, actual.Status);
-        //    Assert.Equal<int>(expected.CreationCount, actual.CreationCount);
-        //    Assert.Equal<int>(expected.ModificationCount, actual.ModificationCount);
-        //    DateTimeAssertAreEqual(expected.TimeStamp, actual.TimeStamp, TimeSpan.FromMinutes(0.1));
-        //}
+
+            expected.Terms.Should().NotBeNullOrEmpty();
+            expected.Terms.Select(x => x.Id).Should().BeEquivalentTo(actual.DueId);
+            expected.Terms.Select(x => x.TermNumber).Should().BeEquivalentTo(actual.ContractNumber);
+
+            expected.TermDetails.Should().NotBeNullOrEmpty();
+            expected.TermDetails.Should().HaveCount(actual.DueDetails.Count);
+            expected.TermDetails.Count.Should().Be(1);
+            expected.TermDetails.Select(x => x.Id).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.Id));
+            expected.TermDetails.Select(x => x.DebtCode).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.DebtCode));
+            expected.TermDetails.Select(x => x.TermsType).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.TermsType));
+
+
+            expected.TermDetails.Select(x => x.TermDetailConfigs).Should().NotBeNullOrEmpty();
+            expected.TermDetails.Select(x => x.TermDetailConfigs).Should().HaveCount(actual.DueDetailConfigs.Count);
+            
+            DateTimeAssertAreEqual(expected.CreatedDate, actual.CreatedDate, TimeSpan.FromMinutes(0.1));
+            DateTimeAssertAreEqual(expected.ModifiedDate, actual.ChangedDate, TimeSpan.FromMinutes(0.1));
+
+            expected.ModifiedBy.Should().BeEquivalentTo(actual.UpdateBy);
+            expected.CreatedBy.Should().BeEquivalentTo(actual.CreatedBy);
+            expected.Active.Equals(actual.IsDeleted).Should().BeTrue();
+        }
+
+        /// <summary>
+        /// From Model To Entity
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        public static void AssertAreEqual(ContractOrganization expected, Organization actual)
+        {
+            //Assert.Equal(expected.Id, actual.Id);
+            //Assert.Equal(expected.Name, actual.Name);
+            //Assert.Equal(expected.Status, actual.Status);
+            //Assert.Equal<int>(expected.CreationCount, actual.CreationCount);
+            //Assert.Equal<int>(expected.ModificationCount, actual.ModificationCount);
+            //DateTimeAssertAreEqual(expected., actual.TimeStamp, TimeSpan.FromMinutes(0.1));
+        }
 
         /// <summary>
         ///     Date Time validate
@@ -192,6 +216,13 @@ namespace RN_Process.Tests
             if (totalSecondsDifference > maximumDelta.TotalSeconds)
                 throw new Exception(
                     $"Expected Date: {expectedDate}, Actual Date: {actualDate} \nExpected Delta: {maximumDelta}, Actual Delta in seconds- {totalSecondsDifference}");
+        }
+
+        public static Organization GetCompleteOrganization()
+        {
+            var  info = new Organization("Banco de Portual","BBP234");
+            info.AddTerm(null,1423123,45632,TermsType.Leasing);
+            return info;
         }
     }
 }

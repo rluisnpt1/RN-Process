@@ -1,35 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
 {
-    public class Due
+    public class DueDetailConfiguration
     {
-        public Due()
+        public string Id { get; set; }
+
+        public DueDetailConfiguration()
         {
             FileHeaderColumns = new List<string>() { "CLIENT_COLUM1", "CLIENT_COLUM2", "CLIENT_COLUM3" };
             AvailableFieldsColumns = RnProcessConstant.AvailableColumnsIntrum.ToList();
         }
-
-        
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Uniq code that identify the debt
-        /// </summary>
-        [Display(Name = "Debt Code (Intrum)")]
-        [Required]
-        public int DebtCode { get; set; }
-        /// <summary>
-        /// Description of debt
-        /// </summary>
-        [Display(Name = "Type Debt")]
-        [Required]
-        public TermsType TermsType { get; set; }
 
         /// <summary>
         /// Type communication has been agreed 
@@ -66,7 +51,7 @@ namespace RN_Process.Api.Models
         public string AuthenticationLogin { get; set; }
 
         [Display(Name = "Password")]
-        public byte[] AuthenticationPassword { get; set; }
+        public string AuthenticationPassword { get; set; }
 
 
         [Display(Name = "SSH Host key Finger Print ")]
@@ -103,11 +88,6 @@ namespace RN_Process.Api.Models
         [Required]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public IList<string> AvailableFieldsColumns { get; set; }
-
-        [JsonIgnore]
-        public bool IsDeleted { get; set; }
-
-
 
     }
 }
