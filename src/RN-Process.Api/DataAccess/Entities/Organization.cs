@@ -82,12 +82,7 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        /// <summary>
-        /// </summary>
-        /// <param name="termNumber"></param>
-        /// <param name="typeDebt"></param>
-        /// <param name="debtDescription"></param>
-        public void AddNewTerm(int termNumber, int typeDebt)
+        public void AddNewTerm(int termNumber, int typeDebt, TermsType termsType)
         {
             //create term
             var fact = new Term(termNumber, this);
@@ -96,7 +91,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Terms.Add(fact);
 
             //base configuration
-            fact.AddTermDetail(null, typeDebt, TermsType.Loan, true, false);
+            fact.AddTermDetail(null, typeDebt,termsType , true, false);
 
             //add term configuration details to list term configuration details list of organization
             TermDetails = fact.TermDetails;
@@ -109,8 +104,9 @@ namespace RN_Process.Api.DataAccess.Entities
         /// <param name="id"></param>
         /// <param name="termNumber"></param>
         /// <param name="typeDebt"></param>
+        /// <param name="termsType"></param>
         /// <param name="debtDescription"></param>
-        public void AddTerm(string id, int termNumber, int typeDebt)
+        public void AddTerm(string id, int termNumber, int typeDebt, TermsType termsType)
         {
             Guard.Against.Null(termNumber, nameof(termNumber));
             Guard.Against.Zero(termNumber, nameof(termNumber));
@@ -120,7 +116,7 @@ namespace RN_Process.Api.DataAccess.Entities
             if (!string.IsNullOrEmpty(id))
                 UpdateExistingTermById(id, typeDebt, termNumber);
             else
-                AddNewTerm(termNumber, typeDebt);
+                AddNewTerm(termNumber, typeDebt, termsType);
         }
 
        

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Shared.Enums;
 using Xunit;
 
 namespace RN_Process.Tests.DataAccessTests
@@ -27,8 +28,8 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void RemoveOrganizationTermByInvalidId_TheTermsAreNotRemoved()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651);
-            SystemUnderTest.AddTerm(null, 95, 6652);
+            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan);
+            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan);
 
 
             SystemUnderTest.RemoveTerms("21");
@@ -39,8 +40,8 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void RemoveOrganizationTermNullId_TheTermsAreNotRemoved()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651);
-            SystemUnderTest.AddTerm(null, 95, 6652);
+            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan);
+            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan);
 
 
             SystemUnderTest.RemoveTerms(null);
@@ -72,8 +73,8 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void RemoveOrganizationTermWhithSoftDeleteTrueById_ThenConfigurationDetailRelated_ShouldNotBeActive()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651);
-            SystemUnderTest.AddTerm(null, 95, 6652);
+            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan);
+            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan);
 
             var term = SystemUnderTest.Terms.First();
             var config = term.TermDetails.FirstOrDefault(x => x.TermId == term.Id);
@@ -109,8 +110,8 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void RemoveOrganizationTermWhithSoftDeleteTrueById_ThenTermIsRemoved()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651);
-            SystemUnderTest.AddTerm(null, 95, 6652);
+            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan);
+            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan);
             var actual21 = SystemUnderTest.Terms.First();
 
             SystemUnderTest.RemoveTerms(actual21.Id);
@@ -270,7 +271,7 @@ namespace RN_Process.Tests.DataAccessTests
         public void WhenOrganizationAddTerm_TheTermTermIsCreated()
         {
             //act
-            SystemUnderTest.AddTerm(null, 99, 6651);
+            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan);
 
             //has term
             Assert.Equal(1, SystemUnderTest.Terms.Count);
@@ -302,7 +303,7 @@ namespace RN_Process.Tests.DataAccessTests
         {
             //act
 
-            SystemUnderTest.AddTerm(null, 99, 665);
+            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan);
 
             Assert.Equal(1, SystemUnderTest.Terms.Count);
             //get term from organization
@@ -319,7 +320,7 @@ namespace RN_Process.Tests.DataAccessTests
         {
             //act
 
-            SystemUnderTest.AddTerm(null, 99, 665);
+            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan);
 
             Assert.Equal(1, SystemUnderTest.Terms.Count);
             //get term from organization
@@ -341,13 +342,13 @@ namespace RN_Process.Tests.DataAccessTests
         {
             //act
 
-            SystemUnderTest.AddTerm(null, 99, 6651);
-            SystemUnderTest.AddTerm(null, 99, 665);
-            SystemUnderTest.AddTerm(null, 1233, 665);
+            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan);
+            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan);
+            SystemUnderTest.AddTerm(null, 1233, 665, TermsType.Loan);
 
             //Update Existent
             var actual21 = SystemUnderTest.Terms.Take(1).First();
-            SystemUnderTest.AddTerm(actual21.Id, 99, 34455);
+            SystemUnderTest.AddTerm(actual21.Id, 99, 34455, TermsType.Loan);
 
             Assert.Equal(3, SystemUnderTest.Terms.Count);
             //get term from organization
@@ -365,8 +366,8 @@ namespace RN_Process.Tests.DataAccessTests
         {
             //act
 
-            SystemUnderTest.AddTerm(null, 99, 6651);
-            SystemUnderTest.AddTerm(null, 99, 665);
+            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan);
+            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan);
 
             Assert.Equal(2, SystemUnderTest.Terms.Count);
             //get term from organization
