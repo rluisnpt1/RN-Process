@@ -60,35 +60,76 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public void AddDetailConfig(TermDetailConfig termConfig, bool active = true)
+        public void AddDetailConfig(string id, FileAccessType communicationType, string internalHost,
+                                    string linkToAccess, string linkToAccessType, string typeOfResponse,
+                                    bool requiredLogin, string authenticationLogin, string authenticationPassword,
+                                    string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+                                    string pathToDestinationFile, string pathToFileBackupAtClient,
+                                    string pathToFileBackupAtHostServer, string fileDeLimiter,
+                                    IList<string> fileHeaderColumns, IList<string> availableFieldsColumns,
+                                    bool active = true)
         {
-            if (!string.IsNullOrWhiteSpace(termConfig.Id))
-                UpdateTermConfiguration(termConfig, active);
+            if (!string.IsNullOrWhiteSpace(id))
+                UpdateTermConfiguration(id, communicationType, internalHost, linkToAccess, linkToAccessType,
+                                        typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword,
+                                        hostKeyFingerPrint, authenticationCodeApp, pathToOriginFile,
+                                        pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer,
+                                        fileDeLimiter, fileHeaderColumns, availableFieldsColumns, active);
             else
-                AddNewTermDetailConfig(termConfig);
+                AddNewTermDetailConfig(communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
+                                       requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                                       authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                                       pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                                       fileHeaderColumns, availableFieldsColumns);
         }
 
-        public void AddNewTermDetailConfig(TermDetailConfig config)
+        
+
+        public void AddNewTermDetailConfig(FileAccessType communicationType, string internalHost, string linkToAccess,
+                                           string linkToAccessType, string typeOfResponse, bool requiredLogin,
+                                           string authenticationLogin, string authenticationPassword,
+                                           string hostKeyFingerPrint, string authenticationCodeApp,
+                                           string pathToOriginFile, string pathToDestinationFile,
+                                           string pathToFileBackupAtClient, string pathToFileBackupAtHostServer,
+                                           string fileDeLimiter, IList<string> fileHeaderColumns,
+                                           IList<string> availableFieldsColumns)
         {
-            var fact = CreateConfiguration(config);
+            var fact = CreateConfiguration(communicationType, internalHost, linkToAccess, linkToAccessType,
+                                           typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword,
+                                           hostKeyFingerPrint, authenticationCodeApp, pathToOriginFile,
+                                           pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer,
+                                           fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
 
             TermDetailConfigs.Add(fact);
         }
 
-   
-        public void UpdateTermConfiguration(TermDetailConfig termsDetailConfig, bool active = true)
+
+        public void UpdateTermConfiguration(string id, FileAccessType communicationType, string internalHost,
+                                            string linkToAccess, string linkToAccessType, string typeOfResponse,
+                                            bool requiredLogin, string authenticationLogin,
+                                            string authenticationPassword, string hostKeyFingerPrint,
+                                            string authenticationCodeApp, string pathToOriginFile,
+                                            string pathToDestinationFile, string pathToFileBackupAtClient,
+                                            string pathToFileBackupAtHostServer, string fileDeLimiter,
+                                            IList<string> fileHeaderColumns, IList<string> availableFieldsColumns,
+                                            bool active = true)
         {
             TermDetailConfig config = null;
             var foundIt = false;
 
-            if (!string.IsNullOrEmpty(termsDetailConfig.Id))
-                config = TermDetailConfigs.FirstOrDefault(temp => temp.Id.Equals(termsDetailConfig.Id)
+            if (!string.IsNullOrEmpty(id))
+                config = TermDetailConfigs.FirstOrDefault(temp => temp.Id.Equals(id)
                                                                   && temp.TermDetailId == Id
                                                                   && temp.TermDetail.OrgCode == OrgCode);
 
             if (config == null)
             {
-                config = CreateConfiguration(termsDetailConfig);
+                config = CreateConfiguration(communicationType, internalHost, linkToAccess, linkToAccessType,
+                                             typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword,
+                                             hostKeyFingerPrint, authenticationCodeApp, pathToOriginFile,
+                                             pathToDestinationFile, pathToFileBackupAtClient,
+                                             pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns,
+                                             availableFieldsColumns);
             }
             else
             {
@@ -102,31 +143,23 @@ namespace RN_Process.Api.DataAccess.Entities
             if (foundIt == false) TermDetailConfigs.Add(config);
         }
 
-        private TermDetailConfig CreateConfiguration(TermDetailConfig config)
+        private TermDetailConfig CreateConfiguration(FileAccessType communicationType, string internalHost,
+                                                     string linkToAccess, string linkToAccessType, string typeOfResponse,
+                                                     bool requiredLogin, string authenticationLogin,
+                                                     string authenticationPassword, string hostKeyFingerPrint,
+                                                     string authenticationCodeApp, string pathToOriginFile,
+                                                     string pathToDestinationFile, string pathToFileBackupAtClient,
+                                                     string pathToFileBackupAtHostServer, string fileDeLimiter,
+                                                     IList<string> fileHeaderColumns,
+                                                     IList<string> availableFieldsColumns)
         {
-            var password = Encoding.ASCII.GetString(config.AuthenticationPassword);
-            var fingerPrint = Encoding.ASCII.GetString(config.HostKeyFingerPrint);
 
-            var fact = new TermDetailConfig(
-                ObjectId.GenerateNewId().ToString(), 
-                this,
-                config.CommunicationType,
-                config.InternalHost,
-                config.LinkToAccess,
-                config.LinkToAccessType,
-                config.TypeOfResponse,
-                config.RequiredLogin,
-                config.AuthenticationLogin,
-                password,
-                fingerPrint,
-                config.AuthenticationCodeApp,
-                config.PathToOriginFile,
-                config.PathToDestinationFile,
-                config.PathToFileBackupAtClient,
-                config.PathToFileBackupAtHostServer,
-                config.FileDelimiter,
-                config.FileHeaderColumns,
-                config.AvailableFieldsColumns);
+            var fact = new TermDetailConfig(ObjectId.GenerateNewId().ToString(), this, communicationType, internalHost,
+                                            linkToAccess, linkToAccessType, typeOfResponse, requiredLogin,
+                                            authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                                            authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                                            pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                                            fileHeaderColumns, availableFieldsColumns);
             return fact;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using MongoDB.Bson.IO;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Shared.Enums;
@@ -66,6 +67,7 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty, string.Empty,
                 new List<string> {""}, new List<string> {""});
+
             var teste2 = new TermDetailConfig(null, SystemUnderTest, FileAccessType.Email,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, false, string.Empty, string.Empty,
@@ -73,8 +75,42 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty, string.Empty, string.Empty,
                 new List<string> {""}, new List<string> {""});
 
-            SystemUnderTest.AddDetailConfig(teste1);
-            SystemUnderTest.AddDetailConfig(teste2);
+            SystemUnderTest.AddDetailConfig(string.Empty, 
+                teste1.CommunicationType,
+                string.Empty,
+                teste1.LinkToAccess,
+                teste1.LinkToAccessType,
+                teste1.TypeOfResponse,
+                teste1.RequiredLogin,
+                teste1.AuthenticationLogin,
+                Encoding.ASCII.GetString(teste1.AuthenticationPassword),
+                Encoding.ASCII.GetString(teste1.HostKeyFingerPrint),
+                teste1.AuthenticationCodeApp,
+                teste1.PathToOriginFile,
+                teste1.PathToDestinationFile,
+                teste1.PathToFileBackupAtClient,
+                string.Empty,
+                teste1.FileDelimiter,
+                teste1.FileHeaderColumns,
+                teste1.AvailableFieldsColumns);
+            SystemUnderTest.AddDetailConfig(string.Empty,
+                teste2.CommunicationType,
+                string.Empty,
+                teste2.LinkToAccess,
+                teste2.LinkToAccessType,
+                teste2.TypeOfResponse,
+                teste2.RequiredLogin,
+                teste2.AuthenticationLogin,
+                Encoding.ASCII.GetString(teste2.AuthenticationPassword),
+                Encoding.ASCII.GetString(teste2.HostKeyFingerPrint),
+                teste2.AuthenticationCodeApp,
+                teste2.PathToOriginFile,
+                teste2.PathToDestinationFile,
+                teste2.PathToFileBackupAtClient,
+                string.Empty,
+                teste2.FileDelimiter,
+                teste2.FileHeaderColumns,
+                teste2.AvailableFieldsColumns); ;
 
             //has configurations
             Assert.Equal(2, SystemUnderTest.TermDetailConfigs.Count);

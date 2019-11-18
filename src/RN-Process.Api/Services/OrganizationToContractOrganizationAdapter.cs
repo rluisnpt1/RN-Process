@@ -31,7 +31,8 @@ namespace RN_Process.Api.Services
             toValue.IsDeleted = fromValue.Active;
 
 
-            foreach (var item in fromValue.TermDetails.GetTermDetails(fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
+            foreach (var item in fromValue.TermDetails.GetTermDetails(
+                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
             {
                 toValue.DueId = item.TermId;
 
@@ -43,6 +44,7 @@ namespace RN_Process.Api.Services
                 };
 
                 toValue.DueDetails.Add(tempDt);
+
 
                 var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
 
@@ -67,12 +69,13 @@ namespace RN_Process.Api.Services
                     PathToFileBackupAtClient = configTemp.PathToFileBackupAtClient,
                     FileDelimiter = configTemp.FileDelimiter
                 };
-                toValue.DueDetailConfigs.Add(config);
+
+                toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
+                // toValue.DueDetailConfigs.Add(config);
             }
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="fromValues"></param>
         /// <param name="toValues"></param>
@@ -93,38 +96,43 @@ namespace RN_Process.Api.Services
             }
         }
 
-
-        public void Adapt(ContractOrganization fromValue, string description, string codOrg)
+        public void Adapt(ContractOrganization fromValue, Organization organization)
         {
             Guard.Against.Null(fromValue, nameof(ContractOrganization));
-            Guard.Against.NullOrWhiteSpace(description, nameof(description));
-            Guard.Against.NullOrWhiteSpace(codOrg, nameof(codOrg));
+            Guard.Against.Null(organization, nameof(Organization));
 
-
-            var newOrg = new Organization(description, codOrg);
-
-            AdaptDueDetail(fromValue,newOrg);
+            AdaptDueDetail(fromValue, organization);
         }
 
-        private void AdaptDueDetail(ContractOrganization fromValue, Organization newOrg)
+        private void AdaptDueDetail(ContractOrganization fromValue, Organization organization)
         {
-            foreach (var item in fromValue.DueDetails)
-            {
+            foreach (var itemDetailModel in fromValue.DueDetails)
                 if (fromValue.IsDeleted == false)
-                {
-                    //newOrg.AddTerm(item.Id,fromValue.ContractNumber,item.DebtCode,item.TermsType);
-
-                    foreach (var newOrgTermDetail in newOrg.TermDetails)
-                    {
-                      //  newOrgTermDetail.TermDetailConfigs.Select(x => newOrgTermDetail.AddDetailConfig(x) )
-
-                    }
-                }else if (fromValue.IsDeleted == true && !string.IsNullOrWhiteSpace(item.Id))
-                {
-                    newOrg.RemoveTerms(item.Id);
-                }
-            }
+                    foreach (var dueDetailConfiguration in itemDetailModel.DueDetailConfigs)
+                        organization.AddTerm(itemDetailModel.Id,
+                            fromValue.ContractNumber,
+                            itemDetailModel.DebtCode,
+                            itemDetailModel.TermsType,
+                            dueDetailConfiguration.CommunicationType,
+                            string.Empty,
+                            dueDetailConfiguration.LinkToAccess,
+                            dueDetailConfiguration.LinkToAccessType,
+                            dueDetailConfiguration.TypeOfResponse,
+                            dueDetailConfiguration.RequiredLogin,
+                            dueDetailConfiguration.AuthenticationLogin,
+                            dueDetailConfiguration.AuthenticationPassword,
+                            dueDetailConfiguration.HostkeyFingerPrint,
+                            dueDetailConfiguration.AuthenticationCodeApp,
+                            dueDetailConfiguration.PathToOriginFile,
+                            dueDetailConfiguration.PathToDestinationFile,
+                            dueDetailConfiguration.PathToFileBackupAtClient,
+                            string.Empty,
+                            dueDetailConfiguration.FileDelimiter,
+                            dueDetailConfiguration.FileHeaderColumns,
+                            dueDetailConfiguration.AvailableFieldsColumns
+                        );
+                else if (fromValue.IsDeleted && !string.IsNullOrWhiteSpace(itemDetailModel.Id))
+                    organization.RemoveTerms(itemDetailModel.Id);
         }
-   
     }
 }

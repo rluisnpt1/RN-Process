@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using FluentAssertions;
 using MongoDB.Bson;
 using RN_Process.Api.DataAccess.Entities;
@@ -78,7 +79,7 @@ namespace RN_Process.Tests
 
         public static TermDetailConfig GetTermDetailConfigToTest()
         {
-            return new TermDetailConfig(null, 
+            return new TermDetailConfig(null,
                 GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir,
                 "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null,
                 BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum",
@@ -122,69 +123,76 @@ namespace RN_Process.Tests
         }
 
 
-        public static List<Term> GetManyTermOrganizationToTest()
+        public static TermDetailConfig TermDetailIdNull()
         {
-            var list = new List<Term>();
-
-            var listc = new Term(14533686, GetBancoPortugalOrganizationToTest());
-            var listb = new Term(14533686, GetBancoPortugalOrganizationToTest());
-            list.Add(listc);
-            list.Add(listb);
-            return list;
+            return new TermDetailConfig(null, GetTermBaseToTeste(), FileAccessType.LocalMachine,
+                string.Empty, "C://Temp", string.Empty,
+                string.Empty, false, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty, string.Empty,
+                new List<string> { "" }, new List<string> { "" });
         }
 
-        /// <summary>
-        ///     From Entity to Model
-        /// </summary>
-        /// <param name="expected"></param>
-        /// <param name="actual"></param>
-        public static void AssertAreEqual(Organization expected, ContractOrganization actual)
+        public static Organization GetCompleteOrganization()
         {
-            expected.Id.Should().NotBeNullOrEmpty();
-            expected.Id.Should().BeEquivalentTo(actual.Id);
-            expected.OrgCode.Should().BeEquivalentTo(actual.CodOrg);
-            expected.Description.Should().BeEquivalentTo(actual.Description);
+            var info = new Organization("Banco de Portual", "BBP234");
 
-
-            expected.Terms.Should().NotBeNullOrEmpty();
-            expected.Terms.Select(x => x.Id).Should().BeEquivalentTo(actual.DueId);
-            expected.Terms.Select(x => x.TermNumber).Should().BeEquivalentTo(actual.ContractNumber);
-
-            expected.TermDetails.Should().NotBeNullOrEmpty();
-            expected.TermDetails.Should().HaveCount(actual.DueDetails.Count);
-            expected.TermDetails.Count.Should().Be(1);
-            expected.TermDetails.Select(x => x.Id).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.Id));
-            expected.TermDetails.Select(x => x.DebtCode).Should()
-                .BeEquivalentTo(actual.DueDetails.Select(x => x.DebtCode));
-            expected.TermDetails.Select(x => x.TermsType).Should()
-                .BeEquivalentTo(actual.DueDetails.Select(x => x.TermsType));
-
-
-            expected.TermDetails.Select(x => x.TermDetailConfigs).Should().NotBeNullOrEmpty();
-            expected.TermDetails.Select(x => x.TermDetailConfigs).Should().HaveCount(actual.DueDetailConfigs.Count);
-
-            DateTimeAssertAreEqual(expected.CreatedDate, actual.CreatedDate, TimeSpan.FromMinutes(0.1));
-            DateTimeAssertAreEqual(expected.ModifiedDate, actual.ChangedDate, TimeSpan.FromMinutes(0.1));
-
-            expected.ModifiedBy.Should().BeEquivalentTo(actual.UpdateBy);
-            expected.CreatedBy.Should().BeEquivalentTo(actual.CreatedBy);
-            expected.Active.Equals(actual.IsDeleted).Should().BeTrue();
+            var detailConfig = TermDetailIdNull();
+            info.AddTerm(null, 1423123, 45632, TermsType.Leasing,
+                detailConfig.CommunicationType,
+                detailConfig.InternalHost,
+                detailConfig.LinkToAccess,
+                detailConfig.LinkToAccessType,
+                detailConfig.TypeOfResponse,
+                detailConfig.RequiredLogin,
+                detailConfig.AuthenticationLogin,
+                Encoding.ASCII.GetString(detailConfig.AuthenticationPassword),
+                Encoding.ASCII.GetString(detailConfig.HostKeyFingerPrint),
+                detailConfig.AuthenticationCodeApp,
+                detailConfig.PathToOriginFile,
+                detailConfig.PathToDestinationFile,
+                detailConfig.PathToFileBackupAtClient,
+                detailConfig.PathToFileBackupAtHostServer,
+                detailConfig.FileDelimiter,
+                detailConfig.FileHeaderColumns,
+                detailConfig.AvailableFieldsColumns
+            );
+            return info;
         }
 
-        /// <summary>
-        ///     From Model To Entity
-        /// </summary>
-        /// <param name="expected"></param>
-        /// <param name="actual"></param>
-        public static void AssertAreEqual(ContractOrganization expected, Organization actual)
+        public static ContractOrganization GetContractOrganizationModel()
         {
-            expected.Id.Should().NotBeNullOrEmpty();
-            expected.Id.Should().BeEquivalentTo(actual.Id);
-            expected.CodOrg.Should().BeEquivalentTo(actual.OrgCode);
-            expected.Description.Should().BeEquivalentTo(actual.Description);
+            var infoModel = new ContractOrganization
+            {
+                Description = "banco da china",
+                CodOrg = "BCD8@565",
+                ContractNumber = 44552368
+            };
+            infoModel.AddDueDetail(556698, TermsType.Leasing);
 
-            expected.DueId.Should().BeEquivalentTo(actual.Terms.Select(x => x.Id).FirstOrDefault());
+            var dueDetails = infoModel.DueDetails.Select(x => x);
+            foreach (var dueDetail in dueDetails)
+                dueDetail.AddDueDetailConfigs(null, FileAccessType.FTP,
+                    "SFTP://ftp.unicre.pt",
+                    "C://Desktop",
+                    "",
+                    true,
+                    "logi",
+                    "ih3bb6",
+                    "",
+                    null,
+                    BaseWorkdir,
+                    "SFTP",
+                    "FTP",
+                    ",",
+                    new List<string> { "NDIV", "COD_CRED", "VAL1" },
+                    RnProcessConstant.AvailableColumnsIntrum
+                );
+
+            return infoModel;
         }
+
+
 
         /// <summary>
         ///     Date Time validate
@@ -215,45 +223,88 @@ namespace RN_Process.Tests
                     $"Expected Date: {expectedDate}, Actual Date: {actualDate} \nExpected Delta: {maximumDelta}, Actual Delta in seconds- {totalSecondsDifference}");
         }
 
-        public static TermDetailConfig TermDetailIdNull()
+        /// <summary>
+        ///     From Entity to Model
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        public static void AssertAreEqual(Organization expected, ContractOrganization actual)
         {
-           return new TermDetailConfig(null, GetTermBaseToTeste(), FileAccessType.LocalMachine,
-                string.Empty, string.Empty, string.Empty,
-                string.Empty, false, string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty, string.Empty,
-                new List<string> { "" }, new List<string> { "" });
+            expected.Id.Should().NotBeNullOrEmpty();
+            expected.Id.Should().BeEquivalentTo(actual.Id);
+            expected.OrgCode.Should().BeEquivalentTo(actual.CodOrg);
+            expected.Description.Should().BeEquivalentTo(actual.Description);
+
+
+            expected.Terms.Should().NotBeNullOrEmpty();
+            expected.Terms.Select(x => x.Id).Should().BeEquivalentTo(actual.DueId);
+            expected.Terms.Select(x => x.TermNumber).Should().BeEquivalentTo(actual.ContractNumber);
+
+            expected.TermDetails.Should().NotBeNullOrEmpty();
+            expected.TermDetails.Should().HaveCount(actual.DueDetails.Count);
+            expected.TermDetails.Count.Should().Be(1);
+            expected.TermDetails.Select(x => x.Id).Should().BeEquivalentTo(actual.DueDetails.Select(x => x.Id));
+            expected.TermDetails.Select(x => x.DebtCode).Should()
+                .BeEquivalentTo(actual.DueDetails.Select(x => x.DebtCode));
+            expected.TermDetails.Select(x => x.TermsType).Should()
+                .BeEquivalentTo(actual.DueDetails.Select(x => x.TermsType));
+
+
+            expected.TermDetails.Select(x => x.TermDetailConfigs).Should().NotBeNullOrEmpty();
+            expected.TermDetails.Select(x => x.TermDetailConfigs).Should()
+                .HaveCount(actual.DueDetails.Select(x => x.DueDetailConfigs.Count).Count());
+
+            DateTimeAssertAreEqual(expected.CreatedDate, actual.CreatedDate, TimeSpan.FromMinutes(0.1));
+            DateTimeAssertAreEqual(expected.ModifiedDate, actual.ChangedDate, TimeSpan.FromMinutes(0.1));
+
+            expected.ModifiedBy.Should().BeEquivalentTo(actual.UpdateBy);
+            expected.CreatedBy.Should().BeEquivalentTo(actual.CreatedBy);
+            expected.Active.Equals(actual.IsDeleted).Should().BeTrue();
         }
 
-        public static Organization GetCompleteOrganization()
+        /// <summary>
+        ///     From Model To Entity
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        public static void AssertAreEqual(ContractOrganization expected, Organization actual)
         {
-            var info = new Organization("Banco de Portual", "BBP234");
-            info.AddTerm(null, 1423123, 45632, TermsType.Leasing, TermDetailIdNull());
-            return info;
+
+            //model side is null actual not null
+            expected.Id.Should().BeNullOrEmpty();
+
+            actual.Should().NotBeNull();
+            actual.Id.Should().NotBeNullOrEmpty();
+            actual.Terms.Select(x => x.Id).Should().NotBeNullOrEmpty();
+            actual.Terms.Select(x => x.TermDetails.Select(x => x.Id)).Should().NotBeNullOrEmpty();
+
+            expected.CodOrg.Should().BeEquivalentTo(actual.OrgCode);
+            expected.Description.Should().BeEquivalentTo(actual.Description);
+
+            expected.DueDetails.Should().NotBeNullOrEmpty();
+            expected.DueDetails.Should().HaveCount(actual.TermDetails.Count);
+            expected.DueDetails.Select(x => x.DueDetailConfigs).Should()
+                .HaveCount(actual.TermDetails.Select(x => x.TermDetailConfigs.Count).Max());
+
+            //model side is null actual not null
+            expected.DueId.Should().BeNullOrEmpty();
+
+            //verify data in terms
+            expected.ContractNumber.Should().BeGreaterThan(0);
+            expected.ContractNumber.Should().Be(actual.Terms.Select(x => x.TermNumber).FirstOrDefault());
+            expected.CodOrg.Should().Be(actual.Terms.Select(x => x.OrgCode).FirstOrDefault());
+
+            expected.DueDetails.Select(x => x.DueDetailConfigs.Count)
+                .Should().HaveCount(actual.TermDetails.Select(x => x.TermDetailConfigs.Count).Max());
+            //.AllBeEquivalentTo(actual.TermDetails.Select(s => s.DebtCode));
+
+            DateTimeAssertAreEqual(DateTime.UtcNow, actual.CreatedDate, TimeSpan.FromMinutes(0.1));
+            actual.Active.Should().BeTrue();
+            actual.Deleted.Should().BeFalse();
+            actual.CreatedBy.Should().NotBeNullOrEmpty();
+            actual.ModifiedDate.Should().BeNull();
+            actual.ModifiedBy.Should().BeNull();
         }
 
-        public static ContractOrganization GetContractOrganizationModel()
-        {
-            var infoModel = new ContractOrganization();
-            infoModel.AddDueDetail(556698, TermsType.Leasing);
-
-            infoModel.AddDueDetailConfigs(null,FileAccessType.FTP,
-                "SFTP://ftp.unicre.pt",
-                "C://Desktop",
-                "",
-                true,
-                "logi",
-                "ih3bb6",
-                "",
-                null,
-                BaseWorkdir,
-                "SFTP",
-                "FTP",
-                ",",
-                new List<string> { "NDIV", "COD_CRED", "VAL1" },
-                RnProcessConstant.AvailableColumnsIntrum
-                );
-            return infoModel;
-        }
     }
 }

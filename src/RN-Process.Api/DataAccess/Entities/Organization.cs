@@ -83,7 +83,13 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public void AddNewTerm(int termNumber, int typeDebt, TermsType termsType, TermDetailConfig detailConfig)
+        public void AddNewTerm(int termNumber, int typeDebt, TermsType termsType, FileAccessType communicationType, string internalHost,
+                                    string linkToAccess, string linkToAccessType, string typeOfResponse,
+                                    bool requiredLogin, string authenticationLogin, string authenticationPassword,
+                                    string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+                                    string pathToDestinationFile, string pathToFileBackupAtClient,
+                                    string pathToFileBackupAtHostServer, string fileDeLimiter,
+                                    IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             //create term
             var fact = new Term(termNumber, this);
@@ -92,37 +98,46 @@ namespace RN_Process.Api.DataAccess.Entities
             Terms.Add(fact);
 
             //base configuration
-            fact.AddTermDetail(null, typeDebt, termsType, detailConfig);
+            fact.AddTermDetail(null, typeDebt, termsType, communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
+                                       requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                                       authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                                       pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                                       fileHeaderColumns, availableFieldsColumns);
 
             //add term configuration details to list term configuration details list of organization
             TermDetails = fact.TermDetails;
         }
 
 
-        /// <summary>
-        ///     Add term
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="termNumber"></param>
-        /// <param name="typeDebt"></param>
-        /// <param name="termsType"></param>
-        /// <param name="debtDescription"></param>
-        public void AddTerm(string id, int termNumber, int typeDebt, TermsType termsType, TermDetailConfig detailConfig)
+        public void AddTerm(string id, int termNumber, int typeDebt, TermsType termsType, FileAccessType communicationType, string internalHost,
+                                    string linkToAccess, string linkToAccessType, string typeOfResponse,
+                                    bool requiredLogin, string authenticationLogin, string authenticationPassword,
+                                    string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+                                    string pathToDestinationFile, string pathToFileBackupAtClient,
+                                    string pathToFileBackupAtHostServer, string fileDeLimiter,
+                                    IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             Guard.Against.Null(termNumber, nameof(termNumber));
             Guard.Against.Zero(termNumber, nameof(termNumber));
             Guard.Against.Null(typeDebt, nameof(typeDebt));
             Guard.Against.Zero(typeDebt, nameof(typeDebt));
 
+            Guard.Against.NullOrEmpty(linkToAccess, nameof(linkToAccess));
+            Guard.Against.NullOrEmpty(fileHeaderColumns, nameof(fileHeaderColumns));
+            Guard.Against.NullOrEmpty(availableFieldsColumns, nameof(availableFieldsColumns));
+
             if (!string.IsNullOrEmpty(id))
-                UpdateExistingTermById(id, typeDebt, termNumber, termsType, detailConfig);
+                UpdateExistingTermById(id, typeDebt, termNumber, termsType);
             else
-                AddNewTerm(termNumber, typeDebt, termsType, detailConfig);
+                AddNewTerm(termNumber, typeDebt, termsType, communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
+                                       requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                                       authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                                       pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                                       fileHeaderColumns, availableFieldsColumns);
         }
 
 
-        private void UpdateExistingTermById(string id, int debtCode, int termNumber,
-            TermsType termsType, TermDetailConfig detailConfig, bool active = true)
+        private void UpdateExistingTermById(string id, int debtCode, int termNumber, TermsType termsType, bool active = true)
         {
             Term term = null;
             var foundIt = false;
@@ -132,7 +147,7 @@ namespace RN_Process.Api.DataAccess.Entities
             if (term == null)
             {
                 term = new Term(termNumber, this);
-                term.AddTermDetail(null, debtCode, termsType, detailConfig);
+                //term.AddTermDetail(null, debtCode, termsType);
             }
             else
             {
@@ -147,7 +162,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 foreach (var item in config)
                 {
                     var first = item.TermDetailConfigs.First(x => x.TermDetailId == item.Id);
-                    term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, first, active);
+                    term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, active);
                 }
             }
 
@@ -169,8 +184,7 @@ namespace RN_Process.Api.DataAccess.Entities
             if (match == null) return;
 
             var first = match.TermDetailConfigs.First(x => x.TermDetailId == match.Id);
-            UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber,
-                    match.TermsType, first, false);
+            UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber, match.TermsType, false);
 
 
         }

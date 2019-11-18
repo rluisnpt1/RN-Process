@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -57,27 +58,49 @@ namespace RN_Process.Api.DataAccess.Entities
             TermNumber = termNumber;
         }
 
-        public void AddTermDetail(string id, int debtCode, TermsType termType, TermDetailConfig detailConfig, bool active = true)
+        public void AddTermDetail(string id, int debtCode, TermsType termType,
+                                    FileAccessType communicationType, string internalHost,
+                                    string linkToAccess, string linkToAccessType, string typeOfResponse,
+                                    bool requiredLogin, string authenticationLogin, string authenticationPassword,
+                                    string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+                                    string pathToDestinationFile, string pathToFileBackupAtClient,
+                                    string pathToFileBackupAtHostServer, string fileDeLimiter,
+                                    IList<string> fileHeaderColumns, IList<string> availableFieldsColumns, bool active = true)
         {
             Guard.Against.Null(debtCode, nameof(debtCode));
             Guard.Against.Zero(debtCode, nameof(debtCode));
 
             if (!string.IsNullOrWhiteSpace(id))
-                UpdateTermTermById(id, debtCode, termType, detailConfig, active);
+                UpdateTermTermById(id, debtCode, termType, active);
             else
-                AddNewTermDetails(debtCode, termType, detailConfig);
+                AddNewTermDetails(debtCode, termType, communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
+                                       requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                                       authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                                       pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                                       fileHeaderColumns, availableFieldsColumns);
         }
 
-        private void AddNewTermDetails(int debtCode, TermsType termType, TermDetailConfig detailConfig)
+        private void AddNewTermDetails(int debtCode, TermsType termType, FileAccessType communicationType, string internalHost,
+                                    string linkToAccess, string linkToAccessType, string typeOfResponse,
+                                    bool requiredLogin, string authenticationLogin, string authenticationPassword,
+                                    string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+                                    string pathToDestinationFile, string pathToFileBackupAtClient,
+                                    string pathToFileBackupAtHostServer, string fileDeLimiter,
+                                    IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             var fact = new TermDetail(debtCode, termType, this);
 
             TermDetails.Add(fact);
-            fact.AddDetailConfig(detailConfig);
+
+            fact.AddDetailConfig(null,communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
+                                       requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                                       authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                                       pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                                       fileHeaderColumns, availableFieldsColumns);
         }
 
-
-        public void UpdateTermTermById(string id, int debtCode, TermsType term, TermDetailConfig detailConfig, bool active)
+    
+        public void UpdateTermTermById(string id, int debtCode, TermsType term, bool active)
         {
             TermDetail termdet = null;
             var foundIt = false;
@@ -105,7 +128,25 @@ namespace RN_Process.Api.DataAccess.Entities
                     config.Active = termdet.Active;
                     config.Deleted = termdet.Deleted;
 
-                    termdet.UpdateTermConfiguration(config, config.Active);
+                    termdet.UpdateTermConfiguration(config.Id, 
+                                            config.CommunicationType,
+                                            config.InternalHost, 
+                                            config.LinkToAccess, 
+                                            config.LinkToAccessType,
+                                            config.TypeOfResponse,
+                                            config.RequiredLogin,
+                                            config.AuthenticationLogin, 
+                                            Encoding.ASCII.GetString(config.AuthenticationPassword),
+                                            Encoding.ASCII.GetString(config.HostKeyFingerPrint),
+                                            config.AuthenticationCodeApp, 
+                                            config.PathToOriginFile, 
+                                            config.PathToDestinationFile,
+                                            config.PathToFileBackupAtClient, 
+                                            config.PathToFileBackupAtHostServer, 
+                                            config.FileDelimiter,
+                                            config.FileHeaderColumns,
+                                            config.AvailableFieldsColumns,
+                                       config.Active);
                 }
             }
 

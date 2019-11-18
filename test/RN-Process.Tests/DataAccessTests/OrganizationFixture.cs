@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Shared.Enums;
@@ -25,12 +26,22 @@ namespace RN_Process.Tests.DataAccessTests
             return new Organization(description, uniqcode);
         }
 
+        private void RepeatProcess(int numberofTime)
+        {
+            var start = numberofTime == 0 ? 1 : numberofTime;
+            for (var i = 0; i < start; i++)
+                SystemUnderTest.AddTerm(null, 99 + i, 6651 + i, TermsType.Loan, FileAccessType.LocalMachine,
+                    string.Empty, "C://Temp", string.Empty,
+                    string.Empty, false, string.Empty, string.Empty,
+                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, string.Empty, string.Empty, string.Empty,
+                    new List<string> {""}, new List<string> {""});
+        }
+
         [Fact]
         public void RemoveOrganizationTermByInvalidId_TheTermsAreNotRemoved()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-
+            RepeatProcess(2);
 
             SystemUnderTest.RemoveTerms("21");
 
@@ -40,9 +51,7 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void RemoveOrganizationTermNullId_TheTermsAreNotRemoved()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-
+            RepeatProcess(2);
 
             SystemUnderTest.RemoveTerms(null);
 
@@ -73,8 +82,7 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void RemoveOrganizationTermWhithSoftDeleteTrueById_ThenConfigurationDetailRelated_ShouldNotBeActive()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
+            RepeatProcess(2);
 
             var term = SystemUnderTest.Terms.First();
             var config = term.TermDetails.FirstOrDefault(x => x.TermId == term.Id);
@@ -110,8 +118,7 @@ namespace RN_Process.Tests.DataAccessTests
         [Fact]
         public void RemoveOrganizationTermWhithSoftDeleteTrueById_ThenTermIsRemoved()
         {
-            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-            SystemUnderTest.AddTerm(null, 95, 6652, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
+            RepeatProcess(2);
             var actual21 = SystemUnderTest.Terms.First();
 
             SystemUnderTest.RemoveTerms(actual21.Id);
@@ -263,6 +270,44 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.Equal("orgCode", ex.ParamName);
         }
 
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void WhenOrganizationAddTerm_ThenTermIsAddedToCollection_andTerms_isNotnull_StringBasedTerm()
+        {
+            //act
+
+            RepeatProcess(1);
+
+            Assert.Equal(1, SystemUnderTest.Terms.Count);
+            //get term from organization
+            var actual = SystemUnderTest.Terms.First();
+
+            //exist terms
+            var termesInCollection = SystemUnderTest.Terms.Where(x => x.TermDetails.Count > 0);
+
+            //assert term created is the same in organization
+            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
+            Assert.Same(SystemUnderTest, actual.Organization);
+            Assert.Single(termesInCollection);
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void WhenOrganizationAddTerm_ThenTermIsAddedToCollection_StringBasedTerm()
+        {
+            //act
+
+            RepeatProcess(1);
+
+            Assert.Equal(1, SystemUnderTest.Terms.Count);
+            //get term from organization
+            var actual = SystemUnderTest.Terms.First();
+
+            //assert term created is the same in organization
+            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
+            Assert.Same(SystemUnderTest, actual.Organization);
+        }
+
         /// <summary>
         ///     When term is
         /// </summary>
@@ -271,14 +316,13 @@ namespace RN_Process.Tests.DataAccessTests
         public void WhenOrganizationAddTerm_TheTermTermIsCreated()
         {
             //act
-            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
+            RepeatProcess(1);
 
             //has term
             Assert.Equal(1, SystemUnderTest.Terms.Count);
 
             //has detail
             Assert.Equal(1, SystemUnderTest.TermDetails.Count);
-
 
 
             //get term from organization
@@ -295,7 +339,7 @@ namespace RN_Process.Tests.DataAccessTests
 
             //organization exist
             Assert.Equal(SystemUnderTest.OrgCode, actualTermDetail.OrgCode);
-           
+
             //term exist
             Assert.Equal(1, actualActualTerm.TermDetails.Count);
             Assert.True(actualTermDetail.Active);
@@ -309,60 +353,21 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.False(actualTermConfig.Deleted);
         }
 
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenOrganizationAddTerm_ThenTermIsAddedToCollection_StringBasedTerm()
-        {
-            //act
-
-            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-
-            Assert.Equal(1, SystemUnderTest.Terms.Count);
-            //get term from organization
-            var actual = SystemUnderTest.Terms.First();
-
-            //assert term created is the same in organization
-            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
-            Assert.Same(SystemUnderTest, actual.Organization);
-        }
 
         [Fact]
         [Trait("Category", "Unit")]
-        public void WhenOrganizationAddTerm_ThenTermIsAddedToCollection_andTerms_isNotnull_StringBasedTerm()
+        public void WhenOrganizationAddTermIsCalledWithNonZeroIdThenTermIsModified_Term()
         {
             //act
 
-            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-
-            Assert.Equal(1, SystemUnderTest.Terms.Count);
-            //get term from organization
-            var actual = SystemUnderTest.Terms.First();
-
-            //exist terms
-            var termesInCollection = SystemUnderTest.Terms.Where(x => x.TermDetails.Count > 0);
-
-            //assert term created is the same in organization
-            Assert.Same(SystemUnderTest.Id, actual.OrganizationId);
-            Assert.Same(SystemUnderTest, actual.Organization);
-            Assert.Single(termesInCollection);
-        }
-
-
-        [Fact]
-        [Trait("Category", "Unit")]
-        public void WhenOrganizationAddTermIsCalledWithNonZeroIdThenTermIsModified_DateRangeTerm()
-        {
-            //act
-
-            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
-            SystemUnderTest.AddTerm(null, 1233, 665, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
+            RepeatProcess(3);
 
             //Update Existent
             var actual21 = SystemUnderTest.Terms.Take(1).First();
-            SystemUnderTest.AddTerm(actual21.Id, 99, 34455, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
 
-            Assert.Equal(3, SystemUnderTest.Terms.Count);
+            RepeatProcess(1);
+
+            Assert.Equal(4, SystemUnderTest.Terms.Count);
             //get term from organization
             var actual = SystemUnderTest.Terms.First();
 
@@ -378,8 +383,7 @@ namespace RN_Process.Tests.DataAccessTests
         {
             //act
 
-            SystemUnderTest.AddTerm(null, 99, 6651, TermsType.CreditCards, UnitTestUtility.TermDetailIdNull());
-            SystemUnderTest.AddTerm(null, 99, 665, TermsType.Loan, UnitTestUtility.TermDetailIdNull());
+            RepeatProcess(2);
 
             Assert.Equal(2, SystemUnderTest.Terms.Count);
             //get term from organization

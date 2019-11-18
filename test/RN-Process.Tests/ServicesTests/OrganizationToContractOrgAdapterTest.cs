@@ -49,13 +49,12 @@ namespace RN_Process.Tests.ServicesTests
         {
             // Arrange
             var fromValue = UnitTestUtility.GetContractOrganizationModel();
-            // Act
-            SystemUnderTest.Adapt(fromValue,fromValue.Description,fromValue.CodOrg);
-
             var toValue = new Organization(fromValue.Description, fromValue.CodOrg);
+            // Act
+            SystemUnderTest.Adapt(fromValue, toValue);
 
             // Assert
-            UnitTestUtility.AssertAreEqual(fromValue,toValue);
+            UnitTestUtility.AssertAreEqual(fromValue, toValue);
         }
     }
 }
