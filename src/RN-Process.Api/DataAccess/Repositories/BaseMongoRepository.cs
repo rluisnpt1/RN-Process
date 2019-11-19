@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.DataAccess;
@@ -9,8 +10,7 @@ using RN_Process.DataAccess.MongoDb;
 
 namespace RN_Process.Api.DataAccess.Repositories
 {
-    public abstract class BaseMongoRepository<T, TKey> 
-        : IRepositoryNoSql<T, TKey> where T : AuditableEntity<TKey>
+    public class BaseMongoRepository<T, TKey> : IRepositoryNoSql<T, TKey> where T : AuditableEntity<TKey>
     {
         private readonly RnProcessMongoDbContext<T> _repository;
 
@@ -52,6 +52,11 @@ namespace RN_Process.Api.DataAccess.Repositories
             //add new
             if (product.Result == null)
             {
+                if (entity.Id == null)
+                {
+                    // assign new identity value
+                    entity.Id = (TKey)(object)Convert.ChangeType(ObjectId.GenerateNewId(), typeof(TKey)); //GetNextIdValue();
+                }
                 entity.CreatedBy = "new user need add";
                 entity.CreatedDate = DateTime.UtcNow;
                 entity.ModifiedBy = string.Empty;
@@ -68,7 +73,23 @@ namespace RN_Process.Api.DataAccess.Repositories
 
                 await _repository.Collection.UpdateOneAsync(filter, update);
             }
-          //  await _repository.Collection.InsertOneAsync(entity);
+        }
+
+        public async Task RemoveOneAsync(T entity)
+        {
+            var filter = Builders<T>.Filter.Eq("_id", entity.Id);
+            var product = _repository.Collection.Find(filter).FirstOrDefaultAsync();
+
+            if (product.Result != null)
+            {
+                product.Result.Deleted = true;
+                product.Result.Active = false;
+                await SaveOneAsync(product.Result);
+            }
+            else
+            {
+                await _repository.Collection.DeleteOneAsync(filter);
+            }
         }
 
         public virtual async Task<bool> RemoveOneAsync(TKey id, bool softDelete)

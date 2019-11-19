@@ -19,14 +19,14 @@ namespace RN_Process.WebUi.Controllers
         //    _productService = productService;
         //}
 
-        //public IActionResult Index()
-        //{
-        //    var ct = new Term(5454, new Organization("Banco BB", "ADFF"));
-        //    var ss = _productService.SaveOneAsync(ct);
-        //    var s2 = _productService.GetAllAsync();
+        public IActionResult Index()
+        {
+            //    var ct = new Term(5454, new Organization("Banco BB", "ADFF"));
+            //    var ss = _productService.SaveOneAsync(ct);
+            //    var s2 = _productService.GetAllAsync();
 
-        //    return View();
-        //}
+            return View();
+        }
 
         public IActionResult Privacy()
         {
@@ -36,7 +36,7 @@ namespace RN_Process.WebUi.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -82,7 +82,7 @@ namespace RN_Process.Api.Services
                 FileDelimiter = configTemp.FileDelimiter
             };
 
-            var enumerable = toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
+           toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
         }
 
 

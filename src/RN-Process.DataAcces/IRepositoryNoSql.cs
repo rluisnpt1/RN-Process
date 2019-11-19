@@ -16,6 +16,8 @@ namespace RN_Process.DataAccess
         //  Task<T> SaveOneAsync(T entity);
         Task SaveOneAsync(T entity);
 
+        Task RemoveOneAsync(T entity);
+
         ////   Task<T> SaveManyAsync(IEnumerable<T> entity);
         //Task<bool> UpdateAsync(T entity);
         Task<bool> RemoveOneAsync(TKey id, bool softDelete);

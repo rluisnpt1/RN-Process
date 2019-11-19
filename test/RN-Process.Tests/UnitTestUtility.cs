@@ -65,17 +65,6 @@ namespace RN_Process.Tests
             return getTermDetailConfigToTest;
         }
 
-        //public static TermDetailConfig GetTermDetailConfigToTest(string codorg)
-        //{
-        //    return new TermDetailConfig(GetTermBaseToTeste(), FileAccessType.FTP, "LocalHost", BaseWorkdir, BaseWorkdir,
-        //        "ETL", "FTP", true, "MYLogin@MyName", "MyPass1234", "", null,
-        //        BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum",
-        //        BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum\\Processados\\",
-        //        BaseWorkdir + "\\backup\\SimulationCliente\\Backup\\", BaseWorkdir + "\\BackupToHost", ",",
-        //        new List<string>
-        //            {"NDIV", "COD_CRED", "VAL1", "DATA3"}, new List<string>
-        //            {"NDIV", "COD_CRED", "VAL1", "DATA3"});
-        //}
 
         public static TermDetailConfig GetTermDetailConfigToTest()
         {
@@ -164,8 +153,39 @@ namespace RN_Process.Tests
         {
             var infoModel = new ContractOrganization
             {
-                Description = "banco da china",
-                CodOrg = "BCD8@565",
+                Description = "English Bank in Some where",
+                CodOrg = "BBEE",
+                ContractNumber = 44552368
+            };
+            infoModel.AddDueDetail(556698, TermsType.Leasing);
+
+            var dueDetails = infoModel.DueDetails.Select(x => x);
+            foreach (var dueDetail in dueDetails)
+                dueDetail.AddDueDetailConfigs(null, FileAccessType.FTP,
+                    "SFTP://ftp.unicre.pt",
+                    "C://Desktop",
+                    "",
+                    true,
+                    "logi",
+                    "ih3bb6",
+                    "",
+                    null,
+                    BaseWorkdir,
+                    "SFTP",
+                    "FTP",
+                    ",",
+                    new List<string> { "NDIV", "COD_CRED", "VAL1" },
+                    RnProcessConstant.AvailableColumnsIntrum
+                );
+
+            return infoModel;
+        }
+        public static ContractOrganization GetContractOrganizationModelTwo()
+        {
+            var infoModel = new ContractOrganization
+            {
+                Description = "Banco da China",
+                CodOrg = "BBP234",
                 ContractNumber = 44552368
             };
             infoModel.AddDueDetail(556698, TermsType.Leasing);

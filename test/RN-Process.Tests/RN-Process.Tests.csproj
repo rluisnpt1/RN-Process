@@ -40,7 +40,6 @@
     <Folder Include="FeaturesTests\" />
     <Folder Include="PresentationTests\" />
     <Folder Include="SecurityTests\" />
-    <Folder Include="ServicesTests\" />
   </ItemGroup>
 
   <ItemGroup>
