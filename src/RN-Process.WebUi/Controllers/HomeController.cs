@@ -11,22 +11,22 @@ namespace RN_Process.WebUi.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private readonly ITermRepository _productService;
+        //private readonly ITermRepository _productService;
 
-        public HomeController(ILogger<HomeController> logger, ITermRepository productService)
-        {
-            _logger = logger;
-            _productService = productService;
-        }
+        //public HomeController(ILogger<HomeController> logger, ITermRepository productService)
+        //{
+        //    _logger = logger;
+        //    _productService = productService;
+        //}
 
-        public IActionResult Index()
-        {
-            var ct = new Term(5454, new Organization("Banco BB", "ADFF"));
-            var ss = _productService.SaveOneAsync(ct);
-            var s2 = _productService.GetAllAsync();
+        //public IActionResult Index()
+        //{
+        //    var ct = new Term(5454, new Organization("Banco BB", "ADFF"));
+        //    var ss = _productService.SaveOneAsync(ct);
+        //    var s2 = _productService.GetAllAsync();
 
-            return View();
-        }
+        //    return View();
+        //}
 
         public IActionResult Privacy()
         {

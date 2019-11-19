@@ -46,8 +46,7 @@ namespace RN_Process.DataAccess.SqlServer
             if (saveThis == null)
                 throw new ArgumentNullException("saveThis", "saveThis is null.");
 
-            VerifyItemIsAddedOrAttachedToDbSet(
-                EntityDbSet, saveThis);
+            VerifyItemIsAddedOrAttachedToDbSet(EntityDbSet, saveThis);
 
             Context.SaveChanges();
         }

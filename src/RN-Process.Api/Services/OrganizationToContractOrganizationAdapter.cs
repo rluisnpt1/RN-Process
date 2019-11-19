@@ -8,7 +8,7 @@ using RN_Process.Shared.Commun;
 
 namespace RN_Process.Api.Services
 {
-    public class OrganizationToContractOrganizationAdapter
+    public class OrganizationToContractOrganizationAdapter : IOrganizationToContractOrganizationAdapter
     {
         /// <summary>
         ///     Adapt (converter) data from organization to ContractOrganizationModel
@@ -31,71 +31,66 @@ namespace RN_Process.Api.Services
             toValue.IsDeleted = fromValue.Active;
 
 
-            foreach (var item in fromValue.TermDetails.GetTermDetails(
-                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
+            foreach (var item in fromValue.TermDetails.GetTermDetails(fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
             {
-                toValue.DueId = item.TermId;
-
-                var tempDt = new DueDetail
-                {
-                    Id = item.Id,
-                    DebtCode = item.DebtCode,
-                    TermsType = item.TermsType
-                };
-
-                toValue.DueDetails.Add(tempDt);
-
-
-                var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
-
-                var config = new DueDetailConfiguration
-                {
-                    Id = configTemp.Id,
-                    CommunicationType = configTemp.CommunicationType,
-                    LinkToAccess = configTemp.LinkToAccess,
-                    LinkToAccessType = configTemp.LinkToAccessType,
-                    TypeOfResponse = configTemp.TypeOfResponse,
-                    RequiredLogin = configTemp.RequiredLogin,
-                    AuthenticationLogin = configTemp.AuthenticationLogin,
-                    AuthenticationPassword = configTemp.AuthenticationPassword.Length > 0
-                        ? Encoding.ASCII.GetString(configTemp.AuthenticationPassword)
-                        : "",
-                    HostkeyFingerPrint = configTemp.HostKeyFingerPrint.Length > 0
-                        ? Encoding.ASCII.GetString(configTemp.HostKeyFingerPrint)
-                        : "",
-                    AuthenticationCodeApp = configTemp.AuthenticationCodeApp,
-                    PathToOriginFile = configTemp.PathToOriginFile,
-                    PathToDestinationFile = configTemp.PathToDestinationFile,
-                    PathToFileBackupAtClient = configTemp.PathToFileBackupAtClient,
-                    FileDelimiter = configTemp.FileDelimiter
-                };
-
-                toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
-                // toValue.DueDetailConfigs.Add(config);
+                AdaptTermsDetail(toValue, item);
             }
         }
 
         /// <summary>
+        /// Adapt detail from entity to model
         /// </summary>
-        /// <param name="fromValues"></param>
-        /// <param name="toValues"></param>
-        public void Adapt(IEnumerable<Organization> fromValues, IList<ContractOrganization> toValues)
+        /// <param name="toValue"></param>
+        /// <param name="item"></param>
+        public static void AdaptTermsDetail(ContractOrganization toValue, TermDetail item)
         {
-            if (fromValues == null)
-                throw new ArgumentNullException("fromValues", "fromValues is null.");
 
-            ContractOrganization toValue;
+            Guard.Against.Null(toValue, nameof(ContractOrganization));
+            Guard.Against.Null(item, nameof(TermDetail));
+            toValue.DueId = item.TermId;
 
-            foreach (var fromValue in fromValues)
+            var tempDt = new DueDetail
             {
-                toValue = new ContractOrganization();
+                Id = item.Id,
+                DebtCode = item.DebtCode,
+                TermsType = item.TermsType
+            };
 
-                Adapt(fromValue, toValue);
+            toValue.DueDetails.Add(tempDt);
 
-                toValues.Add(toValue);
-            }
+            var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
+
+            var config = new DueDetailConfiguration
+            {
+                Id = configTemp.Id,
+                CommunicationType = configTemp.CommunicationType,
+                LinkToAccess = configTemp.LinkToAccess,
+                LinkToAccessType = configTemp.LinkToAccessType,
+                TypeOfResponse = configTemp.TypeOfResponse,
+                RequiredLogin = configTemp.RequiredLogin,
+                AuthenticationLogin = configTemp.AuthenticationLogin,
+                AuthenticationPassword = configTemp.AuthenticationPassword.Length > 0
+                    ? Encoding.ASCII.GetString(configTemp.AuthenticationPassword)
+                    : "",
+                HostkeyFingerPrint = configTemp.HostKeyFingerPrint.Length > 0
+                    ? Encoding.ASCII.GetString(configTemp.HostKeyFingerPrint)
+                    : "",
+                AuthenticationCodeApp = configTemp.AuthenticationCodeApp,
+                PathToOriginFile = configTemp.PathToOriginFile,
+                PathToDestinationFile = configTemp.PathToDestinationFile,
+                PathToFileBackupAtClient = configTemp.PathToFileBackupAtClient,
+                FileDelimiter = configTemp.FileDelimiter
+            };
+
+            var enumerable = toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
         }
 
+
+        /// <summary>
+        /// Convert data from (ContractOrganization  model) to entity Organization
+        /// </summary>
+        /// <param name="fromValue"></param>
+        /// <param name="organization"></param>
         public void Adapt(ContractOrganization fromValue, Organization organization)
         {
             Guard.Against.Null(fromValue, nameof(ContractOrganization));
@@ -104,7 +99,13 @@ namespace RN_Process.Api.Services
             AdaptDueDetail(fromValue, organization);
         }
 
-        private void AdaptDueDetail(ContractOrganization fromValue, Organization organization)
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fromValue"></param>
+        /// <param name="organization"></param>
+        public void AdaptDueDetail(ContractOrganization fromValue, Organization organization)
         {
             foreach (var itemDetailModel in fromValue.DueDetails)
                 if (fromValue.IsDeleted == false)

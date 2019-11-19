@@ -26,7 +26,7 @@ namespace RN_Process.WebUi
                 Options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
                 Options.Database = Configuration.GetSection("MongoConnection:Database").Value;
             });
-            services.AddTransient<ITermRepository, TermRepository>();
+            //services.AddTransient<ITermRepository, TermRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

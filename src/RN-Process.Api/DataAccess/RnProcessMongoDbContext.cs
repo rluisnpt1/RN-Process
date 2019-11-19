@@ -21,6 +21,7 @@ namespace RN_Process.Api.DataAccess
             {
                 var client = new MongoClient(settings.Value.ConnectionString);
                 Database = client.GetDatabase(settings.Value.Database);
+                
                 Collection = Database.GetCollection<T>(collectionName);
                 //_database.GetCollection<Product>("Products");
             }

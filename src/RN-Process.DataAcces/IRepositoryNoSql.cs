@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace RN_Process.DataAccess
 {
-    public interface IRepositoryNoSql<T, in TKey> where T : BaseEntity
+    public interface IRepositoryNoSql<T, in TKey> where T : AuditableEntity<TKey>
     {
         Task<IEnumerable<T>> GetAllAsync();
 
