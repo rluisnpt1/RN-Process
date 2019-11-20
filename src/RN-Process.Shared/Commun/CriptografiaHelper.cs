@@ -3,7 +3,7 @@ using System.Text;
 
 namespace RN_Process.Shared.Commun
 {
-    public class CriptografiaHelper
+    public static class CriptografiaHelper
     {
         public static byte[] PasswordCryptography(string password)
         {

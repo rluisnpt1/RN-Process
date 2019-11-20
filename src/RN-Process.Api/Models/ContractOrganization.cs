@@ -21,13 +21,18 @@ namespace RN_Process.Api.Models
         /// <summary>
         ///     Cod organization
         /// </summary>
+        [Display(Name = "Organization Code (Intrum)")]
+        [Required]
         public string CodOrg { get; set; }
 
         /// <summary>
         ///     Name that describe the organization
         /// </summary>
+        [Display(Name = "Description")]
+        [Required]
         public string Description { get; set; }
 
+        [Display(Name = "Contract Number")]
         public int ContractNumber { get; set; }
 
         public string DueId { get; set; }
