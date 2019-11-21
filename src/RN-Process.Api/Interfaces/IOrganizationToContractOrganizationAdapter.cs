@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using RN_Process.Api.DataAccess.Entities;
+﻿using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Models;
 
-namespace RN_Process.Api.Services
+namespace RN_Process.Api.Interfaces
 {
     public interface IOrganizationToContractOrganizationAdapter
     {
@@ -13,13 +12,11 @@ namespace RN_Process.Api.Services
         /// <param name="toValue"></param>
         void Adapt(Organization fromValue, ContractOrganization toValue);
 
-      
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="fromValue"></param>
         /// <param name="organization"></param>
         void Adapt(ContractOrganization fromValue, Organization organization);
-
     }
 }

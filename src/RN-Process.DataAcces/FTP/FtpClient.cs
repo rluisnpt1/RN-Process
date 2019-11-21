@@ -32,16 +32,13 @@ namespace RN_Process.DataAccess.FTP
         }
 
         ///// <summary>
-        ///     Download File
+        /// Download File
         /// </summary>
         /// <param name="remoteFile"></param>
         /// <param name="localFile"></param>
         public void DownloadFiles(string pathTofileToGetfile, string localTosaveData, string filename)
         {
-            if (pathTofileToGetfile.StartsWith("/"))
-            {
-                pathTofileToGetfile = pathTofileToGetfile.Remove(0, 1);
-            }
+            if (pathTofileToGetfile.StartsWith("/")) pathTofileToGetfile = pathTofileToGetfile.Remove(0, 1);
             //if (localTosaveData.EndsWith("\\"))
             //{
             //    localTosaveData = localTosaveData.Remove(localTosaveData.Length - 1);
@@ -49,7 +46,7 @@ namespace RN_Process.DataAccess.FTP
             try
             {
                 /* Create an FTP Request */
-                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + pathTofileToGetfile);
+                ftpRequest = (FtpWebRequest) WebRequest.Create(host + "/" + pathTofileToGetfile);
                 /* Log in to the FTP Server with the User Name and Password Provided */
                 ftpRequest.Credentials = _networkCredential;
                 /* When in doubt, use these options */
@@ -59,7 +56,7 @@ namespace RN_Process.DataAccess.FTP
                 /* Specify the Type of FTP Request */
                 ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
                 /* Get the FTP Server's Response Stream */
                 ftpStream = ftpResponse.GetResponseStream();
 
@@ -98,7 +95,7 @@ namespace RN_Process.DataAccess.FTP
             try
             {
                 /* Create an FTP Request */
-                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + remoteFile);
+                ftpRequest = (FtpWebRequest) WebRequest.Create(host + "/" + remoteFile);
                 /* Log in to the FTP Server with the User Name and Password Provided */
                 ftpRequest.Credentials = _networkCredential;
                 /* When in doubt, use these options */
@@ -141,7 +138,7 @@ namespace RN_Process.DataAccess.FTP
                 CreateFTPRequest(deleteFile, WebRequestMethods.Ftp.DeleteFile);
 
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
                 /* Resource Cleanup */
                 ftpResponse.Close();
                 ftpRequest = null;
@@ -166,7 +163,7 @@ namespace RN_Process.DataAccess.FTP
                 CreateFTPRequest(deleteFile, WebRequestMethods.Ftp.RemoveDirectory);
 
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
                 /* Resource Cleanup */
                 ftpResponse.Close();
                 ftpRequest = null;
@@ -194,7 +191,7 @@ namespace RN_Process.DataAccess.FTP
                 /* Rename the File */
                 ftpRequest.RenameTo = newFileName;
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
                 /* Resource Cleanup */
                 ftpResponse.Close();
                 ftpRequest = null;
@@ -217,7 +214,7 @@ namespace RN_Process.DataAccess.FTP
                 CreateFTPRequest(newDirectory, WebRequestMethods.Ftp.MakeDirectory);
 
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
                 /* Resource Cleanup */
                 ftpResponse.Close();
                 ftpRequest = null;
@@ -242,7 +239,7 @@ namespace RN_Process.DataAccess.FTP
                 CreateFTPRequest(fileName, WebRequestMethods.Ftp.GetDateTimestamp);
 
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
 
                 /* Establish Return Communication with the FTP Server */
                 ftpStream = ftpResponse.GetResponseStream();
@@ -284,7 +281,7 @@ namespace RN_Process.DataAccess.FTP
                 CreateFTPRequest(fileName, WebRequestMethods.Ftp.GetFileSize);
 
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
 
                 /* Establish Return Communication with the FTP Server */
                 ftpStream = ftpResponse.GetResponseStream();
@@ -328,7 +325,7 @@ namespace RN_Process.DataAccess.FTP
                 CreateFTPRequest(directory, WebRequestMethods.Ftp.ListDirectory);
 
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
                 /* Establish Return Communication with the FTP Server */
                 ftpStream = ftpResponse.GetResponseStream();
                 /* Get the FTP Server's Response Stream */
@@ -371,7 +368,7 @@ namespace RN_Process.DataAccess.FTP
                 CreateFTPRequest(directory, WebRequestMethods.Ftp.ListDirectoryDetails);
 
                 /* Establish Return Communication with the FTP Server */
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                ftpResponse = (FtpWebResponse) ftpRequest.GetResponse();
                 /* Establish Return Communication with the FTP Server */
                 ftpStream = ftpResponse.GetResponseStream();
                 /* Get the FTP Server's Response Stream */
@@ -410,12 +407,12 @@ namespace RN_Process.DataAccess.FTP
             }
 
             /* Return an Empty string Array if an Exception Occurs */
-            return new[] { "" };
+            return new[] {""};
         }
 
         public FtpWebRequest CreateCredential(string directoryOrfileName)
         {
-            ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + directoryOrfileName);
+            ftpRequest = (FtpWebRequest) WebRequest.Create(host + "/" + directoryOrfileName);
             /* Log in to the FTP Server with the User Name and Password Provided */
             ftpRequest.Credentials = _networkCredential;
             return ftpRequest;
@@ -468,13 +465,13 @@ namespace RN_Process.DataAccess.FTP
             {
                 if (string.IsNullOrEmpty(remoteFtpDirUrl)) remoteFtpDirUrl = $"{host}/";
 
-                var listRequest = (FtpWebRequest)WebRequest.Create(remoteFtpDirUrl);
+                var listRequest = (FtpWebRequest) WebRequest.Create(remoteFtpDirUrl);
                 listRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
                 listRequest.Credentials = _networkCredential;
 
                 var lines = new List<string>();
 
-                using (var listResponse = (FtpWebResponse)listRequest.GetResponse())
+                using (var listResponse = (FtpWebResponse) listRequest.GetResponse())
                 using (var listStream = listResponse.GetResponseStream())
                 using (var listReader = new StreamReader(listStream))
                 {
@@ -483,7 +480,7 @@ namespace RN_Process.DataAccess.FTP
 
                 foreach (var line in lines)
                 {
-                    var tokens = line.Split(new[] { ' ' }, 9, StringSplitOptions.RemoveEmptyEntries);
+                    var tokens = line.Split(new[] {' '}, 9, StringSplitOptions.RemoveEmptyEntries);
 
                     var name = tokens[8]; //get folder
                     var permissions = tokens[0]; // get permition
@@ -499,11 +496,11 @@ namespace RN_Process.DataAccess.FTP
                     }
                     else
                     {
-                        var downloadRequest = (FtpWebRequest)WebRequest.Create(fileUrl);
+                        var downloadRequest = (FtpWebRequest) WebRequest.Create(fileUrl);
                         downloadRequest.Method = WebRequestMethods.Ftp.DownloadFile;
                         downloadRequest.Credentials = _networkCredential;
 
-                        using (var downloadResponse = (FtpWebResponse)downloadRequest.GetResponse())
+                        using (var downloadResponse = (FtpWebResponse) downloadRequest.GetResponse())
                         using (var sourceStream = downloadResponse.GetResponseStream())
                         using (Stream targetStream = File.Create(localFilePath))
                         {
@@ -575,7 +572,8 @@ namespace RN_Process.DataAccess.FTP
 
         private void ExceptionMessage(Exception ex)
         {
-            throw new Exception(string.Format($"Error FTP: {host} ," + $" User: {_networkCredential.UserName}, Msg: ") + ex.Message);
+            throw new Exception(string.Format($"Error FTP: {host} ," + $" User: {_networkCredential.UserName}, Msg: ") +
+                                ex.Message);
         }
     }
 }

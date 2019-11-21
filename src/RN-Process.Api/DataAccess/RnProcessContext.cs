@@ -34,7 +34,6 @@ namespace RN_Process.Api.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
             modelBuilder.Entity<Organization>(entity =>
             {
                 entity.ToTable("Organization");
@@ -56,8 +55,8 @@ namespace RN_Process.Api.DataAccess
                     .WithOne(x => x.Term);
 
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
-            });  
-            
+            });
+
             modelBuilder.Entity<TermDetail>(entity =>
             {
                 entity.ToTable("TermDetail");

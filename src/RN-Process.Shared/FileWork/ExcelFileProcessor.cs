@@ -8,10 +8,9 @@ namespace RN_Process.Shared.FileWork
         private readonly IFileSystem _fileSystem;
 
         public ExcelFileProcessor(string inputFilePath, string outputFilePath)
-            : this(inputFilePath, outputFilePath, new FileSystem()) { }
-
-        public string InputFilePath { get; }
-        public string OutputFilePath { get; }
+            : this(inputFilePath, outputFilePath, new FileSystem())
+        {
+        }
 
         public ExcelFileProcessor(string inputFilePath, string outputFilePath, IFileSystem fileSystem)
         {
@@ -19,6 +18,9 @@ namespace RN_Process.Shared.FileWork
             OutputFilePath = outputFilePath;
             _fileSystem = fileSystem;
         }
+
+        public string InputFilePath { get; }
+        public string OutputFilePath { get; }
 
         public void Process()
         {

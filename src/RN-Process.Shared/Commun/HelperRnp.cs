@@ -17,7 +17,7 @@ namespace RN_Process.Shared.Commun
         {
             var fi = source.GetType().GetField(source.ToString());
 
-            var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(
+            var attributes = (DescriptionAttribute[]) fi.GetCustomAttributes(
                 typeof(DescriptionAttribute), false);
 
             return attributes.Length > 0 ? attributes[0].Description : source.ToString();
@@ -125,15 +125,11 @@ namespace RN_Process.Shared.Commun
         public static List<string> ListValidDocumentFormat(string[] stringData)
         {
             var listValidFiles = new List<string>();
-            string[] format = { "xml", "xlsx", ".xls", ".txt", ".csv", ".data" };
+            string[] format = {"xml", "xlsx", ".xls", ".txt", ".csv", ".data"};
             foreach (var item in stringData)
-            {
                 if (format.Any(x => item.EndsWith(x)))
-                {
                     listValidFiles.Add(item);
-                }
-            }
             return listValidFiles;
-        }        
+        }
     }
 }

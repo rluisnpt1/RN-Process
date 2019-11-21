@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 using RN_Process.Shared.Commun;
 
@@ -27,24 +26,35 @@ namespace RN_Process.Api.Services
             toValue.CreatedDate = fromValue.CreatedDate;
             toValue.CreatedBy = fromValue.CreatedBy;
             toValue.UpdateBy = fromValue.ModifiedBy;
-            toValue.ChangedDate = fromValue.ModifiedDate;
+            toValue.ChangedDate = fromValue.UpdatedDate;
             toValue.IsDeleted = fromValue.Active;
 
 
-            foreach (var item in fromValue.TermDetails.GetTermDetails(fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
-            {
-                AdaptTermsDetail(toValue, item);
-            }
+            foreach (var item in fromValue.TermDetails.GetTermDetails(
+                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode))) AdaptTermsDetail(toValue, item);
+        }
+
+
+        /// <summary>
+        ///     Convert data from (ContractOrganization  model) to entity Organization
+        /// </summary>
+        /// <param name="fromValue"></param>
+        /// <param name="organization"></param>
+        public void Adapt(ContractOrganization fromValue, Organization organization)
+        {
+            Guard.Against.Null(fromValue, nameof(ContractOrganization));
+            Guard.Against.Null(organization, nameof(Organization));
+
+            AdaptDueDetail(fromValue, organization);
         }
 
         /// <summary>
-        /// Adapt detail from entity to model
+        ///     Adapt detail from entity to model
         /// </summary>
         /// <param name="toValue"></param>
         /// <param name="item"></param>
         public static void AdaptTermsDetail(ContractOrganization toValue, TermDetail item)
         {
-
             Guard.Against.Null(toValue, nameof(ContractOrganization));
             Guard.Against.Null(item, nameof(TermDetail));
             toValue.DueId = item.TermId;
@@ -82,26 +92,11 @@ namespace RN_Process.Api.Services
                 FileDelimiter = configTemp.FileDelimiter
             };
 
-           toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
+            toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
         }
 
 
         /// <summary>
-        /// Convert data from (ContractOrganization  model) to entity Organization
-        /// </summary>
-        /// <param name="fromValue"></param>
-        /// <param name="organization"></param>
-        public void Adapt(ContractOrganization fromValue, Organization organization)
-        {
-            Guard.Against.Null(fromValue, nameof(ContractOrganization));
-            Guard.Against.Null(organization, nameof(Organization));
-
-            AdaptDueDetail(fromValue, organization);
-        }
-
-        
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="fromValue"></param>
         /// <param name="organization"></param>

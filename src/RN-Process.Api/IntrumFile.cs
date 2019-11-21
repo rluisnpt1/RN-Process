@@ -9,7 +9,6 @@ namespace RN_Process.Api
     /// </summary>
     public static class IntrumFile
     {
-        
         /// <summary>
         /// </summary>
         /// <param name="path"></param>
@@ -17,7 +16,7 @@ namespace RN_Process.Api
         public static string CreateDirectory(string path)
         {
             if (Directory.Exists(path)) return path;
-                 Console.WriteLine($"Begin process of {path}");
+            Console.WriteLine($"Begin process of {path}");
             return Directory.CreateDirectory(path).FullName;
         }
 
@@ -136,8 +135,8 @@ namespace RN_Process.Api
 
         public static string ExtractFolderFromPath(string fileName, string pathSeparator, bool includeSeparatorAtEnd)
         {
-            int pos = fileName.LastIndexOf(pathSeparator);
-            return fileName.Substring(0, (includeSeparatorAtEnd ? pos + 1 : pos));
+            var pos = fileName.LastIndexOf(pathSeparator);
+            return fileName.Substring(0, includeSeparatorAtEnd ? pos + 1 : pos);
         }
     }
 }

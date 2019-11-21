@@ -6,35 +6,37 @@ namespace RN_Process.Api.Models
 {
     public class DueDetail
     {
+        public DueDetail()
+        {
+            DueDetailConfigs = new List<DueDetailConfiguration>();
+        }
+
         public string Id { get; set; }
+
         /// <summary>
-        /// Uniq code that identify the debt
+        ///     Uniq code that identify the debt
         /// </summary>
         [Display(Name = "Debt Code (Intrum)")]
         [Required]
         public int DebtCode { get; set; }
+
         /// <summary>
-        /// Description of debt
+        ///     Description of debt
         /// </summary>
         [Display(Name = "Type Debt")]
         [Required]
         public TermsType TermsType { get; set; }
 
-        public DueDetail()
-        {
-
-            DueDetailConfigs = new List<DueDetailConfiguration>();
-        }
-
         public IList<DueDetailConfiguration> DueDetailConfigs { get; set; }
 
-        public void AddDueDetailConfigs(string id, FileAccessType communicationType, string linkToAccess, string linkToAccessType,
-          string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
-          string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
-          string pathToDestinationFile, string pathToFileBackupAtClient, string fileDelimiter,
-          IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
+        public void AddDueDetailConfigs(string id, FileAccessType communicationType, string linkToAccess,
+            string linkToAccessType,
+            string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
+            string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+            string pathToDestinationFile, string pathToFileBackupAtClient, string fileDelimiter,
+            IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
-            DueDetailConfigs.Add(new DueDetailConfiguration()
+            DueDetailConfigs.Add(new DueDetailConfiguration
             {
                 Id = id,
                 CommunicationType = communicationType,

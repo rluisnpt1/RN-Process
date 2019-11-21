@@ -13,7 +13,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="DataAccess\BaseMongoRepository.cs" />
     <Compile Remove="DataAccess\DataGenerator.cs" />
+    <Compile Remove="DataAccess\IDataRepository.cs" />
+    <Compile Remove="DataAccess\MongoDbRepository.cs" />
+    <Compile Remove="DataAccess\OnlineStoreDatabase.cs" />
+    <Compile Remove="DataAccess\RepositoryDataService.cs" />
+    <Compile Remove="DataAccess\RnFileProcessDbContext.cs" />
+    <Compile Remove="DataAccess\RnProcessSqlContext.cs" />
+    <Compile Remove="Services\ContractOrganizationBusinessServices.cs" />
   </ItemGroup>
 
   <ItemGroup>

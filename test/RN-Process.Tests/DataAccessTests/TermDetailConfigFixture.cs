@@ -227,7 +227,7 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.IsType<string>(SystemUnderTest.Id);
 
             Assert.Null(SystemUnderTest.ModifiedBy);
-            Assert.Null(SystemUnderTest.ModifiedDate);
+            Assert.Null(SystemUnderTest.UpdatedDate);
             Assert.True(SystemUnderTest.Active);
             Assert.False(SystemUnderTest.Deleted);
             Assert.NotNull(SystemUnderTest.RowVersion);

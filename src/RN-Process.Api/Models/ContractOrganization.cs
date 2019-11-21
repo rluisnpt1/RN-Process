@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using System.Text.Json.Serialization;
 using RN_Process.Shared.Enums;
 
@@ -32,13 +31,11 @@ namespace RN_Process.Api.Models
         [Required]
         public string Description { get; set; }
 
-        [Display(Name = "Contract Number")]
-        public int ContractNumber { get; set; }
+        [Display(Name = "Contract Number")] public int ContractNumber { get; set; }
 
         public string DueId { get; set; }
 
-        [JsonIgnore]
-        public bool IsDeleted { get; set; }
+        [JsonIgnore] public bool IsDeleted { get; set; }
 
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -49,14 +46,12 @@ namespace RN_Process.Api.Models
 
         public void AddDueDetail(int debtCode, TermsType termsType)
         {
-            DueDetails.Add(new DueDetail()
+            DueDetails.Add(new DueDetail
             {
                 DebtCode = debtCode,
-                TermsType = termsType,
-                
-
+                TermsType = termsType
             });
-        }      
+        }
 
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

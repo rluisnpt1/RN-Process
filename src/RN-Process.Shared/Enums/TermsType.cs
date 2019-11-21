@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace RN_Process.Shared.Enums
 {
@@ -9,7 +6,6 @@ namespace RN_Process.Shared.Enums
     {
         [Description("Credit Card")] CreditCards,
         [Description("Leasing")] Leasing,
-        [Description("Loan")] Loan,
-
+        [Description("Loan")] Loan
     }
 }

@@ -9,10 +9,10 @@ namespace RN_Process.DataAccess
 
         public DateTime CreatedDate
         {
-            get => (DateTime)(_createdDate ??= _createdDate = DateTime.UtcNow);
+            get => (DateTime) (_createdDate ??= _createdDate = DateTime.UtcNow);
             set
             {
-                if (_createdDate != null) value = (DateTime)_createdDate;
+                if (_createdDate != null) value = (DateTime) _createdDate;
             }
         }
 
@@ -23,7 +23,7 @@ namespace RN_Process.DataAccess
         }
 
 
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public string ModifiedBy { get; set; }
     }

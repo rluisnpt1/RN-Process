@@ -7,11 +7,10 @@ namespace RN_Process.Shared.FileWork
     {
         private readonly IFileSystem _fileSystem;
 
-        public string InputFilePath { get; }
-        public string OutputFilePath { get; }
-
         public BinaryFileProcessor(string inputFilePath, string outputFilePath)
-            : this(inputFilePath, outputFilePath, new FileSystem()) { }
+            : this(inputFilePath, outputFilePath, new FileSystem())
+        {
+        }
 
 
         public BinaryFileProcessor(string inputFilePath, string outputFilePath,
@@ -22,26 +21,26 @@ namespace RN_Process.Shared.FileWork
             _fileSystem = fileSystem;
         }
 
+        public string InputFilePath { get; }
+        public string OutputFilePath { get; }
+
         public void Process()
         {
-            using (Stream inputFileStream = _fileSystem.File.Open(
-                                                InputFilePath, FileMode.Open, FileAccess.Read))
-            using (BinaryReader binaryStreamReader = new BinaryReader(inputFileStream))
-            using (Stream outputFileStream = _fileSystem.File.Create(OutputFilePath))
-            using (BinaryWriter binaryStreamWriter = new BinaryWriter(outputFileStream))
+            using (var inputFileStream = _fileSystem.File.Open(
+                InputFilePath, FileMode.Open, FileAccess.Read))
+            using (var binaryStreamReader = new BinaryReader(inputFileStream))
+            using (var outputFileStream = _fileSystem.File.Create(OutputFilePath))
+            using (var binaryStreamWriter = new BinaryWriter(outputFileStream))
             {
                 byte largest = 0;
 
                 while (binaryStreamReader.BaseStream.Position < binaryStreamReader.BaseStream.Length)
                 {
-                    byte currentByte = binaryStreamReader.ReadByte();
+                    var currentByte = binaryStreamReader.ReadByte();
 
                     binaryStreamWriter.Write(currentByte);
 
-                    if (currentByte > largest)
-                    {
-                        largest = currentByte;
-                    }
+                    if (currentByte > largest) largest = currentByte;
                 }
 
                 binaryStreamWriter.Write(largest);

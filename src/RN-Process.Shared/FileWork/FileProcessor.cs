@@ -10,12 +10,12 @@ namespace RN_Process.Shared.FileWork
         private static readonly string InProgressDirectoryName = "processing";
         private static readonly string CompletedDirectoryName = "complete";
 
-        public string InputFilePath { get; }
-
         public FileProcessor(string filePath)
         {
             InputFilePath = filePath;
         }
+
+        public string InputFilePath { get; }
 
         public void Process()
         {
@@ -28,25 +28,25 @@ namespace RN_Process.Shared.FileWork
                 return;
             }
 
-            string rootDirectoryPath = new DirectoryInfo(InputFilePath).Parent.Parent.FullName;
+            var rootDirectoryPath = new DirectoryInfo(InputFilePath).Parent.Parent.FullName;
             WriteLine($"Root data path is {rootDirectoryPath}");
 
             // Check if backup dir exists
-            string inputFileDirectoryPath = Path.GetDirectoryName(InputFilePath);
-            string backupDirectoryPath = Path.Combine(rootDirectoryPath, BackupDirectoryName);
+            var inputFileDirectoryPath = Path.GetDirectoryName(InputFilePath);
+            var backupDirectoryPath = Path.Combine(rootDirectoryPath, BackupDirectoryName);
 
             Directory.CreateDirectory(backupDirectoryPath);
 
             // Copy file to backup dir
-            string inputFileName = Path.GetFileName(InputFilePath);
-            string backupFilePath = Path.Combine(backupDirectoryPath, inputFileName);
+            var inputFileName = Path.GetFileName(InputFilePath);
+            var backupFilePath = Path.Combine(backupDirectoryPath, inputFileName);
             WriteLine($"Copying {InputFilePath} to {backupFilePath}");
             File.Copy(InputFilePath, backupFilePath, true);
 
             // Move to in progress dir
             Directory.CreateDirectory(Path.Combine(rootDirectoryPath, InProgressDirectoryName));
 
-            string inProgressFilePath = 
+            var inProgressFilePath =
                 Path.Combine(rootDirectoryPath, InProgressDirectoryName, inputFileName);
 
             if (File.Exists(inProgressFilePath))
@@ -59,9 +59,9 @@ namespace RN_Process.Shared.FileWork
             File.Move(InputFilePath, inProgressFilePath);
 
             // Determine type of file
-            string extension = Path.GetExtension(InputFilePath);
+            var extension = Path.GetExtension(InputFilePath);
 
-            string completedDirectoryPath = Path.Combine(rootDirectoryPath, CompletedDirectoryName);
+            var completedDirectoryPath = Path.Combine(rootDirectoryPath, CompletedDirectoryName);
             Directory.CreateDirectory(completedDirectoryPath);
             var dataToName = DateTime.UtcNow.ToString("yyyyMMddHHmmssFFF");
 
@@ -75,7 +75,7 @@ namespace RN_Process.Shared.FileWork
                 case ".txt":
                     var textProcessor = new TextFileProcessor(inProgressFilePath, completedFilePath);
                     textProcessor.Process();
-                    break; 
+                    break;
                 case ".xml":
                     var xmlProcessor = new XmlFileProcessor(inProgressFilePath, completedFilePath);
                     xmlProcessor.Process();
@@ -102,6 +102,5 @@ namespace RN_Process.Shared.FileWork
             WriteLine($"Deleting {inProgressFilePath}");
             File.Delete(inProgressFilePath);
         }
-
     }
 }

@@ -17,7 +17,7 @@ namespace RN_Process.Api.DataAccess.Persistences
 
                 map.MapIdMember(x => x.Id).SetIdGenerator(ObjectIdGenerator.Instance);
                 map.MapMember(x => x.Description).SetIsRequired(true);
-                map.MapMember(x => x.ModifiedDate).SetIsRequired(true);
+                map.MapMember(x => x.UpdatedDate).SetIsRequired(true);
             });
         }
 

@@ -8,15 +8,17 @@ namespace RN_Process.Api.Models
 {
     public class DueDetailConfiguration
     {
-        public string Id { get; set; }
-
         public DueDetailConfiguration()
         {
-            FileHeaderColumns = new List<string>() { "CLIENT_COLUM1", "CLIENT_COLUM2", "CLIENT_COLUM3" };
+            FileHeaderColumns = new List<string> {"CLIENT_COLUM1", "CLIENT_COLUM2", "CLIENT_COLUM3"};
             AvailableFieldsColumns = RnProcessConstant.AvailableColumnsIntrum.ToList();
         }
 
-        public DueDetailConfiguration(string id,FileAccessType communicationType, string linkToAccess, string linkToAccessType, string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword, string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient, string fileDelimiter, IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
+        public DueDetailConfiguration(string id, FileAccessType communicationType, string linkToAccess,
+            string linkToAccessType, string typeOfResponse, bool requiredLogin, string authenticationLogin,
+            string authenticationPassword, string hostkeyFingerPrint, string authenticationCodeApp,
+            string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient,
+            string fileDelimiter, IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             Id = id;
             CommunicationType = communicationType;
@@ -35,42 +37,43 @@ namespace RN_Process.Api.Models
             FileHeaderColumns = fileHeaderColumns;
             AvailableFieldsColumns = availableFieldsColumns;
         }
+
+        public string Id { get; set; }
+
         /// <summary>
-        /// Type communication has been agreed 
+        ///     Type communication has been agreed
         /// </summary>
         [Required]
         public FileAccessType CommunicationType { get; set; }
 
         /// <summary>
-        /// link or path to access the file
+        ///     link or path to access the file
         /// </summary>
         [Display(Name = "Address to Access file (LINK|IP)")]
         [Required]
         public string LinkToAccess { get; set; }
 
         /// <summary>
-        /// Type acces //SFTP HTTP HTTPS
+        ///     Type acces //SFTP HTTP HTTPS
         /// </summary>
         [Display(Name = "Type Access")]
         public string LinkToAccessType { get; set; }
 
         /// <summary>
-        /// File Format Agreed
+        ///     File Format Agreed
         /// </summary>
         [Display(Name = "Type File Response")]
         public string TypeOfResponse { get; set; }
 
         /// <summary>
-        /// If need login
+        ///     If need login
         /// </summary>
         [Display(Name = "Required Login?")]
         public bool RequiredLogin { get; set; }
 
-        [Display(Name = "User Login")]
-        public string AuthenticationLogin { get; set; }
+        [Display(Name = "User Login")] public string AuthenticationLogin { get; set; }
 
-        [Display(Name = "Password")]
-        public string AuthenticationPassword { get; set; }
+        [Display(Name = "Password")] public string AuthenticationPassword { get; set; }
 
 
         [Display(Name = "SSH Host key Finger Print ")]
@@ -107,6 +110,5 @@ namespace RN_Process.Api.Models
         [Required]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public IList<string> AvailableFieldsColumns { get; set; }
-
     }
 }

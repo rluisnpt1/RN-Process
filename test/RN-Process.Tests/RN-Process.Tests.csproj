@@ -20,6 +20,7 @@
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.10.0-beta1" />
+    <PackageReference Include="Moq" Version="4.5.28" />
     <PackageReference Include="Selenium.Chrome.WebDriver" Version="77.0.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
     <PackageReference Include="WinSCP" Version="5.15.5" />
@@ -44,6 +45,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\RN-Process.Api\RN-Process.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

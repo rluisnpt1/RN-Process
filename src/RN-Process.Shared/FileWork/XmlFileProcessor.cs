@@ -8,7 +8,9 @@ namespace RN_Process.Shared.FileWork
         private readonly IFileSystem _fileSystem;
 
         public XmlFileProcessor(string inputFilePath, string outputFilePath)
-            : this(inputFilePath, outputFilePath, new FileSystem()) { }
+            : this(inputFilePath, outputFilePath, new FileSystem())
+        {
+        }
 
         public XmlFileProcessor(string inputFilePath, string outputFilePath, IFileSystem fileSystem)
         {

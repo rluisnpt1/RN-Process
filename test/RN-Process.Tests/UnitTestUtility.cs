@@ -275,7 +275,7 @@ namespace RN_Process.Tests
                 .HaveCount(actual.DueDetails.Select(x => x.DueDetailConfigs.Count).Count());
 
             DateTimeAssertAreEqual(expected.CreatedDate, actual.CreatedDate, TimeSpan.FromMinutes(0.1));
-            DateTimeAssertAreEqual(expected.ModifiedDate, actual.ChangedDate, TimeSpan.FromMinutes(0.1));
+            DateTimeAssertAreEqual(expected.UpdatedDate, actual.ChangedDate, TimeSpan.FromMinutes(0.1));
 
             expected.ModifiedBy.Should().BeEquivalentTo(actual.UpdateBy);
             expected.CreatedBy.Should().BeEquivalentTo(actual.CreatedBy);
@@ -322,7 +322,7 @@ namespace RN_Process.Tests
             actual.Active.Should().BeTrue();
             actual.Deleted.Should().BeFalse();
             actual.CreatedBy.Should().NotBeNullOrEmpty();
-            actual.ModifiedDate.Should().BeNull();
+            actual.UpdatedDate.Should().BeNull();
             actual.ModifiedBy.Should().BeNull();
         }
 

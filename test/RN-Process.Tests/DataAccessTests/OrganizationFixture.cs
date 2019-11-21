@@ -101,13 +101,13 @@ namespace RN_Process.Tests.DataAccessTests
             Assert.False(term.Active);
             Assert.True(term.Deleted);
             Assert.NotNull(term.ModifiedBy);
-            Assert.NotNull(term.ModifiedDate);
+            Assert.NotNull(term.UpdatedDate);
 
             //configuration 
             Assert.False(config.Active);
             Assert.True(config.Deleted);
             Assert.NotNull(config.ModifiedBy);
-            Assert.NotNull(config.ModifiedDate);
+            Assert.NotNull(config.UpdatedDate);
             Assert.Same(config.TermId, term.Id);
 
             //organization
@@ -148,7 +148,7 @@ namespace RN_Process.Tests.DataAccessTests
 
             Assert.True(SystemUnderTest.Active);
             Assert.False(SystemUnderTest.Deleted);
-            Assert.Null(SystemUnderTest.ModifiedDate);
+            Assert.Null(SystemUnderTest.UpdatedDate);
         }
 
         [Fact]

@@ -244,6 +244,5 @@ namespace RN_Process.Shared.Commun
                     $"Parameter ['{parameterName.ToUpper()}'] is default value for type {typeof(T).Name}",
                     parameterName);
         }
-
     }
 }

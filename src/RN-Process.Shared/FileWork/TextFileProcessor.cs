@@ -6,13 +6,12 @@ namespace RN_Process.Shared.FileWork
     {
         private readonly IFileSystem _fileSystem;
 
-        public string InputFilePath { get; }
-        public string OutputFilePath { get; }
-
         public TextFileProcessor(string inputFilePath, string outputFilePath)
-            : this(inputFilePath, outputFilePath, new FileSystem()) { }
+            : this(inputFilePath, outputFilePath, new FileSystem())
+        {
+        }
 
-        public TextFileProcessor(string inputFilePath, string outputFilePath, 
+        public TextFileProcessor(string inputFilePath, string outputFilePath,
             IFileSystem fileSystem)
         {
             InputFilePath = inputFilePath;
@@ -20,15 +19,18 @@ namespace RN_Process.Shared.FileWork
             _fileSystem = fileSystem;
         }
 
+        public string InputFilePath { get; }
+        public string OutputFilePath { get; }
+
         public void Process()
         {
-            using (var inputStreamReader = _fileSystem.File.OpenText(InputFilePath))            
+            using (var inputStreamReader = _fileSystem.File.OpenText(InputFilePath))
             using (var outputStreamWriter = _fileSystem.File.CreateText(OutputFilePath))
             {
                 var currentLineNumber = 1;
                 while (!inputStreamReader.EndOfStream)
                 {
-                    string line = inputStreamReader.ReadLine();
+                    var line = inputStreamReader.ReadLine();
 
                     Write(currentLineNumber == 2 ? line.ToUpperInvariant() : line);
 
@@ -36,18 +38,13 @@ namespace RN_Process.Shared.FileWork
 
                     void Write(string content)
                     {
-                        bool isLastLine = inputStreamReader.EndOfStream;
+                        var isLastLine = inputStreamReader.EndOfStream;
 
                         if (isLastLine)
-                        {
                             outputStreamWriter.Write(content);
-                        }
                         else
-                        {
                             outputStreamWriter.WriteLine(content);
-                        }
                     }
-
                 }
             }
         }
