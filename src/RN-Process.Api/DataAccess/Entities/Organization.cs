@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
@@ -83,13 +82,14 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public void AddNewTerm(int termNumber, int typeDebt, TermsType termsType, FileAccessType communicationType, string internalHost,
-                                    string linkToAccess, string linkToAccessType, string typeOfResponse,
-                                    bool requiredLogin, string authenticationLogin, string authenticationPassword,
-                                    string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
-                                    string pathToDestinationFile, string pathToFileBackupAtClient,
-                                    string pathToFileBackupAtHostServer, string fileDeLimiter,
-                                    IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
+        public void AddNewTerm(int termNumber, int typeDebt, TermsType termsType, FileAccessType communicationType,
+            string internalHost,
+            string linkToAccess, string linkToAccessType, string typeOfResponse,
+            bool requiredLogin, string authenticationLogin, string authenticationPassword,
+            string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+            string pathToDestinationFile, string pathToFileBackupAtClient,
+            string pathToFileBackupAtHostServer, string fileDeLimiter,
+            IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             //create term
             var fact = new Term(termNumber, this);
@@ -98,24 +98,26 @@ namespace RN_Process.Api.DataAccess.Entities
             Terms.Add(fact);
 
             //base configuration
-            fact.AddTermDetail(null, typeDebt, termsType, communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
-                                       requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
-                                       authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
-                                       pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
-                                       fileHeaderColumns, availableFieldsColumns);
+            fact.AddTermDetail(null, typeDebt, termsType, communicationType, internalHost, linkToAccess,
+                linkToAccessType, typeOfResponse,
+                requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                fileHeaderColumns, availableFieldsColumns);
 
             //add term configuration details to list term configuration details list of organization
             TermDetails = fact.TermDetails;
         }
 
 
-        public void AddTerm(string id, int termNumber, int typeDebt, TermsType termsType, FileAccessType communicationType, string internalHost,
-                                    string linkToAccess, string linkToAccessType, string typeOfResponse,
-                                    bool requiredLogin, string authenticationLogin, string authenticationPassword,
-                                    string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
-                                    string pathToDestinationFile, string pathToFileBackupAtClient,
-                                    string pathToFileBackupAtHostServer, string fileDeLimiter,
-                                    IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
+        public void AddTerm(string id, int termNumber, int typeDebt, TermsType termsType,
+            FileAccessType communicationType, string internalHost,
+            string linkToAccess, string linkToAccessType, string typeOfResponse,
+            bool requiredLogin, string authenticationLogin, string authenticationPassword,
+            string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
+            string pathToDestinationFile, string pathToFileBackupAtClient,
+            string pathToFileBackupAtHostServer, string fileDeLimiter,
+            IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             Guard.Against.Null(termNumber, nameof(termNumber));
             Guard.Against.Zero(termNumber, nameof(termNumber));
@@ -129,15 +131,17 @@ namespace RN_Process.Api.DataAccess.Entities
             if (!string.IsNullOrEmpty(id))
                 UpdateExistingTermById(id, typeDebt, termNumber, termsType);
             else
-                AddNewTerm(termNumber, typeDebt, termsType, communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
-                                       requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
-                                       authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
-                                       pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
-                                       fileHeaderColumns, availableFieldsColumns);
+                AddNewTerm(termNumber, typeDebt, termsType, communicationType, internalHost, linkToAccess,
+                    linkToAccessType, typeOfResponse,
+                    requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
+                    authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
+                    pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                    fileHeaderColumns, availableFieldsColumns);
         }
 
 
-        private void UpdateExistingTermById(string id, int debtCode, int termNumber, TermsType termsType, bool active = true)
+        private void UpdateExistingTermById(string id, int debtCode, int termNumber, TermsType termsType,
+            bool active = true)
         {
             Term term = null;
             var foundIt = false;
@@ -153,7 +157,7 @@ namespace RN_Process.Api.DataAccess.Entities
             {
                 //add update term ?
                 foundIt = true;
-                term.ModifiedDate = DateTime.UtcNow;
+                term.UpdatedDate = DateTime.UtcNow;
                 term.ModifiedBy = "System-- need change for user";
                 term.Active = active;
                 term.Deleted = !active;
@@ -169,7 +173,7 @@ namespace RN_Process.Api.DataAccess.Entities
             if (foundIt == false) Terms.Add(term);
         }
 
-        public void RemoveTerms(string id)//, bool softDelete)
+        public void RemoveTerms(string id) //, bool softDelete)
         {
             if (string.IsNullOrEmpty(id)) return;
 
@@ -185,8 +189,6 @@ namespace RN_Process.Api.DataAccess.Entities
 
             var first = match.TermDetailConfigs.First(x => x.TermDetailId == match.Id);
             UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber, match.TermsType, false);
-
-
         }
     }
 }

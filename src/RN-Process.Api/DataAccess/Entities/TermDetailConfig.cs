@@ -14,8 +14,99 @@ namespace RN_Process.Api.DataAccess.Entities
 {
     public class TermDetailConfig : AuditableEntity<string>
     {
-        private static string BaseWorkDir ="C:\\TEMP\\WorkDir"; //Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        private static readonly string
+            BaseWorkDir = "C:\\TEMP\\WorkDir"; //Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
         [BsonIgnore] private ICollection<FileImport> _fileImport;
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        //public string TermId { get; private set; }
+        //public Term Term { get; set; }   
+
+        public string TermDetailId { get; private set; }
+
+        public TermDetail TermDetail { get; set; }
+
+
+        public string OrgCode { get; private set; }
+
+        public FileAccessType CommunicationType { get; private set; }
+        public string InternalHost { get; }
+        public string BaseWorkDirectoryHost { get; private set; }
+        public string LinkToAccess { get; }
+        public string LinkToAccessType { get; }
+        public string TypeOfResponse { get; }
+
+        public bool RequiredLogin { get; private set; }
+        public string AuthenticationLogin { get; private set; }
+        public byte[] AuthenticationPassword { get; private set; }
+        public byte[] HostKeyFingerPrint { get; private set; }
+        public string AuthenticationCodeApp { get; private set; }
+
+        public string PathToOriginFile { get; private set; }
+        public string PathToDestinationFile { get; }
+        public string PathToFileBackupAtClient { get; private set; }
+        public string PathToFileBackupAtHostServer { get; private set; }
+        public string FileDelimiter { get; private set; }
+
+        public int DirectoryHostServerSize { get; private set; }
+
+        public IList<string> FileHeaderColumns { get; private set; }
+        public IList<string> AvailableFieldsColumns { get; private set; }
+
+        public ICollection<FileImport> FileImports
+        {
+            get { return _fileImport ??= new List<FileImport>(); }
+            protected set => _fileImport = value;
+        }
+
+        public void CreateCommunicationType()
+        {
+            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
+
+            if (!Directory.Exists(BaseWorkDirectoryHost))
+                throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
+            switch (CommunicationType)
+            {
+                case FileAccessType.FTP:
+                    var ftpLogin = new FtpClient(AuthenticationLogin, Encoding.ASCII.GetString(AuthenticationPassword),
+                        LinkToAccess);
+                    CreateCommunicationWithFTP(ftpLogin);
+                    break;
+                case FileAccessType.Email:
+                    break;
+                case FileAccessType.WebServer:
+                    break;
+                case FileAccessType.API:
+                    break;
+                case FileAccessType.WebSite:
+                    break;
+                case FileAccessType.DataBase:
+                    break;
+                case FileAccessType.RemoteDesktop:
+                    break;
+                case FileAccessType.ActiveDirectory:
+                    break;
+                case FileAccessType.LocalMachine:
+                    CreateCommunicationWithLocalMachine();
+                    break;
+            }
+        }
+
+        private void CreateCommunicationWithLocalMachine()
+        {
+            Guard.Against.NullOrWhiteSpace(PathToOriginFile, nameof(PathToOriginFile));
+            Guard.Against.NullOrWhiteSpace(PathToDestinationFile, nameof(PathToDestinationFile));
+            //var fileProcessor = new FileProcessor(PathToOriginFile);
+            //fileProcessor.Process();
+        }
+
+
+        private void CreateCommunicationWithFTP(FtpClient ftpLogin)
+        {
+            ftpLogin.CreateCredential("");
+            var stringData = ftpLogin.DirectoryListSimple(PathToOriginFile);
+        }
 
 
         #region Ctors
@@ -73,48 +164,7 @@ namespace RN_Process.Api.DataAccess.Entities
             RowVersion = new byte[0];
         }
 
-      
         #endregion
-
-        [BsonRepresentation(BsonType.ObjectId)]
-        //public string TermId { get; private set; }
-        //public Term Term { get; set; }   
-        
-        public string TermDetailId { get; private set; }
-        public TermDetail TermDetail { get; set; }
-
-
-        public string OrgCode { get; private set; }
-
-        public FileAccessType CommunicationType { get; private set; }
-        public string InternalHost { get; private set; }
-        public string BaseWorkDirectoryHost { get; private set; }
-        public string LinkToAccess { get; private set; }
-        public string LinkToAccessType { get; private set; }
-        public string TypeOfResponse { get; private set; }
-
-        public bool RequiredLogin { get; private set; }
-        public string AuthenticationLogin { get; private set; }
-        public byte[] AuthenticationPassword { get; private set; }
-        public byte[] HostKeyFingerPrint { get; private set; }
-        public string AuthenticationCodeApp { get; private set; }
-
-        public string PathToOriginFile { get; private set; }
-        public string PathToDestinationFile { get; private set; }
-        public string PathToFileBackupAtClient { get; private set; }
-        public string PathToFileBackupAtHostServer { get; private set; }
-        public string FileDelimiter { get; private set; }
-
-        public int DirectoryHostServerSize { get; private set; }
-
-        public IList<string> FileHeaderColumns { get; private set; }
-        public IList<string> AvailableFieldsColumns { get; private set; }
-
-        public ICollection<FileImport> FileImports
-        {
-            get { return _fileImport ??= new List<FileImport>(); }
-            protected set => _fileImport = value;
-        }
 
         #region Sets
 
@@ -235,7 +285,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         private void SetHostKeyFingerPrint(string hostKeyFingerPrint)
         {
-           HostKeyFingerPrint = Encoding.ASCII.GetBytes(hostKeyFingerPrint);
+            HostKeyFingerPrint = Encoding.ASCII.GetBytes(hostKeyFingerPrint);
         }
 
         public void PasswordValidation(string currentPassword)
@@ -254,54 +304,6 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
         #endregion
-
-        public void CreateCommunicationType()
-        {
-            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
-
-            if (!Directory.Exists(BaseWorkDirectoryHost)) throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
-            else
-                switch (CommunicationType)
-                {
-                    case FileAccessType.FTP:
-                        var ftpLogin = new FtpClient(AuthenticationLogin, Encoding.ASCII.GetString(AuthenticationPassword), LinkToAccess);
-                        CreateCommunicationWithFTP(ftpLogin);
-                        break;
-                    case FileAccessType.Email:
-                        break;
-                    case FileAccessType.WebServer:
-                        break;
-                    case FileAccessType.API:
-                        break;
-                    case FileAccessType.WebSite:
-                        break;
-                    case FileAccessType.DataBase:
-                        break;
-                    case FileAccessType.RemoteDesktop:
-                        break;
-                    case FileAccessType.ActiveDirectory:
-                        break;
-                    case FileAccessType.LocalMachine:
-                        CreateCommunicationWithLocalMachine();
-                        break;
-                }
-        }
-
-        private void CreateCommunicationWithLocalMachine()
-        {
-            Guard.Against.NullOrWhiteSpace(PathToOriginFile,nameof(PathToOriginFile));
-            Guard.Against.NullOrWhiteSpace(PathToDestinationFile,nameof(PathToDestinationFile));
-            //var fileProcessor = new FileProcessor(PathToOriginFile);
-            //fileProcessor.Process();
-        }
-
-
-        private void CreateCommunicationWithFTP(FtpClient ftpLogin)
-        {
-            ftpLogin.CreateCredential("");
-            var stringData = ftpLogin.DirectoryListSimple(PathToOriginFile);
-
-        }
 
 
         //public Guid GenerateNewTokenToChangePassword()

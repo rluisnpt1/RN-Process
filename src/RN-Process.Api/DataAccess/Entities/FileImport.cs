@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
-using RN_Process.DataAccess.FTP;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 
@@ -106,6 +104,5 @@ namespace RN_Process.Api.DataAccess.Entities
             OrgCode = termDetailConfig.OrgCode;
             TermDetailConfig = termDetailConfig;
         }
-
     }
 }
