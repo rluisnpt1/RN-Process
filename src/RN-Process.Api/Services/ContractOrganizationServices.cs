@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
@@ -67,5 +68,42 @@ namespace RN_Process.Api.Services
                     $"Can not save Organization {organizationFromModel.CodOrg} already exist.");
             }
         }
+
+        public IList<ContractOrganization> GetContractOrganization()
+        {
+            var allPeople = GetAll();
+
+            var organizationWhoWereContract =
+                allPeople.Result.Where(temp => temp.Terms != null && temp.TermDetails != null);
+
+            return ToContractOrganizations(organizationWhoWereContract);
+        }
+
+        public IList<ContractOrganization> Search(string codOrg, string debtId, int contractNumber)
+        {
+            var allContracts = GetContractOrganization();
+            IEnumerable<ContractOrganization> returnValues =
+                allContracts;
+
+            if (String.IsNullOrWhiteSpace(codOrg) == false)
+            {
+                returnValues =
+                    returnValues.Where(p => p.CodOrg.ToLower().Contains(codOrg.ToLower()));
+            }
+
+            return allContracts;
+        }
+
+        private IList<ContractOrganization> ToContractOrganizations(IEnumerable<Organization> organizationWhoWereContract)
+        {
+            var returnValues = new List<ContractOrganization>();
+
+            _adapter.Adapt(organizationWhoWereContract, returnValues);
+
+
+            return returnValues;
+        }
+
+        
     }
 }

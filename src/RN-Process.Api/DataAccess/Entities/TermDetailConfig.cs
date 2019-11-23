@@ -6,9 +6,9 @@ using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.DataAccess;
-using RN_Process.DataAccess.FTP;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
+using WinSCP;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
@@ -60,52 +60,75 @@ namespace RN_Process.Api.DataAccess.Entities
             protected set => _fileImport = value;
         }
 
-        public void CreateCommunicationType()
+        /// <summary>
+        /// Downloading the most recent file
+        /// </summary>
+        public string FtpDownloadingTheMostRecentFileRemoteDir()
         {
             Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
-
             if (!Directory.Exists(BaseWorkDirectoryHost))
                 throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
-            switch (CommunicationType)
-            {
-                case FileAccessType.FTP:
-                    var ftpLogin = new FtpClient(AuthenticationLogin, Encoding.ASCII.GetString(AuthenticationPassword),
-                        LinkToAccess);
-                    CreateCommunicationWithFTP(ftpLogin);
-                    break;
-                case FileAccessType.Email:
-                    break;
-                case FileAccessType.WebServer:
-                    break;
-                case FileAccessType.API:
-                    break;
-                case FileAccessType.WebSite:
-                    break;
-                case FileAccessType.DataBase:
-                    break;
-                case FileAccessType.RemoteDesktop:
-                    break;
-                case FileAccessType.ActiveDirectory:
-                    break;
-                case FileAccessType.LocalMachine:
-                    CreateCommunicationWithLocalMachine();
-                    break;
-            }
+
+            if (CommunicationType != FileAccessType.FTP)
+                throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
+
+            var sessionOptionsLogin = FtpWork(out var options);
+
+            var directoryInfo = sessionOptionsLogin.GetRemoteDirectoryInfo(options, PathToOriginFile);
+            var latest = sessionOptionsLogin.GetLastFileRemoteFileInfo(directoryInfo);
+
+            var destination = BaseWorkDirectoryHost + "\\" + latest.Name;
+            sessionOptionsLogin.DownloadFileRemoteDir(options, latest.FullName, destination);
+
+            return destination;
         }
 
-        private void CreateCommunicationWithLocalMachine()
+        /// <summary>
+        /// Keep local directory up to date (download changed files from remote SFTP/FTP server)
+        ///This script periodically synchronizes changes from the remote server to a local directory.
+        /// </summary>
+        public void FtpSynchronizationLocalAndRemoteDir()
         {
-            Guard.Against.NullOrWhiteSpace(PathToOriginFile, nameof(PathToOriginFile));
-            Guard.Against.NullOrWhiteSpace(PathToDestinationFile, nameof(PathToDestinationFile));
-            //var fileProcessor = new FileProcessor(PathToOriginFile);
-            //fileProcessor.Process();
+            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
+            if (!Directory.Exists(BaseWorkDirectoryHost))
+                throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
+
+            if (CommunicationType != FileAccessType.FTP)
+                throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
+
+            var sessionOptionsLogin = FtpWork(out var options);
+            
+            sessionOptionsLogin.SynchronizationLocalAndRemoteDir(options, BaseWorkDirectoryHost, PathToOriginFile);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="localFile">d:\toUpload\*</param>
+        public void FtpUploadFileToRemoteDir(string localFile)
+        {
+            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
+            if (!Directory.Exists(BaseWorkDirectoryHost))
+                throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
+
+            if (CommunicationType != FileAccessType.FTP)
+                throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
+
+            Guard.Against.NullOrWhiteSpace(localFile, nameof(localFile));
+
+            var sessionOptionsLogin = FtpWork(out var options);
+            sessionOptionsLogin.UploadFileToRemoteDir(options, localFile, PathToDestinationFile);
         }
 
 
-        private void CreateCommunicationWithFTP(FtpClient ftpLogin)
+        protected virtual FtpWork FtpWork(out SessionOptions options)
         {
-            ftpLogin.CreateCredential("");
-            var stringData = ftpLogin.DirectoryListSimple(PathToOriginFile);
+            var sessionOptionsLogin = new FtpWork();
+            options = sessionOptionsLogin.SessionOptions(LinkToAccess,
+                AuthenticationLogin,
+                Encoding.ASCII.GetString(AuthenticationPassword),
+                Encoding.ASCII.GetString(HostKeyFingerPrint));
+            return sessionOptionsLogin;
         }
 
 

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
@@ -31,7 +33,8 @@ namespace RN_Process.Api.Services
 
 
             foreach (var item in fromValue.TermDetails.GetTermDetails(
-                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode))) AdaptTermsDetail(toValue, item);
+                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode))) 
+                AdaptTermsDetail(toValue, item);
         }
 
 
@@ -46,6 +49,23 @@ namespace RN_Process.Api.Services
             Guard.Against.Null(organization, nameof(Organization));
 
             AdaptDueDetail(fromValue, organization);
+        }
+
+        public void Adapt(IEnumerable<Organization> organizationWhoWereContract,List<ContractOrganization> returnValues)
+        {
+            if (organizationWhoWereContract == null)
+                throw new ArgumentNullException("fromValues", "fromValues is null.");
+
+            ContractOrganization toValue;
+
+            foreach (var fromValue in organizationWhoWereContract)
+            {
+                toValue = new ContractOrganization();
+
+                Adapt(fromValue, toValue);
+
+                returnValues.Add(toValue);
+            }
         }
 
         /// <summary>
@@ -130,5 +150,7 @@ namespace RN_Process.Api.Services
                 else if (fromValue.IsDeleted && !string.IsNullOrWhiteSpace(itemDetailModel.Id))
                     organization.RemoveTerms(itemDetailModel.Id);
         }
+
+
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RN_Process.Api.DataAccess.Repositories;
+
 using RN_Process.DataAccess.MongoDb;
 
 namespace RN_Process.WebUi

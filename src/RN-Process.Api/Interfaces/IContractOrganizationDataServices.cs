@@ -1,4 +1,5 @@
-﻿using RN_Process.Api.Models;
+﻿using System.Collections.Generic;
+using RN_Process.Api.Models;
 
 namespace RN_Process.Api.Interfaces
 {
@@ -13,9 +14,14 @@ namespace RN_Process.Api.Interfaces
         /// <returns></returns>
         ContractOrganization GetContractOrganizationById(string organizationId);
 
+  
+
         /// <summary>
         /// </summary>
         /// <param name="organizationFromModel"></param>
         void CreateContractOrganization(ContractOrganization organizationFromModel);
+
+        IList<ContractOrganization> GetContractOrganization();
+        IList<ContractOrganization> Search(string codOrg, string debtId, int contractNumber);
     }
 }

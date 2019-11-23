@@ -1,4 +1,5 @@
-﻿using RN_Process.Api.DataAccess.Entities;
+﻿using System.Collections.Generic;
+using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Models;
 
 namespace RN_Process.Api.Interfaces
@@ -18,5 +19,7 @@ namespace RN_Process.Api.Interfaces
         /// <param name="fromValue"></param>
         /// <param name="organization"></param>
         void Adapt(ContractOrganization fromValue, Organization organization);
+
+        void Adapt(IEnumerable<Organization> organizationWhoWereContract, List<ContractOrganization> returnValues);
     }
 }

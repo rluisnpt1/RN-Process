@@ -2,8 +2,6 @@
 using System.IO;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Moq;
 using RN_Process.Api.DataAccess;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
@@ -23,16 +21,13 @@ namespace RN_Process.Tests.ServicesTests
             _context = null;
         }
 
-        private IOrganizationToContractOrganizationAdapter _adapter;
         private IMongoContext _context;
+        private IOrganizationToContractOrganizationAdapter _adapter;
         private InMemoryRepository<Organization, string> _repository;
         private ContractOrganizationServices _sut;
 
-
         private InMemoryRepository<Organization, string> RepositoryInstance =>
             _repository ??= _repository = new InMemoryRepository<Organization, string>();
-
-    
 
         private IOrganizationToContractOrganizationAdapter AdapterInstance =>
             _adapter ??= _adapter = new OrganizationToContractOrganizationAdapter();
