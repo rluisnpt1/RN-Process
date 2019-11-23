@@ -21,10 +21,12 @@ namespace RN_Process.Api.Services
             Guard.Against.Null(fromValue, nameof(Organization));
             Guard.Against.Null(toValue, nameof(ContractOrganization));
 
+            var term = fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode);
+
             toValue.Id = fromValue.Id;
             toValue.CodOrg = fromValue.OrgCode;
             toValue.Description = fromValue.Description;
-            toValue.ContractNumber = fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode).TermNumber;
+            toValue.ContractNumber = term?.TermNumber > 0 ? term.TermNumber : 0;
             toValue.CreatedDate = fromValue.CreatedDate;
             toValue.CreatedBy = fromValue.CreatedBy;
             toValue.UpdateBy = fromValue.ModifiedBy;
@@ -33,7 +35,7 @@ namespace RN_Process.Api.Services
 
 
             foreach (var item in fromValue.TermDetails.GetTermDetails(
-                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode))) 
+                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
                 AdaptTermsDetail(toValue, item);
         }
 
@@ -51,7 +53,7 @@ namespace RN_Process.Api.Services
             AdaptDueDetail(fromValue, organization);
         }
 
-        public void Adapt(IEnumerable<Organization> organizationWhoWereContract,List<ContractOrganization> returnValues)
+        public void Adapt(IEnumerable<Organization> organizationWhoWereContract, List<ContractOrganization> returnValues)
         {
             if (organizationWhoWereContract == null)
                 throw new ArgumentNullException("fromValues", "fromValues is null.");

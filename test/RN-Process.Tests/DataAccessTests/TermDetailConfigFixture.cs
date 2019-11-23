@@ -61,7 +61,7 @@ namespace RN_Process.Tests.DataAccessTests
 
 
         [Fact]
-        public void CreateCommunicationToDownloadFilesFromFTP()
+        public void CreateCommunicationToDownloadFilesFromFtp()
         {
             var sut = UnitTestUtility.GetRealTermUnicreDetailConfigToTest();
             var file = sut.FtpDownloadingTheMostRecentFileRemoteDir();
@@ -76,21 +76,6 @@ namespace RN_Process.Tests.DataAccessTests
                 IntrumFile.GetFilesInDirectory(SystemUnderTest.BaseWorkDirectoryHost, "*"));
         }
 
-        [Fact]
-        public void CreateCommunicationEndSynchronizeRemoteAndLocalDir()
-        {
-            var sut = UnitTestUtility.GetRealTermUnicreDetailConfigToTest();
-            sut.FtpSynchronizationLocalAndRemoteDir();
-
-            //local dir
-            var expect = IntrumFile.GetFilesInDirectory(SystemUnderTest.BaseWorkDirectoryHost, "*");
-
-            expect.Should().NotBeNullOrEmpty("Directory is empty");
-
-            Directory.Delete(SystemUnderTest.BaseWorkDirectoryHost, true);
-            Assert.Throws<DirectoryNotFoundException>(() =>
-                IntrumFile.GetFilesInDirectory(SystemUnderTest.BaseWorkDirectoryHost, "*"));
-        }
 
         [Fact]
         public void

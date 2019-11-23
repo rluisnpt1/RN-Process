@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using RN_Process.Api.DataAccess;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
+using RN_Process.Api.Models;
 using RN_Process.Api.Services;
 using RN_Process.DataAccess.MongoDb;
+using RN_Process.Shared.Commun;
+using RN_Process.Shared.Enums;
 using Xunit;
 
 namespace RN_Process.Tests.ServicesTests
@@ -16,27 +21,27 @@ namespace RN_Process.Tests.ServicesTests
         public void Dispose()
         {
             _sut = null;
-            _adapter = null;
+            // _adapter = null;
             _repository = null;
-            _context = null;
+            //_context = null;
         }
 
-        private IMongoContext _context;
-        private IOrganizationToContractOrganizationAdapter _adapter;
+        //private IMongoContext _context;
+        //private IOrganizationToContractOrganizationAdapter _adapter;
         private InMemoryRepository<Organization, string> _repository;
         private ContractOrganizationServices _sut;
 
         private InMemoryRepository<Organization, string> RepositoryInstance =>
             _repository ??= _repository = new InMemoryRepository<Organization, string>();
 
-        private IOrganizationToContractOrganizationAdapter AdapterInstance =>
-            _adapter ??= _adapter = new OrganizationToContractOrganizationAdapter();
+        //private IOrganizationToContractOrganizationAdapter AdapterInstance =>
+        //    _adapter ??= _adapter = new OrganizationToContractOrganizationAdapter();
 
-        private IMongoContext Context => _context ??= _context =
-            new RnProcessMongoDbContext(InitConfiguration());
+        //private IMongoContext Context => _context ??= _context =
+        //    new RnProcessMongoDbContext(InitConfiguration());
 
         private ContractOrganizationServices SystemUnderTest =>
-            _sut ??= _sut = new ContractOrganizationServices(Context, AdapterInstance);
+            _sut ??= _sut = new ContractOrganizationServices(RepositoryInstance);
 
         [Fact]
         public async void GivenIHaveAnAlreadyExistingOrganization_WhenISaveThrowException()
@@ -94,6 +99,94 @@ namespace RN_Process.Tests.ServicesTests
             var fromRepository = _repository.GetById(uniqOrg.Id);
             fromRepository.Should().NotBeNull();
         }
+
+        [Fact]
+        public void GetAllOrganizationsOnlyReturnsContractOrganizations()
+        {
+            PopulateRepositoryWithTestData();
+
+            IList<ContractOrganization> actual = SystemUnderTest.GetContractOrganizations();
+
+            Assert.Equal(4, actual.Count);
+
+            var lastNames =
+                (from temp in actual
+                 select temp.Description).ToList();
+
+           lastNames.Should().Contain("Nova Org");
+           lastNames.Should().Contain("Nova Org 3");
+        }
+      
+        [Fact]
+        public void SearchByDescription()
+        {
+            PopulateRepositoryWithTestData();
+
+            IList<ContractOrganization> actual = SystemUnderTest.Search("Nova Org");
+
+            actual.Count.Should().BeGreaterOrEqualTo(2);
+
+            var lastNames =
+                (from temp in actual
+                    select temp.Description).ToList();
+
+            lastNames.Should().Contain("Nova Org");
+            lastNames.Should().Contain("Nova Org 3");
+        }
+        
+        [Fact]
+        public void SearchByCodOrg()
+        {
+            PopulateRepositoryWithTestData();
+
+            IList<ContractOrganization> actual = SystemUnderTest.Search(string.Empty, "@98598");
+
+            actual.Count.Should().BeGreaterOrEqualTo(1);
+
+            var lastNames =
+                (from temp in actual
+                    select temp.Description).ToList();
+
+            lastNames.Should().Contain("Nova Org 3");
+        }
+        
+        [Fact]
+        public void SearchByContractNumber()
+        {
+            PopulateRepositoryWithTestData();
+
+            IList<ContractOrganization> actual = SystemUnderTest.Search(string.Empty, string.Empty, 9998655);
+
+            actual.Count.Should().BeGreaterOrEqualTo(1);
+
+            var lastNames =
+                (from temp in actual
+                    select temp.Description).ToList();
+
+            lastNames.Should().Contain("Nova Org 3");
+        }
+
+
+
+        private async void PopulateRepositoryWithTestData()
+        {
+            await RepositoryInstance.Add(UnitTestUtility.GetNOWO_Organization_OrganizationToTest());
+            await RepositoryInstance.Add(UnitTestUtility.GetUNICRE_OrganizationToTest());
+
+            var personWithNoFacts = new Organization("Nova Org", "@4566");
+            await RepositoryInstance.Add(personWithNoFacts);
+
+            var personWhoWasVP = new Organization("Nova Org 3", "@98598");
+
+            personWhoWasVP.AddTerm(null, 9998655, 87556, TermsType.Leasing, FileAccessType.LocalMachine
+                , string.Empty, "\\Test\\teste", "LOCAL", "XML", false, string.Empty,
+                string.Empty, string.Empty, string.Empty, "/", string.Empty,
+                string.Empty, string.Empty, ",",
+                RnProcessConstant.AvailableColumnsIntrum, RnProcessConstant.AvailableColumnsIntrum);
+
+            await RepositoryInstance.Add(personWhoWasVP);
+        }
+
 
         public static IConfiguration InitConfiguration()
         {

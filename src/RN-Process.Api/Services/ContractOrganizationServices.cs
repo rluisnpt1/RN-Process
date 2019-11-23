@@ -6,21 +6,22 @@ using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 using RN_Process.DataAccess.MongoDb;
 using RN_Process.Shared.Commun;
+using static System.String;
 
 namespace RN_Process.Api.Services
 {
     /// <summary>
     ///     here
     /// </summary>
-    public class ContractOrganizationServices : BaseRepositoryMongo<Organization, string>,
-        IContractOrganizationDataServices
+    public class ContractOrganizationServices : IContractOrganizationDataServices
     {
-        private readonly IOrganizationToContractOrganizationAdapter _adapter;
+        private readonly IRepositoryNoSql<Organization, string> _repositoryInstance;
+        private readonly OrganizationToContractOrganizationAdapter _adapter;
 
-        public ContractOrganizationServices(IMongoContext context,
-            IOrganizationToContractOrganizationAdapter adapter) : base(context)
+        public ContractOrganizationServices(IRepositoryNoSql<Organization, string> repository)
         {
-            _adapter = adapter;
+            _repositoryInstance = repository;
+            _adapter = new OrganizationToContractOrganizationAdapter();
         }
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace RN_Process.Api.Services
         /// <returns></returns>
         public ContractOrganization GetContractOrganizationById(string organizationId)
         {
-            var match = GetById(organizationId);
+            var match = _repositoryInstance.GetById(organizationId);
 
             if (match.Result == null) return null;
 
@@ -49,7 +50,7 @@ namespace RN_Process.Api.Services
             Guard.Against.Null(organizationFromModel, nameof(organizationFromModel));
 
             //GET ALL DATA --PLEASE CHANGE IT LATER
-            var allData = GetAll();
+            var allData = _repositoryInstance.GetAll();
 
             var match = allData.Result.FirstOrDefault(x => x.OrgCode == organizationFromModel.CodOrg);
 
@@ -58,7 +59,7 @@ namespace RN_Process.Api.Services
                 var org = new Organization(organizationFromModel.Description, organizationFromModel.CodOrg);
                 _adapter.Adapt(organizationFromModel, org);
 
-                Add(org);
+                _repositoryInstance.Add(org);
 
                 organizationFromModel.Id = org.Id;
             }
@@ -69,9 +70,13 @@ namespace RN_Process.Api.Services
             }
         }
 
-        public IList<ContractOrganization> GetContractOrganization()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IList<ContractOrganization> GetContractOrganizations()
         {
-            var allPeople = GetAll();
+            var allPeople = _repositoryInstance.GetAll();
 
             var organizationWhoWereContract =
                 allPeople.Result.Where(temp => temp.Terms != null && temp.TermDetails != null);
@@ -79,13 +84,25 @@ namespace RN_Process.Api.Services
             return ToContractOrganizations(organizationWhoWereContract);
         }
 
-        public IList<ContractOrganization> Search(string codOrg, string debtId, int contractNumber)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="codOrg"></param>
+        /// <returns></returns>
+        public IList<ContractOrganization> Search(string description, string codOrg)
         {
-            var allContracts = GetContractOrganization();
-            IEnumerable<ContractOrganization> returnValues =
-                allContracts;
+            var allContracts = GetContractOrganizations();
 
-            if (String.IsNullOrWhiteSpace(codOrg) == false)
+            IEnumerable<ContractOrganization> returnValues = allContracts;
+
+            if (IsNullOrWhiteSpace(description) == false)
+            {
+                returnValues =
+                    returnValues.Where(p => p.CodOrg.ToLower().Contains(description.ToLower()));
+            }
+
+            if (IsNullOrWhiteSpace(codOrg) == false)
             {
                 returnValues =
                     returnValues.Where(p => p.CodOrg.ToLower().Contains(codOrg.ToLower()));
@@ -94,6 +111,65 @@ namespace RN_Process.Api.Services
             return allContracts;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="codOrg"></param>
+        /// <param name="contract"></param>
+        /// <returns></returns>
+        public IList<ContractOrganization> Search(string description, string codOrg, int contract)
+        {
+            var allContracts = GetContractOrganizations();
+
+            IEnumerable<ContractOrganization> returnValues = allContracts;
+
+            if (IsNullOrWhiteSpace(description) == false)
+            {
+                returnValues =
+                    returnValues.Where(p => p.CodOrg.ToLower().Contains(description.ToLower()));
+            }
+
+            if (IsNullOrWhiteSpace(codOrg) == false)
+            {
+                returnValues =
+                    returnValues.Where(p => p.CodOrg.ToLower().Contains(codOrg.ToLower()));
+            }
+
+            if (contract > 0)
+            {
+                returnValues =
+                    returnValues.Where(p => p.ContractNumber == contract);
+            }
+
+            return allContracts;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codeOrg"></param>
+        /// <returns></returns>
+        public IList<ContractOrganization> Search(string codeOrg)
+        {
+            var allContracts = GetContractOrganizations();
+
+            IEnumerable<ContractOrganization> returnValues = allContracts;
+
+            if (IsNullOrWhiteSpace(codeOrg) == false)
+            {
+                returnValues =
+                    returnValues.Where(p => p.CodOrg.ToLower().Contains(codeOrg.ToLower()));
+            }
+
+            return allContracts;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="organizationWhoWereContract"></param>
+        /// <returns></returns>
         private IList<ContractOrganization> ToContractOrganizations(IEnumerable<Organization> organizationWhoWereContract)
         {
             var returnValues = new List<ContractOrganization>();
@@ -104,6 +180,6 @@ namespace RN_Process.Api.Services
             return returnValues;
         }
 
-        
+
     }
 }

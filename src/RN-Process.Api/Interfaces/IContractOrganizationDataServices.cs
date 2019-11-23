@@ -21,7 +21,7 @@ namespace RN_Process.Api.Interfaces
         /// <param name="organizationFromModel"></param>
         void CreateContractOrganization(ContractOrganization organizationFromModel);
 
-        IList<ContractOrganization> GetContractOrganization();
+        IList<ContractOrganization> GetContractOrganizations();
         IList<ContractOrganization> Search(string codOrg, string debtId, int contractNumber);
     }
 }

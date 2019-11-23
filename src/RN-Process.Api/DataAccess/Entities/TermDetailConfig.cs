@@ -83,42 +83,6 @@ namespace RN_Process.Api.DataAccess.Entities
             return destination;
         }
 
-        /// <summary>
-        /// Keep local directory up to date (download changed files from remote SFTP/FTP server)
-        ///This script periodically synchronizes changes from the remote server to a local directory.
-        /// </summary>
-        public void FtpSynchronizationLocalAndRemoteDir()
-        {
-            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
-            if (!Directory.Exists(BaseWorkDirectoryHost))
-                throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
-
-            if (CommunicationType != FileAccessType.FTP)
-                throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
-
-            var sessionOptionsLogin = FtpWork(out var options);
-            
-            sessionOptionsLogin.SynchronizationLocalAndRemoteDir(options, BaseWorkDirectoryHost, PathToOriginFile);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="localFile">d:\toUpload\*</param>
-        public void FtpUploadFileToRemoteDir(string localFile)
-        {
-            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
-            if (!Directory.Exists(BaseWorkDirectoryHost))
-                throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
-
-            if (CommunicationType != FileAccessType.FTP)
-                throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
-
-            Guard.Against.NullOrWhiteSpace(localFile, nameof(localFile));
-
-            var sessionOptionsLogin = FtpWork(out var options);
-            sessionOptionsLogin.UploadFileToRemoteDir(options, localFile, PathToDestinationFile);
-        }
 
 
         protected virtual FtpWork FtpWork(out SessionOptions options)
@@ -213,7 +177,10 @@ namespace RN_Process.Api.DataAccess.Entities
             var clientDir = $"\\backup\\{OrgCode.ToUpper()}";
 
             if (string.IsNullOrEmpty(pathToFileBackupAtHostServer))
-                PathToFileBackupAtClient = IntrumFile.CreateDirectory(PathToOriginFile + clientDir);
+            {
+                var te2 = PathToOriginFile.Replace("/", "").ToString();
+                PathToFileBackupAtClient = IntrumFile.CreateDirectory(te2 + clientDir);
+            }
             else
                 PathToFileBackupAtHostServer = IntrumFile.CreateDirectory(pathToFileBackupAtHostServer + clientDir);
         }
