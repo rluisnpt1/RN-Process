@@ -45,7 +45,7 @@ namespace RN_Process.Api.DataAccess.Persistences
 
         public static void FileImPortConfigure()
         {
-            BsonClassMap.RegisterClassMap<FileImport>(map =>
+            BsonClassMap.RegisterClassMap<OrganizationFile>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);

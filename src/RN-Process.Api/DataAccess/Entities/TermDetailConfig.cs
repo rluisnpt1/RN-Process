@@ -17,7 +17,7 @@ namespace RN_Process.Api.DataAccess.Entities
         private static readonly string
             BaseWorkDir = "C:\\TEMP\\WorkDir"; //Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-        [BsonIgnore] private ICollection<FileImport> _fileImport;
+        [BsonIgnore] private ICollection<OrganizationFile> _fileImport;
 
         [BsonRepresentation(BsonType.ObjectId)]
         //public string TermId { get; private set; }
@@ -54,14 +54,57 @@ namespace RN_Process.Api.DataAccess.Entities
         public IList<string> FileHeaderColumns { get; private set; }
         public IList<string> AvailableFieldsColumns { get; private set; }
 
-        public ICollection<FileImport> FileImports
+        public ICollection<OrganizationFile> OrganizationFiles
         {
-            get { return _fileImport ??= new List<FileImport>(); }
+            get { return _fileImport ??= new List<OrganizationFile>(); }
             protected set => _fileImport = value;
         }
 
+        public void AddOrganizationFile(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
+            string fileLocationOrigin, string locationToCopy, StatusType status, bool fileMigrated,
+            DateTime? fileMigratedOn, List<BsonDocument> allDataInFile, bool active)
+        {
+            if (!string.IsNullOrEmpty(id))
+                UpdateExistingTermById(id, orgCode,status, fileMigrated, fileMigratedOn, active);
+            else
+                AddNwwOrganizationFile("", fileDescription, fileSize, fileFormat, fileLocationOrigin
+                    , locationToCopy, status, allDataInFile);
+        }
+
+        private void UpdateExistingTermById(string id, string orgCode, StatusType status, 
+            bool fileMigrated, DateTime? fileMigratedOn, bool active)
+        {
+            OrganizationFile orgFile =null;
+            var foundIt = false;
+            if (!string.IsNullOrEmpty(id)) orgFile = 
+                OrganizationFiles.FirstOrDefault(temp => temp.Id == id
+                                                         && temp.OrgCode.ToUpper()
+                                                             .Equals(orgCode.ToUpper()));
+            if (orgFile != null)
+            {
+                foundIt = true;
+                orgFile.Status = status;
+                orgFile.FileMigrated = fileMigrated;
+                orgFile.FileMigratedOn = fileMigratedOn;
+                orgFile.Active = active;
+                orgFile.Deleted = !active;
+
+                OrganizationFiles.Add(orgFile);
+            }
+        }
+
+        private void AddNwwOrganizationFile(string id, string fileDescription, int fileSize,
+            string fileFormat, string fileLocationOrigin, string locationToCopy, StatusType status, 
+            List<BsonDocument> allDataInFile)
+        {
+            var newdoc = new OrganizationFile(id, fileDescription, fileSize, fileFormat, fileLocationOrigin
+                , locationToCopy, status, false, null, this, allDataInFile);
+           
+            OrganizationFiles.Add(newdoc);
+        }
+
         /// <summary>
-        /// Downloading the most recent file
+        ///     Downloading the most recent file
         /// </summary>
         public string FtpDownloadingTheMostRecentFileRemoteDir()
         {
@@ -82,7 +125,6 @@ namespace RN_Process.Api.DataAccess.Entities
 
             return destination;
         }
-
 
 
         protected virtual FtpWork FtpWork(out SessionOptions options)
@@ -178,11 +220,13 @@ namespace RN_Process.Api.DataAccess.Entities
 
             if (string.IsNullOrEmpty(pathToFileBackupAtHostServer))
             {
-                var te2 = PathToOriginFile.Replace("/", "").ToString();
+                var te2 = PathToOriginFile.Replace("/", "");
                 PathToFileBackupAtClient = IntrumFile.CreateDirectory(te2 + clientDir);
             }
             else
+            {
                 PathToFileBackupAtHostServer = IntrumFile.CreateDirectory(pathToFileBackupAtHostServer + clientDir);
+            }
         }
 
         private void SetBaseWorkDirectoryHost()

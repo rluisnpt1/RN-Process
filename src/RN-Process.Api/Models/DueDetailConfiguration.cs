@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
+using MongoDB.Bson;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 
@@ -12,6 +15,7 @@ namespace RN_Process.Api.Models
         {
             FileHeaderColumns = new List<string> {"CLIENT_COLUM1", "CLIENT_COLUM2", "CLIENT_COLUM3"};
             AvailableFieldsColumns = RnProcessConstant.AvailableColumnsIntrum.ToList();
+            FilesDataInContracts = new List<FileDataContract>();
         }
 
         public DueDetailConfiguration(string id, FileAccessType communicationType, string linkToAccess,
@@ -110,5 +114,15 @@ namespace RN_Process.Api.Models
         [Required]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public IList<string> AvailableFieldsColumns { get; set; }
+
+        public IList<FileDataContract> FilesDataInContracts { get; set; }
+        public void AddFileIncontract(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
+            string fileLocationOrigin, string locationToCopy, StatusType status, List<BsonDocument> allDataInFile)
+        {
+            FilesDataInContracts.Add(new FileDataContract(id,
+                orgCode, fileDescription, fileSize, fileFormat, fileLocationOrigin, locationToCopy, status
+                , false, null, allDataInFile));
+        }
+
     }
 }

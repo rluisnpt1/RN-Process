@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using FluentAssertions;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Models;
 using RN_Process.Api.Services;
@@ -55,6 +57,28 @@ namespace RN_Process.Tests.ServicesTests
 
             // Assert
             UnitTestUtility.AssertAreEqual(fromValue, toValue);
+        }
+
+        [Fact]
+        public void AdaptFileDataContractToOrganizationFile()
+        {
+            // Arrange
+            var contract = UnitTestUtility.GetContractOrganizationModel();
+            var organization = new Organization(contract.Description, contract.CodOrg);
+            // Act
+            SystemUnderTest.Adapt(contract, organization);
+
+          var config = organization.TermDetails.Select(x => x.TermDetailConfigs.Select(s => s).FirstOrDefault()).FirstOrDefault();
+
+            var fromValue = UnitTestUtility.GetFileDataContract("BBEE");
+          
+            // Act
+            SystemUnderTest.AdaptOrganizationFile(fromValue, config);
+
+            config.OrganizationFiles.Count.Should().BeGreaterThan(0);
+            // Assert
+            // UnitTestUtility.AssertAreEqual(fromValue, toValue);
+            // UnitTestUtility.AssertAreEqual(fromValue, toValue);
         }
     }
 }

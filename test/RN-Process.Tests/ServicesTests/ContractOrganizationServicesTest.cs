@@ -155,7 +155,8 @@ namespace RN_Process.Tests.ServicesTests
         {
             PopulateRepositoryWithTestData();
 
-            IList<ContractOrganization> actual = SystemUnderTest.Search(string.Empty, string.Empty, 9998655);
+            IList<ContractOrganization> actual =
+                SystemUnderTest.Search(string.Empty, string.Empty, 9998655);
 
             actual.Count.Should().BeGreaterOrEqualTo(1);
 

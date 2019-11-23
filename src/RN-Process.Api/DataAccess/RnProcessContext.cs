@@ -16,7 +16,7 @@ namespace RN_Process.Api.DataAccess
         public DbSet<Term> Terms { get; set; }
         public DbSet<TermDetail> TermDetails { get; set; }
         public DbSet<TermDetailConfig> TermDetailConfigs { get; set; }
-        public DbSet<FileImport> FileImports { get; set; }
+        public DbSet<OrganizationFile> FileImports { get; set; }
 
 
         public override int SaveChanges()
@@ -72,12 +72,12 @@ namespace RN_Process.Api.DataAccess
             {
                 entity.ToTable("TermDetailConfig");
                 entity.HasKey(x => x.Id);
-                entity.HasMany(x => x.FileImports).WithOne(x => x.TermDetailConfig);
+                entity.HasMany(x => x.OrganizationFiles).WithOne(x => x.TermDetailConfig);
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
-            modelBuilder.Entity<FileImport>(entity =>
+            modelBuilder.Entity<OrganizationFile>(entity =>
             {
-                entity.ToTable("FileImport");
+                entity.ToTable("OrganizationFile");
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });

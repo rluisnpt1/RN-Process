@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
@@ -36,8 +38,10 @@ namespace RN_Process.Api.Services
 
             foreach (var item in fromValue.TermDetails.GetTermDetails(
                 fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
-                AdaptTermsDetail(toValue, item);
+                AdaptTermsDetail(item, toValue);
         }
+
+
 
 
         /// <summary>
@@ -73,9 +77,9 @@ namespace RN_Process.Api.Services
         /// <summary>
         ///     Adapt detail from entity to model
         /// </summary>
-        /// <param name="toValue"></param>
         /// <param name="item"></param>
-        public static void AdaptTermsDetail(ContractOrganization toValue, TermDetail item)
+        /// <param name="toValue"></param>
+        public static void AdaptTermsDetail(TermDetail item, ContractOrganization toValue)
         {
             Guard.Against.Null(toValue, nameof(ContractOrganization));
             Guard.Against.Null(item, nameof(TermDetail));
@@ -153,6 +157,29 @@ namespace RN_Process.Api.Services
                     organization.RemoveTerms(itemDetailModel.Id);
         }
 
+
+
+        public void AdaptOrganizationFile(FileDataContract fromfileDataContract, TermDetailConfig configuration)
+        {
+            Guard.Against.Null(fromfileDataContract, nameof(FileDataContract));
+            Guard.Against.Null(configuration, nameof(OrganizationFile));
+
+            configuration.AddOrganizationFile("",
+                fromfileDataContract.OrgCode,
+                fromfileDataContract.FileDescription,
+                fromfileDataContract.FileSize,
+                fromfileDataContract.FileFormat,
+                fromfileDataContract.FileLocationOrigin,
+                fromfileDataContract.LocationToCopy,
+                fromfileDataContract.Status,
+                fromfileDataContract.FileMigrated,
+                fromfileDataContract.FileMigratedOn, 
+                fromfileDataContract.AllDataInFile, true);
+
+            //var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
+
+
+        }
 
     }
 }

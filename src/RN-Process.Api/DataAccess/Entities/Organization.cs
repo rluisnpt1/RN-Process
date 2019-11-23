@@ -165,7 +165,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 var config = term.TermDetails.Where(temp => temp.TermId == term.Id);
                 foreach (var item in config)
                 {
-                    var first = item.TermDetailConfigs.First(x => x.TermDetailId == item.Id);
+                    //var first = item.TermDetailConfigs.First(x => x.TermDetailId == item.Id);
                     term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, active);
                 }
             }

@@ -29,7 +29,7 @@ namespace RN_Process.Api.DataAccess
             RegisterConventions<Term>();
             RegisterConventions<TermDetail>();
             RegisterConventions<TermDetailConfig>();
-            RegisterConventions<FileImport>();
+            RegisterConventions<OrganizationFile>();
 
             // Configure mongo (You can inject the config, just to simplify)
             var connection = Environment.GetEnvironmentVariable("MONGOCONNECTION") ??

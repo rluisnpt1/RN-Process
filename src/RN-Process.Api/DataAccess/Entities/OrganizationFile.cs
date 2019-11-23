@@ -8,39 +8,41 @@ using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class FileImport : AuditableEntity<string>
+    public class OrganizationFile : AuditableEntity<string>
     {
-        protected FileImport()
+        protected OrganizationFile()
         {
         }
 
-        public FileImport(string fileDescription, int fileSize, string fileFormat, string fileLocationOrigin,
+        public OrganizationFile(string id, string fileDescription, int fileSize, string fileFormat,
+            string fileLocationOrigin,
             string locationToCopy, StatusType status, bool fileMigrated, DateTime? fileMigratedOn,
             TermDetailConfig termDetailConfig, List<BsonDocument> allDataInFile)
         {
-            Id = ObjectId.GenerateNewId().ToString();
+            Id = string.IsNullOrWhiteSpace(id) ? ObjectId.GenerateNewId().ToString() : id;
 
             SetFileDescritption(fileDescription);
             SetFileSize(fileSize);
             SetFileFormat(fileFormat);
             FileLocationOrigin = fileLocationOrigin;
             LocationToCopy = locationToCopy;
-            Status = status;
+            
             SetMigration(fileMigrated);
             SetMigrationDate(fileMigratedOn);
             SetAllDatafromFile(allDataInFile);
-            Active = true;
             Deleted = false;
+            Active = true;
+            SetStatus(status);
 
             SetTermDetailConfig(termDetailConfig);
         }
 
         public virtual string OrgCode { get; private set; }
-        public string FileDescription { get; set; }
-        public int FileSize { get; set; }
-        public string FileFormat { get; set; }
-        public string FileLocationOrigin { get; set; }
-        public string LocationToCopy { get; set; }
+        public string FileDescription { get; private set; }
+        public int FileSize { get; private set; }
+        public string FileFormat { get; private set; }
+        public string FileLocationOrigin { get; }
+        public string LocationToCopy { get; }
 
         [BsonRepresentation(BsonType.String)] public StatusType Status { get; set; }
 
@@ -48,13 +50,22 @@ namespace RN_Process.Api.DataAccess.Entities
         public DateTime? FileMigratedOn { get; set; }
 
 
-        public List<BsonDocument> AllDataInFile { get; set; }
+        public List<BsonDocument> AllDataInFile { get; private set; }
 
 
         [BsonRepresentation(BsonType.ObjectId)]
-        public string TermDetailConfigId { get; set; }
+        public string TermDetailConfigId { get; private set; }
 
-        public virtual TermDetailConfig TermDetailConfig { get; set; }
+        public virtual TermDetailConfig TermDetailConfig { get; private set; }
+
+        private void SetStatus(StatusType status)
+        {
+            if (status != StatusType.Success || status != StatusType.Processed)
+                Active = false;
+            else
+                Active = true;
+            Status = status;
+        }
 
         private void SetAllDatafromFile(List<BsonDocument> allDataInFile)
         {

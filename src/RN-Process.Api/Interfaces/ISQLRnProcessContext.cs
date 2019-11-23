@@ -10,7 +10,7 @@ namespace RN_Process.Api.Interfaces
         DbSet<Term> Terms { get; set; }
         DbSet<TermDetail> TermDetails { get; set; }
         DbSet<TermDetailConfig> TermDetailConfigs { get; set; }
-        DbSet<FileImport> FileImports { get; set; }
+        DbSet<OrganizationFile> FileImports { get; set; }
 
         //EntityEntry<IEntity<T>> Entry<T>(object entity);
         EntityEntry Entry(object entity);

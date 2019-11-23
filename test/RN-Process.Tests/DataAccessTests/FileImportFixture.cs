@@ -14,12 +14,12 @@ namespace RN_Process.Tests.DataAccessTests
             _Sut = null;
         }
 
-        public FileImport _Sut;
+        public OrganizationFile _Sut;
 
-        public FileImport SystemUnderTest => _Sut ??= _Sut = UnitTestUtility.GetOneFileImportToTest();
+        public OrganizationFile SystemUnderTest => _Sut ??= _Sut = UnitTestUtility.GetOneFileImportToTest();
 
 
-        public FileImport InitializeTest(string fileDescription,
+        public OrganizationFile InitializeTest(string fileDescription,
             int fileSize,
             string fileFormat,
             string fileLocationOrigin,
@@ -30,7 +30,7 @@ namespace RN_Process.Tests.DataAccessTests
             TermDetailConfig termDetailConfig,
            List<BsonDocument> allDataInFile)
         {
-            return new FileImport(fileDescription,
+            return new OrganizationFile("", fileDescription,
                 fileSize,
                 fileFormat,
                 fileLocationOrigin,
@@ -69,7 +69,6 @@ namespace RN_Process.Tests.DataAccessTests
 
             Assert.Null(SystemUnderTest.ModifiedBy);
             Assert.Null(SystemUnderTest.UpdatedDate);
-            Assert.True(SystemUnderTest.Active);
             Assert.False(SystemUnderTest.Deleted);
             Assert.NotNull(SystemUnderTest.RowVersion);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using FluentAssertions;
@@ -46,10 +47,9 @@ namespace RN_Process.Tests
             return new TermDetail(54856, TermsType.Loan, GetTermOrganizationToTest());
         }
 
-        public static FileImport GetOneFileImportToTest()
+        public static OrganizationFile GetOneFileImportToTest()
         {
-            return new FileImport(
-                "file1", 21233
+            return new OrganizationFile("", "file1", 21233
                 , "csv",
                 "abc/local/path",
                 "retorno/copy/to",
@@ -85,9 +85,9 @@ namespace RN_Process.Tests
                 FileAccessType.FTP,
                 "LocalHost",
                 "ftp.unicre.pt",
-                "SFTP", "SFTP", 
-                true, "logi", "ih3bb6", 
-                "ssh-rsa 2048 4e:fd:4f:a3:e3:68:7e:f0:53:91:0d:8d:5f:17:f3:d5", 
+                "SFTP", "SFTP",
+                true, "logi", "ih3bb6",
+                "ssh-rsa 2048 4e:fd:4f:a3:e3:68:7e:f0:53:91:0d:8d:5f:17:f3:d5",
                 null,
                 "/Da Unicre",
                 "/Para Unicre",
@@ -183,6 +183,7 @@ namespace RN_Process.Tests
 
             return infoModel;
         }
+
         public static ContractOrganization GetContractOrganizationModelTwo()
         {
             var infoModel = new ContractOrganization
@@ -215,7 +216,15 @@ namespace RN_Process.Tests
             return infoModel;
         }
 
+        public static FileDataContract GetFileDataContract(string codOrg)
+        {
+            var dataContract = new FileDataContract(null, codOrg, "firstFile.xml", 555,
+                "xml", "c:/temp/teste", "y:/copy/file",
+                StatusType.Processed, false, null, new List<BsonDocument>()
+                );
 
+            return dataContract;
+        }
 
         /// <summary>
         ///     Date Time validate
@@ -292,7 +301,6 @@ namespace RN_Process.Tests
         /// <param name="actual"></param>
         public static void AssertAreEqual(ContractOrganization expected, Organization actual)
         {
-
             //model side is null actual not null
             expected.Id.Should().BeNullOrEmpty();
 
@@ -328,6 +336,5 @@ namespace RN_Process.Tests
             actual.UpdatedDate.Should().BeNull();
             actual.ModifiedBy.Should().BeNull();
         }
-
     }
 }
