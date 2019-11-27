@@ -8,8 +8,10 @@ using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.DataAccess.Repositories;
 using RN_Process.Api.DataAccess.Repositories.MongoDb;
 using RN_Process.Api.Interfaces;
+using RN_Process.Api.Models;
 using RN_Process.Api.Services;
 using RN_Process.DataAccess.MongoDb;
+using RN_Process.Shared.Commun;
 
 namespace RN_Process.WebUi
 {
@@ -29,8 +31,8 @@ namespace RN_Process.WebUi
             services.Configure<Settings>(
                 options =>
                 {
-                    options.ConnectionString = Configuration.GetSection("MongoDb:ConnectionString").Value;
-                    options.Database = Configuration.GetSection("MongoDb:Database").Value;
+                    options.ConnectionString = Configuration.GetSection("MongoDbConnection:ConnectionString").Value;
+                    options.Database = Configuration.GetSection("MongoDbConnection:Database").Value;
                 });
             RegisterTypes(services);
             services.AddControllers();
@@ -42,6 +44,8 @@ namespace RN_Process.WebUi
             services.AddScoped<IMongoContext, MongoContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRepositoryMongo<Organization>, MongoOrganizationRepository>();
+            services.AddTransient<IValidatorStrategy<ContractOrganization>, DefaultValidatorStrategy<ContractOrganization>>();
+
             services.AddTransient<IContractOrganizationDataServices, ContractOrganizationServices>();
 
 

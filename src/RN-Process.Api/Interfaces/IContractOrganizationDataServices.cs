@@ -14,7 +14,7 @@ namespace RN_Process.Api.Interfaces
         /// <returns></returns>
         ContractOrganization GetContractOrganizationById(string organizationId);
 
-  
+
 
         /// <summary>
         /// </summary>
@@ -22,6 +22,9 @@ namespace RN_Process.Api.Interfaces
         void CreateContractOrganization(ContractOrganization organizationFromModel);
 
         IList<ContractOrganization> GetContractOrganizations();
-        IList<ContractOrganization> Search(string codOrg, string debtId, int contractNumber);
+
+        IList<ContractOrganization> Search(string codeOrg);
+        IList<ContractOrganization> Search(string description, string codeOrg);
+        IList<ContractOrganization> Search(string description, string codeOrg, int contractNumber);
     }
 }

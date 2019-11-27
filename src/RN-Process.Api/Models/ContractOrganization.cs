@@ -31,17 +31,29 @@ namespace RN_Process.Api.Models
         [Required]
         public string Description { get; set; }
 
-        [Display(Name = "Contract Number")] public int ContractNumber { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [Display(Name = "Contract Number")]
+        [Required]
+        public int ContractNumber { get; set; }
 
         public string DueId { get; set; }
 
-        [JsonIgnore] public bool IsDeleted { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore]
+        public bool IsDeleted { get; set; }
 
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public string UpdateBy { get; set; }
         public DateTime? ChangedDate { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<DueDetail> DueDetails { get; set; }
 
         public void AddDueDetail(int debtCode, TermsType termsType)

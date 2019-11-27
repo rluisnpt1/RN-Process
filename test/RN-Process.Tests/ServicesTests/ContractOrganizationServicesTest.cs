@@ -21,16 +21,19 @@ namespace RN_Process.Tests.ServicesTests
         public void Dispose()
         {
             _sut = null;
-            // _adapter = null;
             _repository = null;
-            //_context = null;
         }
 
-        //private IMongoContext _context;
-        //private IOrganizationToContractOrganizationAdapter _adapter;
         private InMemoryRepository<Organization> _repository;
         private ContractOrganizationServices _sut;
-
+        private MockOrganizationValidatorStrategy _validatorStrategyInstance;
+        public MockOrganizationValidatorStrategy ValidatorStrategyInstance
+        {
+            get
+            {
+                return _validatorStrategyInstance ??= new MockOrganizationValidatorStrategy();
+            }
+        }
         private InMemoryRepository<Organization> RepositoryInstance =>
             _repository ??= _repository = new InMemoryRepository<Organization>();
 
@@ -41,7 +44,16 @@ namespace RN_Process.Tests.ServicesTests
         //    new RnProcessMongoDbContext(InitConfiguration());
 
         private ContractOrganizationServices SystemUnderTest =>
-            _sut ??= _sut = new ContractOrganizationServices(RepositoryInstance);
+            _sut ??= _sut = new ContractOrganizationServices(RepositoryInstance,ValidatorStrategyInstance);
+
+        [Fact]
+        public void GivenAnInvalidContractWhenSaveIsCalledThenThrowAnException()
+        {
+            ValidatorStrategyInstance.IsValidReturnValue = false;
+
+            Action act = () => SystemUnderTest.CreateContractOrganization(new ContractOrganization());
+            act.Should().Throw<ArgumentException>();
+        }
 
         [Fact]
         public async void GivenIHaveAnAlreadyExistingOrganization_WhenISaveThrowException()

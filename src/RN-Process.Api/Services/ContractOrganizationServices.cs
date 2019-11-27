@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using RN_Process.Api.DataAccess.Entities;
-using RN_Process.Api.DataAccess.Repositories.MongoDb;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 using RN_Process.DataAccess.MongoDb;
@@ -17,11 +16,14 @@ namespace RN_Process.Api.Services
     public class ContractOrganizationServices : IContractOrganizationDataServices
     {
         private readonly IRepositoryMongo<Organization> _repositoryInstance;
+        private IValidatorStrategy<ContractOrganization> _validatorInstance;
         private readonly OrganizationToContractOrganizationAdapter _adapter;
 
-        public ContractOrganizationServices(IRepositoryMongo<Organization> repository)
+        public ContractOrganizationServices(IRepositoryMongo<Organization> 
+            repository, IValidatorStrategy<ContractOrganization> validatorInstance)
         {
             _repositoryInstance = repository;
+            _validatorInstance = validatorInstance;
             _adapter = new OrganizationToContractOrganizationAdapter();
         }
 
@@ -49,7 +51,7 @@ namespace RN_Process.Api.Services
         public void CreateContractOrganization(ContractOrganization organizationFromModel)
         {
             Guard.Against.Null(organizationFromModel, nameof(organizationFromModel));
-
+          
             //GET ALL DATA --PLEASE CHANGE IT LATER
             var allData = _repositoryInstance.GetAll();
 
