@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Api.DataAccess.Repositories;
+using RN_Process.Api.DataAccess.Repositories.MongoDb;
+using RN_Process.Api.Interfaces;
+using RN_Process.Api.Services;
 using RN_Process.DataAccess.MongoDb;
 
 namespace RN_Process.WebUi
@@ -21,12 +26,25 @@ namespace RN_Process.WebUi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.Configure<MongoDbSettings>(Options =>
-            {
-                Options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
-                Options.Database = Configuration.GetSection("MongoConnection:Database").Value;
-            });
-            //services.AddTransient<ITermRepository, TermRepository>();
+            services.Configure<Settings>(
+                options =>
+                {
+                    options.ConnectionString = Configuration.GetSection("MongoDb:ConnectionString").Value;
+                    options.Database = Configuration.GetSection("MongoDb:Database").Value;
+                });
+            RegisterTypes(services);
+            services.AddControllers();
+        }
+
+        private void RegisterTypes(IServiceCollection services)
+        {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IMongoContext, MongoContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IRepositoryMongo<Organization>, MongoOrganizationRepository>();
+            services.AddTransient<IContractOrganizationDataServices, ContractOrganizationServices>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +63,7 @@ namespace RN_Process.WebUi
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseCookiePolicy();
             app.UseRouting();
 
             app.UseAuthorization();
@@ -57,5 +75,7 @@ namespace RN_Process.WebUi
                     "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+
     }
 }

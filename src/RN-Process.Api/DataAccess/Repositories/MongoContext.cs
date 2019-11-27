@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
@@ -11,20 +11,22 @@ using MongoDB.Driver;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.DataAccess.MongoDb;
 
-namespace RN_Process.Api.DataAccess
+namespace RN_Process.Api.DataAccess.Repositories
 {
-    public class RnProcessMongoDbContext : IMongoContext
+    public class MongoContext : IMongoContext
     {
+        private IMongoDatabase Database { get; set; }
+        public MongoClient MongoClient { get; set; }
         private readonly List<Func<Task>> _commands;
+        public IClientSessionHandle Session { get; set; }
 
-        public RnProcessMongoDbContext(IConfiguration configuration)
+        public MongoContext(IOptions<Settings> options)
         {
             // Set Guid to CSharp style (with dash -)
             BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
 
             // Every command will be stored and it'll be processed at SaveChanges
             _commands = new List<Func<Task>>();
-
             RegisterConventions<Organization>();
             RegisterConventions<Term>();
             RegisterConventions<TermDetail>();
@@ -32,19 +34,24 @@ namespace RN_Process.Api.DataAccess
             RegisterConventions<OrganizationFile>();
 
             // Configure mongo (You can inject the config, just to simplify)
-            var connection = Environment.GetEnvironmentVariable("MONGOCONNECTION") ??
-                             configuration.GetSection("MongoConnection").GetSection("ConnectionString").Value;
-            var db = Environment.GetEnvironmentVariable("DATABASENAME") ??
-                     configuration.GetSection("MongoConnection").GetSection("Database")
-                         .Value;
-            MongoClient = new MongoClient(connection);
-
-            Database = MongoClient.GetDatabase(db);
+            MongoClient = new MongoClient(options.Value.ConnectionString);
+            Database = MongoClient.GetDatabase(options.Value.Database);
         }
 
-        private IMongoDatabase Database { get; }
-        private MongoClient MongoClient { get; }
-        private IClientSessionHandle Session { get; set; }
+        private void RegisterConventions<TClass>()
+        {
+            if (!BsonClassMap.IsClassMapRegistered(typeof(TClass)))
+                BsonClassMap.RegisterClassMap<TClass>();
+
+            // Set Guid to CSharp style (with dash -)
+            BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
+            var pack = new ConventionPack
+            {
+                new IgnoreExtraElementsConvention(true),
+                new IgnoreIfDefaultConvention(true)
+            };
+            ConventionRegistry.Register("RnFileProcess Conventions", pack, t => true);
+        }
 
         public async Task<int> SaveChanges()
         {
@@ -80,19 +87,5 @@ namespace RN_Process.Api.DataAccess
             _commands.Add(func);
         }
 
-        private void RegisterConventions<TClass>()
-        {
-            if (!BsonClassMap.IsClassMapRegistered(typeof(TClass)))
-                BsonClassMap.RegisterClassMap<TClass>();
-
-            // Set Guid to CSharp style (with dash -)
-            BsonDefaults.GuidRepresentation = GuidRepresentation.CSharpLegacy;
-            var pack = new ConventionPack
-            {
-                new IgnoreExtraElementsConvention(true),
-                new IgnoreIfDefaultConvention(true)
-            };
-            ConventionRegistry.Register("RnFileProcess Conventions", pack, t => true);
-        }
     }
 }

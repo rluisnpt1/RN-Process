@@ -3,36 +3,56 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RN_Process.DataAccess.SqlServer
 {
-    public abstract class MngodbRepositoryBase<TEntity, TV, TDbContext> : IDisposable where TEntity : class, IEntity<TV>
+    public abstract class SqlEntityFrameworkRepositoryBase<TEntity, TDbContext> :
+        IDisposable where TEntity : class, IInt32Identity
         where TDbContext : DbContext
     {
-        public MngodbRepositoryBase(TDbContext context)
+        public SqlEntityFrameworkRepositoryBase(TDbContext context)
         {
-            Context = context ?? throw new ArgumentNullException(nameof(context), "context is null.");
-        }
+            if (context == null)
+                throw new ArgumentNullException("context", "context is null.");
 
-        protected TDbContext Context { get; }
+            _Context = context;
+        }
 
         public void Dispose()
         {
-            ((IDisposable) Context).Dispose();
+            ((IDisposable)_Context).Dispose();
+        }
+
+        private TDbContext _Context;
+
+        protected TDbContext Context
+        {
+            get
+            {
+                return _Context;
+            }
         }
 
         protected void VerifyItemIsAddedOrAttachedToDbSet(DbSet<TEntity> dbset, TEntity item)
         {
-            if (item == null) return;
-
-            if (item.Id.Equals(0) || item.Id == null)
+            if (item == null)
             {
-                dbset.Add(item);
+                return;
             }
             else
             {
-                var entry = Context.Entry(item);
+                if (item.Id == 0)
+                {
+                    dbset.Add(item);
+                }
+                else
+                {
+                    var entry = _Context.Entry<TEntity>(item);
 
-                if (entry.State == EntityState.Detached) dbset.Attach(item);
+                    if (entry.State == EntityState.Detached)
+                    {
+                        dbset.Attach(item);
+                    }
 
-                entry.State = EntityState.Modified;
+                    entry.State = EntityState.Modified;
+                }
             }
         }
     }

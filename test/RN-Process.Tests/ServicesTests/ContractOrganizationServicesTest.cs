@@ -28,11 +28,11 @@ namespace RN_Process.Tests.ServicesTests
 
         //private IMongoContext _context;
         //private IOrganizationToContractOrganizationAdapter _adapter;
-        private InMemoryRepository<Organization, string> _repository;
+        private InMemoryRepository<Organization> _repository;
         private ContractOrganizationServices _sut;
 
-        private InMemoryRepository<Organization, string> RepositoryInstance =>
-            _repository ??= _repository = new InMemoryRepository<Organization, string>();
+        private InMemoryRepository<Organization> RepositoryInstance =>
+            _repository ??= _repository = new InMemoryRepository<Organization>();
 
         //private IOrganizationToContractOrganizationAdapter AdapterInstance =>
         //    _adapter ??= _adapter = new OrganizationToContractOrganizationAdapter();

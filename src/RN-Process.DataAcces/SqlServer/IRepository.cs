@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace RN_Process.DataAccess
+namespace RN_Process.DataAccess.SqlServer
 {
-    public interface IRepository<T, in TV> where T : IEntity<TV>
+    public interface IRepository<T> where T : IInt32Identity
     {
         IList<T> GetAll();
-        T GetById(TV id);
+        T GetById(int id);
         void Save(T saveThis);
         void Delete(T deleteThis);
     }

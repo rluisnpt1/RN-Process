@@ -5,16 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RN_Process.DataAccess.SqlServer
 {
-    public abstract class MongoDbCrudRepositoryBase<TEntity, V, TDbContext> :
-        MngodbRepositoryBase<TEntity, V, TDbContext>, IRepository<TEntity, V>
-        where TEntity : class, IEntity<V>
+    public abstract class SqlEntityFrameworkCrudRepositoryBase<TEntity, TDbContext> :
+        SqlEntityFrameworkRepositoryBase<TEntity, TDbContext>, IRepository<TEntity>
+        where TEntity : class, IInt32Identity
         where TDbContext : DbContext
     {
-        public MongoDbCrudRepositoryBase(TDbContext context) : base(context)
+        public SqlEntityFrameworkCrudRepositoryBase(
+            TDbContext context) : base(context)
         {
+
         }
 
-        protected abstract DbSet<TEntity> EntityDbSet { get; }
+        protected abstract DbSet<TEntity> EntityDbSet
+        {
+            get;
+        }
 
         public virtual void Delete(TEntity deleteThis)
         {
@@ -23,7 +28,10 @@ namespace RN_Process.DataAccess.SqlServer
 
             var entry = Context.Entry(deleteThis);
 
-            if (entry.State == EntityState.Detached) EntityDbSet.Attach(deleteThis);
+            if (entry.State == EntityState.Detached)
+            {
+                EntityDbSet.Attach(deleteThis);
+            }
 
             EntityDbSet.Remove(deleteThis);
 
@@ -35,10 +43,13 @@ namespace RN_Process.DataAccess.SqlServer
             return EntityDbSet.ToList();
         }
 
-
-        public TEntity GetById(V id)
+        public virtual TEntity GetById(int id)
         {
-            return EntityDbSet.FirstOrDefault(x => x.Id.Equals(id));
+            return (
+                from temp in EntityDbSet
+                where temp.Id == id
+                select temp
+                ).FirstOrDefault();
         }
 
         public virtual void Save(TEntity saveThis)
@@ -46,7 +57,8 @@ namespace RN_Process.DataAccess.SqlServer
             if (saveThis == null)
                 throw new ArgumentNullException("saveThis", "saveThis is null.");
 
-            VerifyItemIsAddedOrAttachedToDbSet(EntityDbSet, saveThis);
+            VerifyItemIsAddedOrAttachedToDbSet(
+                EntityDbSet, saveThis);
 
             Context.SaveChanges();
         }

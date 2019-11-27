@@ -8,8 +8,8 @@ using RN_Process.DataAccess.MongoDb;
 
 namespace RN_Process.Tests
 {
-    public class InMemoryRepository<TEntity, TKey> : IRepositoryNoSql<TEntity, TKey> where TEntity
-        : class, IEntity<TKey>, IAuditableEntity
+    public class InMemoryRepository<TEntity> : IRepositoryMongo<TEntity> where TEntity
+        : class, IEntity<string>, IAuditableEntity
     {
        public InMemoryRepository()
         {
@@ -37,7 +37,7 @@ namespace RN_Process.Tests
             if (entity.Id == null)
             {
                 // assign new identity value
-                entity.Id = (TKey)(object)Convert.ChangeType(ObjectId.GenerateNewId(), typeof(TKey)); //GetNextIdValue();
+                entity.Id = (string)(object)Convert.ChangeType(ObjectId.GenerateNewId(), typeof(string)); //GetNextIdValue();
             }
 
             if (Items.Contains(entity) == false)
@@ -46,7 +46,7 @@ namespace RN_Process.Tests
             }
         }
 
-        public async Task<TEntity> GetById(TKey id)
+        public async Task<TEntity> GetById(string id)
         {
             return (Items.Where(temp => temp.Id.Equals(id))).FirstOrDefault();
         }
@@ -61,7 +61,7 @@ namespace RN_Process.Tests
             throw new NotImplementedException();
         }
 
-        public Task Remove(TKey id)
+        public Task Remove(string id)
         {
             throw new NotImplementedException();
         }
