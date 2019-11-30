@@ -6,17 +6,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0-rc4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.0.0-rc4" />
   </ItemGroup>
-
 
   <ItemGroup>
     <ProjectReference Include="..\RN-Process.Api\RN-Process.Api.csproj" />
+    <ProjectReference Include="..\RN-Process.DataAcces\RN-Process.DataAccess.csproj" />
+    <ProjectReference Include="..\RN-Process.Shared\RN-Process.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="OperationFilters\" />
   </ItemGroup>
 
 </Project>

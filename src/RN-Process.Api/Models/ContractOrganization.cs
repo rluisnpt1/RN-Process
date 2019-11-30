@@ -15,6 +15,13 @@ namespace RN_Process.Api.Models
             DueDetails = new List<DueDetail>();
         }
 
+        public ContractOrganization(string codOrg,string description, int contractNumber)
+        {
+            CodOrg = codOrg;
+            Description = description;
+            ContractNumber = contractNumber;
+        }
+
         public string Id { get; set; }
 
         /// <summary>
@@ -56,13 +63,13 @@ namespace RN_Process.Api.Models
         /// </summary>
         public List<DueDetail> DueDetails { get; set; }
 
-        public void AddDueDetail(int debtCode, TermsType termsType)
+        public void AddDueDetail(int debtCode, string termsType)
         {
-            DueDetails.Add(new DueDetail
+            DueDetails = new List<DueDetail>
             {
-                DebtCode = debtCode,
-                TermsType = termsType
-            });
+                new DueDetail(null, debtCode,termsType)
+            };
+
         }
 
 

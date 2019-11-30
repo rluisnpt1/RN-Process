@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using MongoDB.Bson;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
@@ -14,7 +16,7 @@ namespace RN_Process.Api.Models
         }
 
         public FileDataContract(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
-            string fileLocationOrigin, string locationToCopy, StatusType status, bool fileMigrated,
+            string fileLocationOrigin, string locationToCopy, string status, bool fileMigrated,
             DateTime? fileMigratedOn, List<BsonDocument> allDataInFile)
         {
             Id = id;
@@ -38,7 +40,8 @@ namespace RN_Process.Api.Models
         public string FileLocationOrigin { get; set; }
         public string LocationToCopy { get; set; }
 
-        public StatusType Status { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public string Status { get; set; }
 
         public bool FileMigrated { get; set; }
         public DateTime? FileMigratedOn { get; set; }

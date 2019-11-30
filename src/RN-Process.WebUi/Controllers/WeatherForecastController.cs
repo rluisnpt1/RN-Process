@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace RN_Process.WebClientApi.Controllers
+namespace RN_Process.WebUi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

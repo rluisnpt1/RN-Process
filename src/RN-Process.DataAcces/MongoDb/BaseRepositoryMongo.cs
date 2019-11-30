@@ -15,7 +15,7 @@ namespace RN_Process.DataAccess.MongoDb
         protected BaseRepositoryMongo(IMongoContext context)
         {
             _context = context;
-            DbSet = _context.GetCollection<TEntity>(typeof(TEntity).Name);
+            DbSet = _context.GetCollection<TEntity>(typeof(TEntity).Name+"s");
         }
 
         public virtual Task Add(TEntity obj)

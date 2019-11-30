@@ -8,6 +8,7 @@ using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 using RN_Process.Shared.Commun;
+using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Services
 {
@@ -89,7 +90,7 @@ namespace RN_Process.Api.Services
             {
                 Id = item.Id,
                 DebtCode = item.DebtCode,
-                TermsType = item.TermsType
+                TermsType = item.TermsType.ToString()
             };
 
             toValue.DueDetails.Add(tempDt);
@@ -99,7 +100,7 @@ namespace RN_Process.Api.Services
             var config = new DueDetailConfiguration
             {
                 Id = configTemp.Id,
-                CommunicationType = configTemp.CommunicationType,
+                CommunicationType = configTemp.CommunicationType.ToString(),
                 LinkToAccess = configTemp.LinkToAccess,
                 LinkToAccessType = configTemp.LinkToAccessType,
                 TypeOfResponse = configTemp.TypeOfResponse,
@@ -129,13 +130,22 @@ namespace RN_Process.Api.Services
         public void AdaptDueDetail(ContractOrganization fromValue, Organization organization)
         {
             foreach (var itemDetailModel in fromValue.DueDetails)
+            {
+                TermsType typeTerm;
+                Enum.TryParse<TermsType>(itemDetailModel.TermsType, true, out typeTerm);
+
+
                 if (fromValue.IsDeleted == false)
                     foreach (var dueDetailConfiguration in itemDetailModel.DueDetailConfigs)
+                    {
+                        FileAccessType fileAccessType;
+                        Enum.TryParse<FileAccessType>(dueDetailConfiguration.CommunicationType, true, out fileAccessType);
+
                         organization.AddTerm(itemDetailModel.Id,
                             fromValue.ContractNumber,
                             itemDetailModel.DebtCode,
-                            itemDetailModel.TermsType,
-                            dueDetailConfiguration.CommunicationType,
+                            typeTerm,
+                            fileAccessType,
                             string.Empty,
                             dueDetailConfiguration.LinkToAccess,
                             dueDetailConfiguration.LinkToAccessType,
@@ -153,8 +163,10 @@ namespace RN_Process.Api.Services
                             dueDetailConfiguration.FileHeaderColumns,
                             dueDetailConfiguration.AvailableFieldsColumns
                         );
+                    }
                 else if (fromValue.IsDeleted && !string.IsNullOrWhiteSpace(itemDetailModel.Id))
                     organization.RemoveTerms(itemDetailModel.Id);
+            }
         }
 
 
@@ -164,6 +176,9 @@ namespace RN_Process.Api.Services
             Guard.Against.Null(fromfileDataContract, nameof(FileDataContract));
             Guard.Against.Null(configuration, nameof(OrganizationFile));
 
+            StatusType statusType;
+            Enum.TryParse<StatusType>(fromfileDataContract.Status, true, out statusType);
+
             configuration.AddOrganizationFile("",
                 fromfileDataContract.OrgCode,
                 fromfileDataContract.FileDescription,
@@ -171,9 +186,9 @@ namespace RN_Process.Api.Services
                 fromfileDataContract.FileFormat,
                 fromfileDataContract.FileLocationOrigin,
                 fromfileDataContract.LocationToCopy,
-                fromfileDataContract.Status,
+                statusType,
                 fromfileDataContract.FileMigrated,
-                fromfileDataContract.FileMigratedOn, 
+                fromfileDataContract.FileMigratedOn,
                 fromfileDataContract.AllDataInFile, true);
 
             //var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);

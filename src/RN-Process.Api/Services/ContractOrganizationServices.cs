@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
@@ -59,7 +60,7 @@ namespace RN_Process.Api.Services
 
             if (match == null)
             {
-                var org = new Organization(organizationFromModel.Description, organizationFromModel.CodOrg);
+                var org = new Organization(string.Empty, organizationFromModel.Description, organizationFromModel.CodOrg);
                 _adapter.Adapt(organizationFromModel, org);
 
                 _repositoryInstance.Add(org);
@@ -77,7 +78,7 @@ namespace RN_Process.Api.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        public IList<ContractOrganization> GetContractOrganizations()
+        public  IEnumerable<ContractOrganization> GetContractOrganizations()
         {
             var allPeople = _repositoryInstance.GetAll();
 
@@ -93,7 +94,7 @@ namespace RN_Process.Api.Services
         /// <param name="description"></param>
         /// <param name="codOrg"></param>
         /// <returns></returns>
-        public IList<ContractOrganization> Search(string description, string codOrg)
+        public IEnumerable<ContractOrganization> Search(string description, string codOrg)
         {
             var allContracts = GetContractOrganizations();
 
@@ -121,7 +122,7 @@ namespace RN_Process.Api.Services
         /// <param name="codOrg"></param>
         /// <param name="contract"></param>
         /// <returns></returns>
-        public IList<ContractOrganization> Search(string description, string codOrg, int contract)
+        public IEnumerable<ContractOrganization> Search(string description, string codOrg, int contract)
         {
             var allContracts = GetContractOrganizations();
 
@@ -153,7 +154,7 @@ namespace RN_Process.Api.Services
         /// </summary>
         /// <param name="codeOrg"></param>
         /// <returns></returns>
-        public IList<ContractOrganization> Search(string codeOrg)
+        public IEnumerable<ContractOrganization> Search(string codeOrg)
         {
             var allContracts = GetContractOrganizations();
 
@@ -183,6 +184,6 @@ namespace RN_Process.Api.Services
             return returnValues;
         }
 
-
+       
     }
 }

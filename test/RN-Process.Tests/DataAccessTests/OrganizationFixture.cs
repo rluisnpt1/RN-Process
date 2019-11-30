@@ -23,7 +23,7 @@ namespace RN_Process.Tests.DataAccessTests
 
         private static Organization CustomerInit(string description, string uniqcode)
         {
-            return new Organization(description, uniqcode);
+            return new Organization(string.Empty, description, uniqcode);
         }
 
         private void RepeatProcess(int numberofTime)

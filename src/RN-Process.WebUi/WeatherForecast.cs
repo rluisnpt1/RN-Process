@@ -1,6 +1,6 @@
 using System;
 
-namespace RN_Process.WebClientApi
+namespace RN_Process.WebUi
 {
     public class WeatherForecast
     {

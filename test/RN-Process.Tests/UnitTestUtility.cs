@@ -19,17 +19,17 @@ namespace RN_Process.Tests
 
         public static Organization GetBancoPortugalOrganizationToTest()
         {
-            return new Organization("Banco de portugal", "120@12");
+            return new Organization(string.Empty, "Banco de portugal", "120@12");
         }
 
         public static Organization GetNOWO_Organization_OrganizationToTest()
         {
-            return new Organization("NOWO ORGANIZATION", "CB13");
+            return new Organization(string.Empty, "NOWO ORGANIZATION", "CB13");
         }
 
         public static Organization GetUNICRE_OrganizationToTest()
         {
-            return new Organization("UNICRE PORTO", "UNPOR");
+            return new Organization(string.Empty, "UNICRE PORTO", "UNPOR");
         }
 
         public static Term GetContracuNICREtOrganizationToTest()
@@ -127,7 +127,7 @@ namespace RN_Process.Tests
 
         public static Organization GetCompleteOrganization()
         {
-            var info = new Organization("Banco de Portual", "BBP234");
+            var info = new Organization(string.Empty, "Banco de Portual", "BBP234");
 
             var detailConfig = TermDetailIdNull();
             info.AddTerm(null, 1423123, 45632, TermsType.Leasing,
@@ -160,11 +160,12 @@ namespace RN_Process.Tests
                 CodOrg = "BBEE",
                 ContractNumber = 44552368
             };
-            infoModel.AddDueDetail(556698, TermsType.Leasing);
+
+            infoModel.AddDueDetail(556698, "Leasing");
 
             var dueDetails = infoModel.DueDetails.Select(x => x);
             foreach (var dueDetail in dueDetails)
-                dueDetail.AddDueDetailConfigs(null, FileAccessType.FTP,
+                dueDetail.AddDueDetailConfigs(null, "FTP",
                     "SFTP://ftp.unicre.pt",
                     "C://Desktop",
                     "",
@@ -192,11 +193,11 @@ namespace RN_Process.Tests
                 CodOrg = "BBP234",
                 ContractNumber = 44552368
             };
-            infoModel.AddDueDetail(556698, TermsType.Leasing);
+            infoModel.AddDueDetail(556698, "Leasing");
 
             var dueDetails = infoModel.DueDetails.Select(x => x);
             foreach (var dueDetail in dueDetails)
-                dueDetail.AddDueDetailConfigs(null, FileAccessType.FTP,
+                dueDetail.AddDueDetailConfigs(null, "FTP",
                     "SFTP://ftp.unicre.pt",
                     "C://Desktop",
                     "",
@@ -220,7 +221,7 @@ namespace RN_Process.Tests
         {
             var dataContract = new FileDataContract(null, codOrg, "firstFile.xml", 555,
                 "xml", "c:/temp/teste", "y:/copy/file",
-                StatusType.Processed, false, null, new List<BsonDocument>()
+               "Processed", false, null, new List<BsonDocument>()
                 );
 
             return dataContract;

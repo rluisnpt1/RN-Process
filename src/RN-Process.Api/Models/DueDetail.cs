@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
@@ -8,6 +10,14 @@ namespace RN_Process.Api.Models
     {
         public DueDetail()
         {
+            DueDetailConfigs = new List<DueDetailConfiguration>();
+        }
+
+        public DueDetail(string id, int debtCode, string termsType)
+        {
+            Id = id;
+            DebtCode = debtCode;
+            TermsType = termsType;
             DueDetailConfigs = new List<DueDetailConfiguration>();
         }
 
@@ -25,11 +35,12 @@ namespace RN_Process.Api.Models
         /// </summary>
         [Display(Name = "Type Debt")]
         [Required]
-        public TermsType TermsType { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public string TermsType { get; set; }
 
         public IList<DueDetailConfiguration> DueDetailConfigs { get; set; }
 
-        public void AddDueDetailConfigs(string id, FileAccessType communicationType, string linkToAccess,
+        public void AddDueDetailConfigs(string id, string communicationType, string linkToAccess,
             string linkToAccessType,
             string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
             string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
@@ -39,7 +50,7 @@ namespace RN_Process.Api.Models
             DueDetailConfigs.Add(new DueDetailConfiguration
             {
                 Id = id,
-                CommunicationType = communicationType,
+                CommunicationType = communicationType.ToString(),
                 LinkToAccess = linkToAccess,
                 LinkToAccessType = linkToAccessType,
                 TypeOfResponse = typeOfResponse,

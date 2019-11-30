@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using MongoDB.Bson;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 
@@ -18,7 +20,7 @@ namespace RN_Process.Api.Models
             FilesDataInContracts = new List<FileDataContract>();
         }
 
-        public DueDetailConfiguration(string id, FileAccessType communicationType, string linkToAccess,
+        public DueDetailConfiguration(string id, string communicationType, string linkToAccess,
             string linkToAccessType, string typeOfResponse, bool requiredLogin, string authenticationLogin,
             string authenticationPassword, string hostkeyFingerPrint, string authenticationCodeApp,
             string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient,
@@ -48,7 +50,8 @@ namespace RN_Process.Api.Models
         ///     Type communication has been agreed
         /// </summary>
         [Required]
-        public FileAccessType CommunicationType { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public string CommunicationType { get; set; }
 
         /// <summary>
         ///     link or path to access the file
@@ -117,7 +120,7 @@ namespace RN_Process.Api.Models
 
         public IList<FileDataContract> FilesDataInContracts { get; set; }
         public void AddFileIncontract(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
-            string fileLocationOrigin, string locationToCopy, StatusType status, List<BsonDocument> allDataInFile)
+            string fileLocationOrigin, string locationToCopy, string status, List<BsonDocument> allDataInFile)
         {
             FilesDataInContracts.Add(new FileDataContract(id,
                 orgCode, fileDescription, fileSize, fileFormat, fileLocationOrigin, locationToCopy, status

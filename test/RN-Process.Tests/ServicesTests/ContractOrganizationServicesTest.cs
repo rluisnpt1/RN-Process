@@ -117,9 +117,9 @@ namespace RN_Process.Tests.ServicesTests
         {
             PopulateRepositoryWithTestData();
 
-            IList<ContractOrganization> actual = SystemUnderTest.GetContractOrganizations();
+            IEnumerable<ContractOrganization> actual = SystemUnderTest.GetContractOrganizations();
 
-            Assert.Equal(4, actual.Count);
+            Assert.Equal(4, actual.Count());
 
             var lastNames =
                 (from temp in actual
@@ -134,9 +134,9 @@ namespace RN_Process.Tests.ServicesTests
         {
             PopulateRepositoryWithTestData();
 
-            IList<ContractOrganization> actual = SystemUnderTest.Search("Nova Org");
+            IEnumerable<ContractOrganization> actual = SystemUnderTest.Search("Nova Org");
 
-            actual.Count.Should().BeGreaterOrEqualTo(2);
+            actual.Count().Should().BeGreaterOrEqualTo(2);
 
             var lastNames =
                 (from temp in actual
@@ -151,9 +151,9 @@ namespace RN_Process.Tests.ServicesTests
         {
             PopulateRepositoryWithTestData();
 
-            IList<ContractOrganization> actual = SystemUnderTest.Search(string.Empty, "@98598");
+            IEnumerable<ContractOrganization> actual = SystemUnderTest.Search(string.Empty, "@98598");
 
-            actual.Count.Should().BeGreaterOrEqualTo(1);
+            actual.Count().Should().BeGreaterOrEqualTo(1);
 
             var lastNames =
                 (from temp in actual
@@ -167,10 +167,10 @@ namespace RN_Process.Tests.ServicesTests
         {
             PopulateRepositoryWithTestData();
 
-            IList<ContractOrganization> actual =
+            IEnumerable<ContractOrganization> actual =
                 SystemUnderTest.Search(string.Empty, string.Empty, 9998655);
 
-            actual.Count.Should().BeGreaterOrEqualTo(1);
+            actual.Count().Should().BeGreaterOrEqualTo(1);
 
             var lastNames =
                 (from temp in actual
@@ -186,10 +186,10 @@ namespace RN_Process.Tests.ServicesTests
             await RepositoryInstance.Add(UnitTestUtility.GetNOWO_Organization_OrganizationToTest());
             await RepositoryInstance.Add(UnitTestUtility.GetUNICRE_OrganizationToTest());
 
-            var personWithNoFacts = new Organization("Nova Org", "@4566");
+            var personWithNoFacts = new Organization(string.Empty, "Nova Org", "@4566");
             await RepositoryInstance.Add(personWithNoFacts);
 
-            var personWhoWasVP = new Organization("Nova Org 3", "@98598");
+            var personWhoWasVP = new Organization(string.Empty, "Nova Org 3", "@98598");
 
             personWhoWasVP.AddTerm(null, 9998655, 87556, TermsType.Leasing, FileAccessType.LocalMachine
                 , string.Empty, "\\Test\\teste", "LOCAL", "XML", false, string.Empty,

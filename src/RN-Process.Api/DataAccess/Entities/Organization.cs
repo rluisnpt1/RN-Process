@@ -17,9 +17,9 @@ namespace RN_Process.Api.DataAccess.Entities
         [BsonIgnore] private ICollection<Term> _term;
         [BsonIgnore] private ICollection<TermDetail> _termDetail;
 
-        public Organization(string description, string orgCode)
+        public Organization(string id, string description, string orgCode)
         {
-            Id = ObjectId.GenerateNewId().ToString();
+            Id = string.IsNullOrWhiteSpace(id) ? ObjectId.GenerateNewId().ToString() : id;
             SetDescription(description);
             SetOrgCode(orgCode);
             SetVersion();
@@ -58,7 +58,7 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             Guard.Against.NullOrEmpty(orgCode, nameof(orgCode));
             Guard.Against.NullOrWhiteSpace(orgCode, nameof(orgCode));
-            Guard.Against.OutOfRange(orgCode.Length, nameof(orgCode), 3, 10);
+            Guard.Against.OutOfRange(orgCode.Length, nameof(orgCode), 5, 5);
 
             OrgCode = orgCode.ToUpper();
         }

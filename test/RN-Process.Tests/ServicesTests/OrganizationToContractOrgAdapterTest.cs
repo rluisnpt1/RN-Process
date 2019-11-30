@@ -51,7 +51,7 @@ namespace RN_Process.Tests.ServicesTests
         {
             // Arrange
             var fromValue = UnitTestUtility.GetContractOrganizationModel();
-            var toValue = new Organization(fromValue.Description, fromValue.CodOrg);
+            var toValue = new Organization(string.Empty, fromValue.Description, fromValue.CodOrg);
             // Act
             SystemUnderTest.Adapt(fromValue, toValue);
 
@@ -64,7 +64,7 @@ namespace RN_Process.Tests.ServicesTests
         {
             // Arrange
             var contract = UnitTestUtility.GetContractOrganizationModel();
-            var organization = new Organization(contract.Description, contract.CodOrg);
+            var organization = new Organization(string.Empty, contract.Description, contract.CodOrg);
             // Act
             SystemUnderTest.Adapt(contract, organization);
 
