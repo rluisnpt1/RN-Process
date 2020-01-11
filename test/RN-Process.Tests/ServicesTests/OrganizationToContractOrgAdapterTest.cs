@@ -68,12 +68,15 @@ namespace RN_Process.Tests.ServicesTests
             // Act
             SystemUnderTest.Adapt(contract, organization);
 
-          var config = organization.TermDetails.Select(x => x.TermDetailConfigs.Select(s => s).FirstOrDefault()).FirstOrDefault();
+          var config = organization.Terms.Select(x => x.TermDetails
+              .Select(z => z.TermDetailConfigs.Select(s => s).FirstOrDefault())
+              .FirstOrDefault())
+              .FirstOrDefault();
 
             var fromValue = UnitTestUtility.GetFileDataContract("BBEE");
           
             // Act
-            SystemUnderTest.AdaptOrganizationFile(fromValue, config);
+            SystemUnderTest.AdaptToOrganizationFile(fromValue, config);
 
             config.OrganizationFiles.Count.Should().BeGreaterThan(0);
             // Assert

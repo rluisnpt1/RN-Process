@@ -15,7 +15,7 @@ namespace RN_Process.Api.DataAccess.Entities
         private static readonly DateTime DefaultDateTime = DateTime.UtcNow;
 
         [BsonIgnore] private ICollection<Term> _term;
-        [BsonIgnore] private ICollection<TermDetail> _termDetail;
+
 
         public Organization(string id, string description, string orgCode)
         {
@@ -45,11 +45,7 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public virtual ICollection<TermDetail> TermDetails
-        {
-            get { return _termDetail ??= new List<TermDetail>(); }
-            protected set => _termDetail = value;
-        }
+
 
         /// <summary>
         /// </summary>
@@ -58,7 +54,7 @@ namespace RN_Process.Api.DataAccess.Entities
         {
             Guard.Against.NullOrEmpty(orgCode, nameof(orgCode));
             Guard.Against.NullOrWhiteSpace(orgCode, nameof(orgCode));
-            Guard.Against.OutOfRange(orgCode.Length, nameof(orgCode), 5, 5);
+            Guard.Against.OutOfRange(orgCode.Length, nameof(orgCode), 3, 5);
 
             OrgCode = orgCode.ToUpper();
         }
@@ -89,6 +85,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer, string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             //create term
@@ -103,10 +100,8 @@ namespace RN_Process.Api.DataAccess.Entities
                 requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                 authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
                 pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                hashearder,  fileProtectedPassword,
                 fileHeaderColumns, availableFieldsColumns);
-
-            //add term configuration details to list term configuration details list of organization
-            TermDetails = fact.TermDetails;
         }
 
 
@@ -117,6 +112,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer, string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             Guard.Against.Null(termNumber, nameof(termNumber));
@@ -136,6 +132,7 @@ namespace RN_Process.Api.DataAccess.Entities
                     requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                     authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
                     pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                    hashearder, fileProtectedPassword,
                     fileHeaderColumns, availableFieldsColumns);
         }
 

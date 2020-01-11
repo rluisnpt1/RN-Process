@@ -27,7 +27,28 @@ namespace RN_Process.Tests
             throw new NotImplementedException();
         }
 
-        public async Task Add(TEntity entity)
+        public TEntity Add(TEntity obj)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException("saveThis", "Argument cannot be null.");
+            }
+
+            if (obj.Id == null)
+            {
+                // assign new identity value
+                obj.Id = (string)(object)Convert.ChangeType(ObjectId.GenerateNewId(), typeof(string)); //GetNextIdValue();
+            }
+
+            if (Items.Contains(obj) == false)
+            {
+                Items.Add(obj);
+            }
+
+            return obj;
+        }
+
+        public async Task AddAsync(TEntity entity)
         {
             if (entity == null)
             {
@@ -46,14 +67,24 @@ namespace RN_Process.Tests
             }
         }
 
-        public async Task<TEntity> GetById(string id)
+        public Task AddManyAsync(IEnumerable<TEntity> obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TEntity> GetByIdAsync(string id)
         {
             return (Items.Where(temp => temp.Id.Equals(id))).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return Items;
+        }
+
+        public Task<IEnumerable<TEntity>> GetEqualField(string fieldName, string fieldValue)
+        {
+            throw new NotImplementedException();
         }
 
         public Task Update(TEntity obj)
@@ -124,7 +155,7 @@ namespace RN_Process.Tests
 
         //    if (Items.Contains(entity) == false)
         //    {
-        //        Items.Add(entity);
+        //        Items.AddAsync(entity);
         //    }
         //}
 

@@ -25,7 +25,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public string TermDetailId { get; private set; }
 
-        public TermDetail TermDetail { get; set; }
+        [BsonIgnore] public TermDetail TermDetail { get; set; }
 
 
         public string OrgCode { get; private set; }
@@ -33,9 +33,9 @@ namespace RN_Process.Api.DataAccess.Entities
         public FileAccessType CommunicationType { get; private set; }
         public string InternalHost { get; }
         public string BaseWorkDirectoryHost { get; private set; }
-        public string LinkToAccess { get; }
-        public string LinkToAccessType { get; }
-        public string TypeOfResponse { get; }
+        public string LinkToAccess { get; private set; }
+        public string LinkToAccessType { get; private set; }
+        public string TypeOfResponse { get; private set; }
 
         public bool RequiredLogin { get; private set; }
         public string AuthenticationLogin { get; private set; }
@@ -48,8 +48,10 @@ namespace RN_Process.Api.DataAccess.Entities
         public string PathToFileBackupAtClient { get; private set; }
         public string PathToFileBackupAtHostServer { get; private set; }
         public string FileDelimiter { get; private set; }
+        public bool HasHeader { get; private set; }
+        public string FileProtectedPassword { get; private set; }
 
-        public int DirectoryHostServerSize { get; private set; }
+        private int DirectoryHostServerSize { get; set; }
 
         public IList<string> FileHeaderColumns { get; private set; }
         public IList<string> AvailableFieldsColumns { get; private set; }
@@ -163,6 +165,8 @@ namespace RN_Process.Api.DataAccess.Entities
             string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer,
             string fileDeLimiter,
+            bool hasHeader, 
+            string fileProtectedPassword,
             IList<string> fileHeaderColumns,
             IList<string> availableFieldsColumns)
         {
@@ -184,6 +188,8 @@ namespace RN_Process.Api.DataAccess.Entities
             SetBackupClientDirectory(pathToFileBackupAtClient);
             SetBackupHostServer(pathToFileBackupAtHostServer);
             SetDelimiter(fileDeLimiter);
+            HasHeader = hasHeader;
+            FileProtectedPassword = FileProtectedPassword;
             SetFileHeaderColumns(fileHeaderColumns);
             SetAvailableFieldsColumns(availableFieldsColumns);
             SetDirectoriesSize();

@@ -125,7 +125,7 @@ namespace RN_Process.Shared.Commun
         public static List<string> ListValidDocumentFormat(string[] stringData)
         {
             var listValidFiles = new List<string>();
-            string[] format = {"xml", "xlsx", ".xls", ".txt", ".csv", ".data"};
+            string[] format = {".xml", ".xlsx", ".xls", ".txt", ".csv", ".data"};
             foreach (var item in stringData)
                 if (format.Any(x => item.EndsWith(x)))
                     listValidFiles.Add(item);

@@ -23,23 +23,23 @@ namespace RN_Process.Api.Services
         {
             Guard.Against.Null(fromValue, nameof(Organization));
             Guard.Against.Null(toValue, nameof(ContractOrganization));
-
+            
             var term = fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode);
 
             toValue.Id = fromValue.Id;
             toValue.CodOrg = fromValue.OrgCode;
             toValue.Description = fromValue.Description;
             toValue.ContractNumber = term?.TermNumber > 0 ? term.TermNumber : 0;
-            toValue.CreatedDate = fromValue.CreatedDate;
-            toValue.CreatedBy = fromValue.CreatedBy;
-            toValue.UpdateBy = fromValue.ModifiedBy;
-            toValue.ChangedDate = fromValue.UpdatedDate;
-            toValue.IsDeleted = fromValue.Active;
+            //toValue.CreatedDate = fromValue.CreatedDate;
+            //toValue.CreatedBy = fromValue.CreatedBy;
+            //toValue.UpdateBy = fromValue.ModifiedBy;
+            //toValue.ChangedDate = fromValue.UpdatedDate;
+            toValue.IsDeleted = fromValue.Deleted;
 
 
-            foreach (var item in fromValue.TermDetails.GetTermDetails(
-                fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
-                AdaptTermsDetail(item, toValue);
+            if (term != null)
+                foreach (var item in term.TermDetails.GetTermDetails(fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
+                    AdaptTermsDetail(item, toValue);
         }
 
 
@@ -58,20 +58,20 @@ namespace RN_Process.Api.Services
             AdaptDueDetail(fromValue, organization);
         }
 
-        public void Adapt(IEnumerable<Organization> organizationWhoWereContract, List<ContractOrganization> returnValues)
+        public void Adapt(IEnumerable<Organization> fromOrganization, List<ContractOrganization> toContractOrg)
         {
-            if (organizationWhoWereContract == null)
+            if (fromOrganization == null)
                 throw new ArgumentNullException("fromValues", "fromValues is null.");
 
             ContractOrganization toValue;
 
-            foreach (var fromValue in organizationWhoWereContract)
+            foreach (var fromValue in fromOrganization)
             {
                 toValue = new ContractOrganization();
 
                 Adapt(fromValue, toValue);
 
-                returnValues.Add(toValue);
+                toContractOrg.Add(toValue);
             }
         }
 
@@ -92,8 +92,6 @@ namespace RN_Process.Api.Services
                 DebtCode = item.DebtCode,
                 TermsType = item.TermsType.ToString()
             };
-
-            toValue.DueDetails.Add(tempDt);
 
             var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
 
@@ -119,7 +117,9 @@ namespace RN_Process.Api.Services
                 FileDelimiter = configTemp.FileDelimiter
             };
 
-            toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
+            toValue.DueDetails.Add(tempDt);
+            tempDt.DueDetailConfigs.Add(config);
+            //toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
         }
 
 
@@ -131,15 +131,15 @@ namespace RN_Process.Api.Services
         {
             foreach (var itemDetailModel in fromValue.DueDetails)
             {
-                TermsType typeTerm;
-                Enum.TryParse<TermsType>(itemDetailModel.TermsType, true, out typeTerm);
+                Enum.TryParse<TermsType>(itemDetailModel.TermsType, true, out var typeTerm);
 
 
-                if (fromValue.IsDeleted == false)
+                if (fromValue.IsDeleted.Equals("false"))
                     foreach (var dueDetailConfiguration in itemDetailModel.DueDetailConfigs)
                     {
-                        FileAccessType fileAccessType;
-                        Enum.TryParse<FileAccessType>(dueDetailConfiguration.CommunicationType, true, out fileAccessType);
+                        Enum.TryParse<FileAccessType>(dueDetailConfiguration.CommunicationType, true, out var fileAccessType);
+                        //Boolean.TryParse(dueDetailConfiguration.HasHeader, out var hasHeaderValue);
+                        //Boolean.TryParse(dueDetailConfiguration.RequiredLogin, out var hasRequiredLogin);
 
                         organization.AddTerm(itemDetailModel.Id,
                             fromValue.ContractNumber,
@@ -160,36 +160,38 @@ namespace RN_Process.Api.Services
                             dueDetailConfiguration.PathToFileBackupAtClient,
                             string.Empty,
                             dueDetailConfiguration.FileDelimiter,
+                            dueDetailConfiguration.HasHeader,
+                            dueDetailConfiguration.FileProtectedPassword,
                             dueDetailConfiguration.FileHeaderColumns,
                             dueDetailConfiguration.AvailableFieldsColumns
                         );
                     }
-                else if (fromValue.IsDeleted && !string.IsNullOrWhiteSpace(itemDetailModel.Id))
+                else if (fromValue.IsDeleted.Equals("true") && !string.IsNullOrWhiteSpace(itemDetailModel.Id))
                     organization.RemoveTerms(itemDetailModel.Id);
             }
         }
 
 
 
-        public void AdaptOrganizationFile(FileDataContract fromfileDataContract, TermDetailConfig configuration)
+        public void AdaptToOrganizationFile(FileDataContract fromFileData, TermDetailConfig configuration)
         {
-            Guard.Against.Null(fromfileDataContract, nameof(FileDataContract));
-            Guard.Against.Null(configuration, nameof(OrganizationFile));
+            Guard.Against.Null(fromFileData, nameof(FileDataContract));
+            Guard.Against.Null(configuration, nameof(TermDetailConfig));
 
-            StatusType statusType;
-            Enum.TryParse<StatusType>(fromfileDataContract.Status, true, out statusType);
+            Enum.TryParse<StatusType>(fromFileData.Status, true, out var statusType);
+            Boolean.TryParse(fromFileData.FileMigrated, out var fileMigrated);
 
             configuration.AddOrganizationFile("",
-                fromfileDataContract.OrgCode,
-                fromfileDataContract.FileDescription,
-                fromfileDataContract.FileSize,
-                fromfileDataContract.FileFormat,
-                fromfileDataContract.FileLocationOrigin,
-                fromfileDataContract.LocationToCopy,
+                fromFileData.OrgCode,
+                fromFileData.FileDescription,
+                fromFileData.FileSize,
+                fromFileData.FileFormat,
+                fromFileData.FileLocationOrigin,
+                fromFileData.LocationToCopy,
                 statusType,
-                fromfileDataContract.FileMigrated,
-                fromfileDataContract.FileMigratedOn,
-                fromfileDataContract.AllDataInFile, true);
+                fileMigrated,
+                fromFileData.FileMigratedOn,
+                fromFileData.AllDataInFile, true);
 
             //var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
 

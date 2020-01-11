@@ -65,17 +65,17 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, false, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
                 new List<string> {""}, new List<string> {""});
 
             var teste2 = new TermDetailConfig(null, SystemUnderTest, FileAccessType.Email,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, false, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty, string.Empty,
+                string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
                 new List<string> {""}, new List<string> {""});
 
-            SystemUnderTest.AddDetailConfig(string.Empty, 
+            SystemUnderTest.AddDetailConfig(string.Empty,
                 teste1.CommunicationType,
                 string.Empty,
                 teste1.LinkToAccess,
@@ -91,8 +91,11 @@ namespace RN_Process.Tests.DataAccessTests
                 teste1.PathToFileBackupAtClient,
                 string.Empty,
                 teste1.FileDelimiter,
+                teste1.HasHeader,
+                teste1.FileProtectedPassword,
                 teste1.FileHeaderColumns,
                 teste1.AvailableFieldsColumns);
+
             SystemUnderTest.AddDetailConfig(string.Empty,
                 teste2.CommunicationType,
                 string.Empty,
@@ -109,8 +112,11 @@ namespace RN_Process.Tests.DataAccessTests
                 teste2.PathToFileBackupAtClient,
                 string.Empty,
                 teste2.FileDelimiter,
+                teste2.HasHeader,
+                teste2.FileProtectedPassword,
                 teste2.FileHeaderColumns,
-                teste2.AvailableFieldsColumns); ;
+                teste2.AvailableFieldsColumns);
+            ;
 
             //has configurations
             Assert.Equal(2, SystemUnderTest.TermDetailConfigs.Count);

@@ -30,7 +30,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public string TermId { get; private set; }
 
-        public Term Term { get; set; }
+        [BsonIgnore] public Term Term { get; set; }
 
         public virtual ICollection<TermDetailConfig> TermDetailConfigs
         {
@@ -65,6 +65,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer, string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns,
             bool active = true)
         {
@@ -73,13 +74,13 @@ namespace RN_Process.Api.DataAccess.Entities
                     typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword,
                     hostKeyFingerPrint, authenticationCodeApp, pathToOriginFile,
                     pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer,
-                    fileDeLimiter, fileHeaderColumns, availableFieldsColumns, active);
+                    fileDeLimiter,hashearder ,fileProtectedPassword,fileHeaderColumns, availableFieldsColumns, active);
             else
                 AddNewTermDetailConfig(communicationType, internalHost, linkToAccess, linkToAccessType, typeOfResponse,
                     requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                     authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
-                    pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
-                    fileHeaderColumns, availableFieldsColumns);
+                    pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,hashearder,
+                    fileProtectedPassword,fileHeaderColumns, availableFieldsColumns);
         }
 
 
@@ -89,14 +90,16 @@ namespace RN_Process.Api.DataAccess.Entities
             string hostKeyFingerPrint, string authenticationCodeApp,
             string pathToOriginFile, string pathToDestinationFile,
             string pathToFileBackupAtClient, string pathToFileBackupAtHostServer,
-            string fileDeLimiter, IList<string> fileHeaderColumns,
+            string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
+            IList<string> fileHeaderColumns,
             IList<string> availableFieldsColumns)
         {
             var fact = CreateConfiguration(communicationType, internalHost, linkToAccess, linkToAccessType,
                 typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword,
                 hostKeyFingerPrint, authenticationCodeApp, pathToOriginFile,
                 pathToDestinationFile, pathToFileBackupAtClient, pathToFileBackupAtHostServer,
-                fileDeLimiter, fileHeaderColumns, availableFieldsColumns);
+                fileDeLimiter, hashearder, fileProtectedPassword, fileHeaderColumns, availableFieldsColumns);
 
             TermDetailConfigs.Add(fact);
         }
@@ -109,6 +112,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer, string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns,
             bool active = true)
         {
@@ -126,7 +130,7 @@ namespace RN_Process.Api.DataAccess.Entities
                     typeOfResponse, requiredLogin, authenticationLogin, authenticationPassword,
                     hostKeyFingerPrint, authenticationCodeApp, pathToOriginFile,
                     pathToDestinationFile, pathToFileBackupAtClient,
-                    pathToFileBackupAtHostServer, fileDeLimiter, fileHeaderColumns,
+                    pathToFileBackupAtHostServer, fileDeLimiter, hashearder, fileProtectedPassword, fileHeaderColumns,
                     availableFieldsColumns);
             }
             else
@@ -148,6 +152,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer, string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns,
             IList<string> availableFieldsColumns)
         {
@@ -155,7 +160,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 linkToAccess, linkToAccessType, typeOfResponse, requiredLogin,
                 authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                 authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
-                pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, hashearder, fileProtectedPassword,
                 fileHeaderColumns, availableFieldsColumns);
             return fact;
         }

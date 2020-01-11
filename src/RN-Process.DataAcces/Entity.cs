@@ -33,6 +33,7 @@ namespace RN_Process.DataAccess
 
         /// <summary>
         /// </summary>
+        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public virtual T Id { get; set; }
     }

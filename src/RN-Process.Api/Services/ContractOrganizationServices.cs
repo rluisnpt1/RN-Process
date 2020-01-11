@@ -37,7 +37,7 @@ namespace RN_Process.Api.Services
         /// <returns></returns>
         public ContractOrganization GetContractOrganizationById(string organizationId)
         {
-            var match = _repositoryInstance.GetById(organizationId);
+            var match = _repositoryInstance.GetByIdAsync(organizationId);
 
             if (match.Result == null) return null;
 
@@ -54,7 +54,7 @@ namespace RN_Process.Api.Services
             Guard.Against.Null(organizationFromModel, nameof(organizationFromModel));
           
             //GET ALL DATA --PLEASE CHANGE IT LATER
-            var allData = _repositoryInstance.GetAll();
+            var allData = _repositoryInstance.GetAllAsync();
 
             var match = allData.Result.FirstOrDefault(x => x.OrgCode == organizationFromModel.CodOrg);
 
@@ -80,10 +80,10 @@ namespace RN_Process.Api.Services
         /// <returns></returns>
         public  IEnumerable<ContractOrganization> GetContractOrganizations()
         {
-            var allPeople = _repositoryInstance.GetAll();
+            var allPeople = _repositoryInstance.GetAllAsync();
 
             var organizationWhoWereContract =
-                allPeople.Result.Where(temp => temp.Terms != null && temp.TermDetails != null);
+                allPeople.Result.Where(temp => temp.Terms != null);// && temp.TermDetails != null);
 
             return ToContractOrganizations(organizationWhoWereContract);
         }

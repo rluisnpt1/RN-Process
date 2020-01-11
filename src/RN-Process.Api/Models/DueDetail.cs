@@ -32,19 +32,21 @@ namespace RN_Process.Api.Models
 
         /// <summary>
         ///     Description of debt
+        /// convert String in Enum - this works for bson
         /// </summary>
         [Display(Name = "Type Debt")]
         [Required]
-        [JsonConverter(typeof(StringEnumConverter))]
+       [JsonConverter(typeof(StringEnumConverter))]
         public string TermsType { get; set; }
 
-        public IList<DueDetailConfiguration> DueDetailConfigs { get; set; }
+        public List<DueDetailConfiguration> DueDetailConfigs { get; set; }
 
         public void AddDueDetailConfigs(string id, string communicationType, string linkToAccess,
             string linkToAccessType,
             string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
             string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient, string fileDelimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             DueDetailConfigs.Add(new DueDetailConfiguration
@@ -63,6 +65,8 @@ namespace RN_Process.Api.Models
                 PathToDestinationFile = pathToDestinationFile,
                 PathToFileBackupAtClient = pathToFileBackupAtClient,
                 FileDelimiter = fileDelimiter,
+                HasHeader = hashearder,
+                FileProtectedPassword = fileProtectedPassword,
                 FileHeaderColumns = fileHeaderColumns,
                 AvailableFieldsColumns = availableFieldsColumns
             });

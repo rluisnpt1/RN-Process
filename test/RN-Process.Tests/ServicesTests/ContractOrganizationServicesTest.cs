@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using RN_Process.Api.DataAccess;
 using RN_Process.Api.DataAccess.Entities;
-using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 using RN_Process.Api.Services;
-using RN_Process.DataAccess.MongoDb;
 using RN_Process.Shared.Commun;
 using RN_Process.Shared.Enums;
 using Xunit;
@@ -27,13 +23,12 @@ namespace RN_Process.Tests.ServicesTests
         private InMemoryRepository<Organization> _repository;
         private ContractOrganizationServices _sut;
         private MockOrganizationValidatorStrategy _validatorStrategyInstance;
+
         public MockOrganizationValidatorStrategy ValidatorStrategyInstance
         {
-            get
-            {
-                return _validatorStrategyInstance ??= new MockOrganizationValidatorStrategy();
-            }
+            get { return _validatorStrategyInstance ??= new MockOrganizationValidatorStrategy(); }
         }
+
         private InMemoryRepository<Organization> RepositoryInstance =>
             _repository ??= _repository = new InMemoryRepository<Organization>();
 
@@ -44,7 +39,54 @@ namespace RN_Process.Tests.ServicesTests
         //    new RnProcessMongoDbContext(InitConfiguration());
 
         private ContractOrganizationServices SystemUnderTest =>
-            _sut ??= _sut = new ContractOrganizationServices(RepositoryInstance,ValidatorStrategyInstance);
+            _sut ??= _sut = new ContractOrganizationServices(RepositoryInstance, ValidatorStrategyInstance);
+
+
+        private async void PopulateRepositoryWithTestData()
+        {
+            await RepositoryInstance.AddAsync(UnitTestUtility.GetNOWO_Organization_OrganizationToTest());
+            await RepositoryInstance.AddAsync(UnitTestUtility.GetUNICRE_OrganizationToTest());
+
+            var personWithNoFacts = new Organization(string.Empty, "Nova Org", "@4566");
+            await RepositoryInstance.AddAsync(personWithNoFacts);
+
+            var personWhoWasVP = new Organization(string.Empty, "Nova Org 3", "@9898");
+
+            personWhoWasVP.AddTerm(null, 9998655, 87556, TermsType.Leasing, FileAccessType.LocalMachine
+                , string.Empty, "\\Test\\teste", "LOCAL", "XML", false, string.Empty,
+                string.Empty, string.Empty, string.Empty, "/", string.Empty,
+                string.Empty, string.Empty, ",", true, string.Empty,
+                RnProcessConstant.AvailableColumnsIntrum, RnProcessConstant.AvailableColumnsIntrum);
+
+            await RepositoryInstance.AddAsync(personWhoWasVP);
+        }
+
+
+        public static IConfiguration InitConfiguration()
+        {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.test.json", false, true)
+                .Build();
+            return config;
+        }
+
+        [Fact]
+        public void GetAllOrganizationsOnlyReturnsContractOrganizations()
+        {
+            PopulateRepositoryWithTestData();
+
+            var actual = SystemUnderTest.GetContractOrganizations();
+
+            Assert.Equal(4, actual.Count());
+
+            var lastNames =
+                (from temp in actual
+                    select temp.Description).ToList();
+
+            lastNames.Should().Contain("Nova Org");
+            lastNames.Should().Contain("Nova Org 3");
+        }
 
         [Fact]
         public void GivenAnInvalidContractWhenSaveIsCalledThenThrowAnException()
@@ -63,7 +105,7 @@ namespace RN_Process.Tests.ServicesTests
             var organization = UnitTestUtility.GetCompleteOrganization();
 
             //breaking dependence of our database. using fake in memory repository.
-            await RepositoryInstance.Add(organization);
+            await RepositoryInstance.AddAsync(organization);
 
             //double check
             Assert.NotNull(organization.Id);
@@ -97,7 +139,7 @@ namespace RN_Process.Tests.ServicesTests
             var organization = UnitTestUtility.GetCompleteOrganization();
 
             //breaking dependence of our database. using fake in memory repository.
-            await RepositoryInstance.Add(organization);
+            await RepositoryInstance.AddAsync(organization);
 
             //double check
             organization.Id.Should().NotBeNullOrEmpty("Organization do not exist in data base");
@@ -108,50 +150,16 @@ namespace RN_Process.Tests.ServicesTests
 
             SystemUnderTest.CreateContractOrganization(uniqOrg);
             uniqOrg.Id.Should().NotBeNullOrEmpty("Organization was not saved");
-            var fromRepository = _repository.GetById(uniqOrg.Id);
+            var fromRepository = _repository.GetByIdAsync(uniqOrg.Id);
             fromRepository.Should().NotBeNull();
         }
 
-        [Fact]
-        public void GetAllOrganizationsOnlyReturnsContractOrganizations()
-        {
-            PopulateRepositoryWithTestData();
-
-            IEnumerable<ContractOrganization> actual = SystemUnderTest.GetContractOrganizations();
-
-            Assert.Equal(4, actual.Count());
-
-            var lastNames =
-                (from temp in actual
-                 select temp.Description).ToList();
-
-           lastNames.Should().Contain("Nova Org");
-           lastNames.Should().Contain("Nova Org 3");
-        }
-      
-        [Fact]
-        public void SearchByDescription()
-        {
-            PopulateRepositoryWithTestData();
-
-            IEnumerable<ContractOrganization> actual = SystemUnderTest.Search("Nova Org");
-
-            actual.Count().Should().BeGreaterOrEqualTo(2);
-
-            var lastNames =
-                (from temp in actual
-                    select temp.Description).ToList();
-
-            lastNames.Should().Contain("Nova Org");
-            lastNames.Should().Contain("Nova Org 3");
-        }
-        
         [Fact]
         public void SearchByCodOrg()
         {
             PopulateRepositoryWithTestData();
 
-            IEnumerable<ContractOrganization> actual = SystemUnderTest.Search(string.Empty, "@98598");
+            var actual = SystemUnderTest.Search(string.Empty, "@9859");
 
             actual.Count().Should().BeGreaterOrEqualTo(1);
 
@@ -161,13 +169,13 @@ namespace RN_Process.Tests.ServicesTests
 
             lastNames.Should().Contain("Nova Org 3");
         }
-        
+
         [Fact]
         public void SearchByContractNumber()
         {
             PopulateRepositoryWithTestData();
 
-            IEnumerable<ContractOrganization> actual =
+            var actual =
                 SystemUnderTest.Search(string.Empty, string.Empty, 9998655);
 
             actual.Count().Should().BeGreaterOrEqualTo(1);
@@ -179,35 +187,21 @@ namespace RN_Process.Tests.ServicesTests
             lastNames.Should().Contain("Nova Org 3");
         }
 
-
-
-        private async void PopulateRepositoryWithTestData()
+        [Fact]
+        public void SearchByDescription()
         {
-            await RepositoryInstance.Add(UnitTestUtility.GetNOWO_Organization_OrganizationToTest());
-            await RepositoryInstance.Add(UnitTestUtility.GetUNICRE_OrganizationToTest());
+            PopulateRepositoryWithTestData();
 
-            var personWithNoFacts = new Organization(string.Empty, "Nova Org", "@4566");
-            await RepositoryInstance.Add(personWithNoFacts);
+            var actual = SystemUnderTest.Search("Nova Org");
 
-            var personWhoWasVP = new Organization(string.Empty, "Nova Org 3", "@98598");
+            actual.Count().Should().BeGreaterOrEqualTo(2);
 
-            personWhoWasVP.AddTerm(null, 9998655, 87556, TermsType.Leasing, FileAccessType.LocalMachine
-                , string.Empty, "\\Test\\teste", "LOCAL", "XML", false, string.Empty,
-                string.Empty, string.Empty, string.Empty, "/", string.Empty,
-                string.Empty, string.Empty, ",",
-                RnProcessConstant.AvailableColumnsIntrum, RnProcessConstant.AvailableColumnsIntrum);
+            var lastNames =
+                (from temp in actual
+                    select temp.Description).ToList();
 
-            await RepositoryInstance.Add(personWhoWasVP);
-        }
-
-
-        public static IConfiguration InitConfiguration()
-        {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.test.json", optional: false, reloadOnChange: true)
-                .Build();
-            return config;
+            lastNames.Should().Contain("Nova Org");
+            lastNames.Should().Contain("Nova Org 3");
         }
     }
 }

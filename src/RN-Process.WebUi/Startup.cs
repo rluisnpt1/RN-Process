@@ -120,12 +120,17 @@ namespace RN_Process.WebUi
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IMongoContext, MongoContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+           
             services.AddScoped<IRepositoryMongo<Organization>, MongoOrganizationRepository>();
-            services
-                .AddTransient<IValidatorStrategy<ContractOrganization>, DefaultValidatorStrategy<ContractOrganization>
-                >();
+            services.AddScoped<IRepositoryMongo<Term>, MongoTermRepository>();
+            services.AddScoped<IRepositoryMongo<TermDetail>, MongoTermDetailRepository>();
+            services.AddScoped<IRepositoryMongo<TermDetailConfig>, MongoTermDetailConfigRepository>();
+            services.AddScoped<IRepositoryMongo<OrganizationFile>, MongoOrganizationFileRepository>();
+            services.AddTransient<IValidatorStrategy<ContractOrganization>,DefaultValidatorStrategy<ContractOrganization>>();
 
             services.AddTransient<IContractOrganizationDataServices, ContractOrganizationServices>();
+            services.AddTransient<IContractFileDataService, ContractFileDataService>();
+
         }
 
         private static void SwaggerConfiguration(IServiceCollection services)

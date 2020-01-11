@@ -29,7 +29,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Deleted = false;
         }
 
-        public virtual Organization Organization { get; set; }
+        [BsonIgnore] public virtual Organization Organization { get; set; }
 
 
         public int TermNumber { get; private set; }
@@ -38,7 +38,11 @@ namespace RN_Process.Api.DataAccess.Entities
         public string OrganizationId { get; private set; }
 
 
-        public virtual ICollection<TermDetail> TermDetails { get; private set; }
+        public virtual ICollection<TermDetail> TermDetails
+        {
+            get { return _termDetail ??= new List<TermDetail>(); }
+            protected set => _termDetail = value;
+        }
 
         private void SetCustomer(Organization organization)
         {
@@ -46,7 +50,6 @@ namespace RN_Process.Api.DataAccess.Entities
             OrganizationId = organization.Id;
             OrgCode = organization.OrgCode;
             Organization = organization;
-            TermDetails = new List<TermDetail>();
         }
 
         private void SetTermNumber(int termNumber)
@@ -62,6 +65,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer, string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns, bool active = true)
         {
             Guard.Against.Null(debtCode, nameof(debtCode));
@@ -75,6 +79,7 @@ namespace RN_Process.Api.DataAccess.Entities
                     requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                     authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
                     pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                    hashearder, fileProtectedPassword,
                     fileHeaderColumns, availableFieldsColumns);
         }
 
@@ -85,6 +90,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string hostKeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer, string fileDeLimiter,
+            bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             var fact = new TermDetail(debtCode, termType, this);
@@ -95,6 +101,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                 authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
                 pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                hashearder,fileProtectedPassword,
                 fileHeaderColumns, availableFieldsColumns);
         }
 
@@ -143,6 +150,8 @@ namespace RN_Process.Api.DataAccess.Entities
                         config.PathToFileBackupAtClient,
                         config.PathToFileBackupAtHostServer,
                         config.FileDelimiter,
+                        config.HasHeader,
+                        config.FileProtectedPassword,
                         config.FileHeaderColumns,
                         config.AvailableFieldsColumns,
                         config.Active);

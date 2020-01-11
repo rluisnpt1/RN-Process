@@ -18,21 +18,39 @@ namespace RN_Process.DataAccess.MongoDb
             DbSet = _context.GetCollection<TEntity>(typeof(TEntity).Name+"s");
         }
 
-        public virtual Task Add(TEntity obj)
+        public TEntity Add(TEntity obj)
         {
-            return _context.AddCommand(async () => await DbSet.InsertOneAsync(obj));
+            DbSet.InsertOne(obj);
+            return obj;
         }
 
-        public virtual async Task<TEntity> GetById(string id)
+        public virtual Task AddAsync(TEntity obj)
+        {
+            return _context.AddCommand(async () => await DbSet.InsertOneAsync(obj));
+        }  
+        
+        public virtual Task AddManyAsync(IEnumerable<TEntity> obj)
+        {
+            return _context.AddCommand(async () => await DbSet.InsertManyAsync(obj));
+        }
+
+        public virtual async Task<TEntity> GetByIdAsync(string id)
         {
             var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id));
             return data.FirstOrDefault();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAll()
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             var all = await DbSet.FindAsync(Builders<TEntity>.Filter.Empty);
             return all.ToList();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetEqualField(string fieldName, string fieldValue){
+            var filter = Builders<TEntity>.Filter.Eq(fieldName, fieldValue);
+            var result = await DbSet.Find(filter).ToListAsync();
+
+            return result;
         }
 
         public virtual Task Update(TEntity obj)

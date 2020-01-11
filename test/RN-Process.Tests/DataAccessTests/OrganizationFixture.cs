@@ -14,7 +14,7 @@ namespace RN_Process.Tests.DataAccessTests
             _sut = null;
         }
 
-        private const string CodClientForTest = "003344";
+        private const string CodClientForTest = "00334";
         private const string Name = "First Organization";
 
         private Organization _sut;
@@ -35,6 +35,7 @@ namespace RN_Process.Tests.DataAccessTests
                     string.Empty, false, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty, string.Empty,
+                    true,string.Empty,
                     new List<string> {""}, new List<string> {""});
         }
 
@@ -95,8 +96,7 @@ namespace RN_Process.Tests.DataAccessTests
 
             //
             Assert.Equal(2, SystemUnderTest.Terms.Count);
-            Assert.Equal(1, SystemUnderTest.TermDetails.Count);
-
+            
             //term                        
             Assert.False(term.Active);
             Assert.True(term.Deleted);
@@ -321,13 +321,9 @@ namespace RN_Process.Tests.DataAccessTests
             //has term
             Assert.Equal(1, SystemUnderTest.Terms.Count);
 
-            //has detail
-            Assert.Equal(1, SystemUnderTest.TermDetails.Count);
-
-
             //get term from organization
             var actualActualTerm = SystemUnderTest.Terms.First();
-            var actualTermDetail = SystemUnderTest.TermDetails.First();
+            var actualTermDetail = actualActualTerm.TermDetails.First();
             var actualTermConfig = actualTermDetail.TermDetailConfigs.First();
 
 

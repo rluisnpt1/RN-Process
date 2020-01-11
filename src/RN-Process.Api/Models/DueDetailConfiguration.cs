@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Linq;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RN_Process.Shared.Commun;
-using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
 {
@@ -17,14 +14,15 @@ namespace RN_Process.Api.Models
         {
             FileHeaderColumns = new List<string> {"CLIENT_COLUM1", "CLIENT_COLUM2", "CLIENT_COLUM3"};
             AvailableFieldsColumns = RnProcessConstant.AvailableColumnsIntrum.ToList();
-            FilesDataInContracts = new List<FileDataContract>();
+           // FilesDataInContracts = new List<FileDataContract>();
         }
 
         public DueDetailConfiguration(string id, string communicationType, string linkToAccess,
             string linkToAccessType, string typeOfResponse, bool requiredLogin, string authenticationLogin,
             string authenticationPassword, string hostkeyFingerPrint, string authenticationCodeApp,
             string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient,
-            string fileDelimiter, IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
+            string fileDelimiter, bool hashearder, string fileProtectedPassword,
+            IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             Id = id;
             CommunicationType = communicationType;
@@ -40,6 +38,8 @@ namespace RN_Process.Api.Models
             PathToDestinationFile = pathToDestinationFile;
             PathToFileBackupAtClient = pathToFileBackupAtClient;
             FileDelimiter = fileDelimiter;
+            HasHeader = hashearder;
+            FileProtectedPassword = fileProtectedPassword;
             FileHeaderColumns = fileHeaderColumns;
             AvailableFieldsColumns = availableFieldsColumns;
         }
@@ -78,9 +78,11 @@ namespace RN_Process.Api.Models
         [Display(Name = "Required Login?")]
         public bool RequiredLogin { get; set; }
 
-        [Display(Name = "User Login")] public string AuthenticationLogin { get; set; }
+        [Display(Name = "User Login")] 
+        public string AuthenticationLogin { get; set; }
 
-        [Display(Name = "Password")] public string AuthenticationPassword { get; set; }
+        [Display(Name = "Password")] 
+        public string AuthenticationPassword { get; set; }
 
 
         [Display(Name = "SSH Host key Finger Print ")]
@@ -107,6 +109,15 @@ namespace RN_Process.Api.Models
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string FileDelimiter { get; set; }
 
+        [Display(Name = "Has Header")]
+        [Required]
+        public bool HasHeader { get;  set; }
+
+        [Display(Name = "File is Protected - Password")]
+        [Required]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string FileProtectedPassword { get;  set; }
+
         [Display(Name = "Columns Names at file")]
         [Required]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
@@ -118,14 +129,16 @@ namespace RN_Process.Api.Models
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public IList<string> AvailableFieldsColumns { get; set; }
 
-        public IList<FileDataContract> FilesDataInContracts { get; set; }
-        public void AddFileIncontract(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
-            string fileLocationOrigin, string locationToCopy, string status, List<BsonDocument> allDataInFile)
-        {
-            FilesDataInContracts.Add(new FileDataContract(id,
-                orgCode, fileDescription, fileSize, fileFormat, fileLocationOrigin, locationToCopy, status
-                , false, null, allDataInFile));
-        }
+       // [DisplayFormat(ConvertEmptyStringToNull = false)]
+        //public IList<FileDataContract> FilesDataInContracts { get; set; }
+
+        //public void AddFileIncontract(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
+        //    string fileLocationOrigin, string locationToCopy, string status, List<BsonDocument> allDataInFile)
+        //{
+        //    FilesDataInContracts.Add(new FileDataContract(id,
+        //        orgCode, fileDescription, fileSize, fileFormat, fileLocationOrigin, locationToCopy, status
+        //        , false, null, allDataInFile));
+        //}
 
     }
 }

@@ -20,6 +20,11 @@ namespace RN_Process.Api.Interfaces
         /// <param name="organization"></param>
         void Adapt(ContractOrganization fromValue, Organization organization);
 
-        void Adapt(IEnumerable<Organization> organizationWhoWereContract, List<ContractOrganization> returnValues);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="organizationWhoWereContract"></param>
+        /// <param name="returnValues"></param>
+        void Adapt(IEnumerable<Organization> fromOrganization, List<ContractOrganization> toContractOrg);
     }
 }

@@ -6,13 +6,15 @@ using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
 {
+ 
+
     public class ContractOrganization
     {
         public ContractOrganization()
         {
             CodOrg = string.Empty;
             Description = string.Empty;
-            DueDetails = new List<DueDetail>();
+            //DueDetails = new List<DueDetail>();
         }
 
         public ContractOrganization(string codOrg,string description, int contractNumber)
@@ -53,10 +55,6 @@ namespace RN_Process.Api.Models
         [JsonIgnore]
         public bool IsDeleted { get; set; }
 
-        public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string UpdateBy { get; set; }
-        public DateTime? ChangedDate { get; set; }
 
         /// <summary>
         /// 
