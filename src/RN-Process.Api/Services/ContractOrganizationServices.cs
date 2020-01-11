@@ -46,6 +46,9 @@ namespace RN_Process.Api.Services
             return toContractOrganization;
         }
 
+
+
+
         /// <summary>
         /// </summary>
         /// <param name="organizationFromModel"></param>
@@ -166,7 +169,7 @@ namespace RN_Process.Api.Services
                     returnValues.Where(p => p.CodOrg.ToLower().Contains(codeOrg.ToLower()));
             }
 
-            return allContracts;
+            return returnValues;
         }
 
         /// <summary>

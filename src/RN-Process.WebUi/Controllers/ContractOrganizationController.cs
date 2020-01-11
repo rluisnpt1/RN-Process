@@ -43,18 +43,40 @@ namespace RN_Process.WebUi.Controllers
         /// <param name="contractId">The id of the Contract</param>
         /// <returns>An ActionResult of type contract</returns>
         /// <response code="200">Returns the requested contractorganization</response>
-        [HttpGet("{contractId}")]
+        [HttpGet("{contractId}/organization")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Produces("application/vnd.marvin.contractorganization+json")]
         public async Task<ActionResult<ContractOrganization>> ContractOrganization(string contractId)
         {
+            if (string.IsNullOrWhiteSpace(contractId))
+            {
+                return BadRequest();
+            }
             var contract = _service.GetContractOrganizationById(contractId);
             if (contract == null) return NotFound();
 
             return Ok(contract);
         }
 
+
+        [HttpGet("{codorg}", Name = "ContractOrganizationDetail")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces("application/vnd.marvin.contractorganizationdetail+json")]
+        public async Task<ActionResult<ContractOrganization>> ContractOrganizationDetail(string codorg)
+        {
+            if (string.IsNullOrWhiteSpace(codorg))
+            {
+                return BadRequest("codorg is required");
+            }
+
+
+            var contract = _service.Search(codorg);
+            if (contract == null) return NotFound();
+
+            return Ok(contract);
+        }
         /// <summary>
         ///     Create a ContractOrganization for a specific Org
         /// </summary>
@@ -70,10 +92,10 @@ namespace RN_Process.WebUi.Controllers
         {
             Guard.Against.Null(contractForCreation, nameof(ContractOrganization));
 
-          // _service.CreateContractOrganization(contractForCreation);
+            _service.CreateContractOrganization(contractForCreation);
 
             return CreatedAtRoute("OrganizationContract",
-                new {contractId = contractForCreation.Id},
+                new { contractId = contractForCreation.Id },
                 contractForCreation);
         }
     }

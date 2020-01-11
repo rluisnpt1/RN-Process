@@ -53,10 +53,13 @@ namespace RN_Process.Api.Services
             if (fromDbManyFiles == null) return null;
 
             var dbManyFiles = fromDbManyFiles.ToList();
-            dbManyFiles.Select(x => x.OrgCode.Trim().ToUpper().Equals(codorg.Trim().ToUpper()));
 
             var toValues = new List<FileDataContract>();
-            _adapter.AdaptFile(dbManyFiles, toValues);
+            if(dbManyFiles.Count > 0)
+            {
+              dbManyFiles.Select(x => x.OrgCode.Trim().ToUpper().Equals(codorg.Trim().ToUpper()));
+              _adapter.AdaptFile(dbManyFiles, toValues);
+            }
 
             return toValues;
         }

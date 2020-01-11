@@ -134,14 +134,14 @@ namespace RN_Process.Api.Services
                 Enum.TryParse<TermsType>(itemDetailModel.TermsType, true, out var typeTerm);
 
 
-                if (fromValue.IsDeleted.Equals("false"))
+                if (fromValue.IsDeleted.Equals(false))
                     foreach (var dueDetailConfiguration in itemDetailModel.DueDetailConfigs)
                     {
                         Enum.TryParse<FileAccessType>(dueDetailConfiguration.CommunicationType, true, out var fileAccessType);
                         //Boolean.TryParse(dueDetailConfiguration.HasHeader, out var hasHeaderValue);
                         //Boolean.TryParse(dueDetailConfiguration.RequiredLogin, out var hasRequiredLogin);
-
-                        organization.AddTerm(itemDetailModel.Id,
+                      
+                        organization.AddTerm(null,
                             fromValue.ContractNumber,
                             itemDetailModel.DebtCode,
                             typeTerm,
@@ -166,7 +166,7 @@ namespace RN_Process.Api.Services
                             dueDetailConfiguration.AvailableFieldsColumns
                         );
                     }
-                else if (fromValue.IsDeleted.Equals("true") && !string.IsNullOrWhiteSpace(itemDetailModel.Id))
+                else if (fromValue.IsDeleted.Equals(true) && !string.IsNullOrWhiteSpace(itemDetailModel.Id))
                     organization.RemoveTerms(itemDetailModel.Id);
             }
         }

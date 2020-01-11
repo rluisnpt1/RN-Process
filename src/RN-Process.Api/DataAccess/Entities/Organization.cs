@@ -124,7 +124,7 @@ namespace RN_Process.Api.DataAccess.Entities
             Guard.Against.NullOrEmpty(fileHeaderColumns, nameof(fileHeaderColumns));
             Guard.Against.NullOrEmpty(availableFieldsColumns, nameof(availableFieldsColumns));
 
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrWhiteSpace(id))
                 UpdateExistingTermById(id, typeDebt, termNumber, termsType);
             else
                 AddNewTerm(termNumber, typeDebt, termsType, communicationType, internalHost, linkToAccess,

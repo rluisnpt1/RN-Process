@@ -13,6 +13,8 @@ namespace RN_Process.DataAccess.MongoDb
         Task<TEntity> GetByIdAsync(string id);
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<IEnumerable<TEntity>> GetEqualField(string fieldName, string fieldValue);
+
+        //Task<TEntity> GetEntityByCodorg(string codorg);
         Task Update(TEntity obj);
         Task Remove(string id);
     }

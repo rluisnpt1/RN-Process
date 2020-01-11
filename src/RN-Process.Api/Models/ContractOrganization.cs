@@ -14,7 +14,7 @@ namespace RN_Process.Api.Models
         {
             CodOrg = string.Empty;
             Description = string.Empty;
-            //DueDetails = new List<DueDetail>();
+            DueDetails = new List<DueDetail>();
         }
 
         public ContractOrganization(string codOrg,string description, int contractNumber)
