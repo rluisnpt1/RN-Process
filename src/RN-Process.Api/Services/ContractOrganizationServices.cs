@@ -99,14 +99,16 @@ namespace RN_Process.Api.Services
         /// <returns></returns>
         public IEnumerable<ContractOrganization> Search(string description, string codOrg)
         {
+
             var allContracts = GetContractOrganizations();
 
-            IEnumerable<ContractOrganization> returnValues = allContracts;
+            var contractOrganizations = allContracts.ToList();
+            IEnumerable<ContractOrganization> returnValues = contractOrganizations;
 
             if (IsNullOrWhiteSpace(description) == false)
             {
                 returnValues =
-                    returnValues.Where(p => p.CodOrg.ToLower().Contains(description.ToLower()));
+                    returnValues.Where(p => p.Description.ToLower().Contains(description.ToLower()));
             }
 
             if (IsNullOrWhiteSpace(codOrg) == false)
@@ -115,7 +117,7 @@ namespace RN_Process.Api.Services
                     returnValues.Where(p => p.CodOrg.ToLower().Contains(codOrg.ToLower()));
             }
 
-            return allContracts;
+            return contractOrganizations;
         }
 
         /// <summary>
@@ -155,6 +157,18 @@ namespace RN_Process.Api.Services
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="organizationId"></param>
+        /// <returns></returns>
+        public bool OrganizationSyncRepositories(string organizationId)
+        {
+            Guard.Against.NullOrWhiteSpace(organizationId, nameof(organizationId));
+            
+            return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="codeOrg"></param>
         /// <returns></returns>
         public IEnumerable<ContractOrganization> Search(string codeOrg)
@@ -187,6 +201,18 @@ namespace RN_Process.Api.Services
             return returnValues;
         }
 
-       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="organizationOrgCode"></param>
+        /// <returns></returns>
+        //public bool OrganizationSyncRepositories(string organizationId)
+        //{
+        //    ///Guard.Against.Null(organizationId, nameof(organizationId));
+        //    //var match = GetContractOrganizationById(organizationId);
+        //    //if (match == null)
+        //    //    return false;
+        //    return true;
+        //}
     }
 }

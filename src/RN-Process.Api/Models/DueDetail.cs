@@ -36,12 +36,13 @@ namespace RN_Process.Api.Models
         /// </summary>
         [Display(Name = "Type Debt")]
         [Required]
-       [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public string TermsType { get; set; }
 
         public List<DueDetailConfiguration> DueDetailConfigs { get; set; }
+        public string OrgCode { get; set; }
 
-        public void AddDueDetailConfigs(string id, string communicationType, string linkToAccess,
+        public void AddDueDetailConfigs(string id, string orgCode, string communicationType, string linkToAccess,
             string linkToAccessType,
             string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
             string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
@@ -52,6 +53,7 @@ namespace RN_Process.Api.Models
             DueDetailConfigs.Add(new DueDetailConfiguration
             {
                 Id = id,
+                OrgCode = orgCode,
                 CommunicationType = communicationType.ToString(),
                 LinkToAccess = linkToAccess,
                 LinkToAccessType = linkToAccessType,

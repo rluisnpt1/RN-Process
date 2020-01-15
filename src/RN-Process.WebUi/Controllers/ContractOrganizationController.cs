@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 using RN_Process.Shared.Commun;
@@ -33,7 +34,7 @@ namespace RN_Process.WebUi.Controllers
         {
             var returnRepo = _service.GetContractOrganizations();
             if (returnRepo == null) return NotFound();
-
+            //var data = JsonConvert.SerializeObject(returnRepo);
             return Ok(returnRepo);
         }
 
@@ -56,10 +57,16 @@ namespace RN_Process.WebUi.Controllers
             var contract = _service.GetContractOrganizationById(contractId);
             if (contract == null) return NotFound();
 
+           // var data = JsonConvert.SerializeObject(contract);
             return Ok(contract);
         }
 
-
+        /// <summary>
+        ///   Get the ContractOrganizations by organization code´for specific organization
+        /// </summary>
+        /// <param name="codorg"></param>
+        /// <returns>An ActionResult of type ContractOrganization</returns>
+        /// <response code="200">Returns the requested Contractorganization</response>
         [HttpGet("{codorg}", Name = "ContractOrganizationDetail")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -75,6 +82,8 @@ namespace RN_Process.WebUi.Controllers
             var contract = _service.Search(codorg);
             if (contract == null) return NotFound();
 
+
+            //var data = JsonConvert.SerializeObject(contract);
             return Ok(contract);
         }
         /// <summary>

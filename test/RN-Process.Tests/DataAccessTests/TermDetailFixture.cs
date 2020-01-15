@@ -66,14 +66,14 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty, false, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
-                new List<string> {""}, new List<string> {""});
+                new List<string> {"teste1"}, new List<string> {"teste2"});
 
             var teste2 = new TermDetailConfig(null, SystemUnderTest, FileAccessType.Email,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, false, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
-                new List<string> {""}, new List<string> {""});
+                new List<string> {"teste1"}, new List<string> {"teste2"});
 
             SystemUnderTest.AddDetailConfig(string.Empty,
                 teste1.CommunicationType,

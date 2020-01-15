@@ -14,17 +14,46 @@ namespace RN_Process.Api.Interfaces
         /// <returns></returns>
         ContractOrganization GetContractOrganizationById(string organizationId);
 
-
-
         /// <summary>
         /// </summary>
         /// <param name="organizationFromModel"></param>
         void CreateContractOrganization(ContractOrganization organizationFromModel);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         IEnumerable<ContractOrganization> GetContractOrganizations();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codeOrg"></param>
+        /// <returns></returns>
         IEnumerable<ContractOrganization> Search(string codeOrg);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="codeOrg"></param>
+        /// <returns></returns>
         IEnumerable<ContractOrganization> Search(string description, string codeOrg);
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="codeOrg"></param>
+        /// <param name="contractNumber"></param>
+        /// <returns></returns>
         IEnumerable<ContractOrganization> Search(string description, string codeOrg, int contractNumber);
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="organizationId"></param>
+        /// <returns></returns>
+        bool OrganizationSyncRepositories(string organizationId);
     }
 }

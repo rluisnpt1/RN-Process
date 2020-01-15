@@ -17,7 +17,7 @@ namespace RN_Process.Api.Models
            // FilesDataInContracts = new List<FileDataContract>();
         }
 
-        public DueDetailConfiguration(string id, string communicationType, string linkToAccess,
+        public DueDetailConfiguration(string id, string orgCode, string communicationType, string linkToAccess,
             string linkToAccessType, string typeOfResponse, bool requiredLogin, string authenticationLogin,
             string authenticationPassword, string hostkeyFingerPrint, string authenticationCodeApp,
             string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient,
@@ -25,6 +25,7 @@ namespace RN_Process.Api.Models
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             Id = id;
+            OrgCode = orgCode;
             CommunicationType = communicationType;
             LinkToAccess = linkToAccess;
             LinkToAccessType = linkToAccessType;
@@ -46,11 +47,12 @@ namespace RN_Process.Api.Models
 
         public string Id { get; set; }
 
+        public string OrgCode { get;  set; }
         /// <summary>
         ///     Type communication has been agreed
         /// </summary>
         [Required]
-        [JsonConverter(typeof(StringEnumConverter))]
+       // [JsonConverter(typeof(StringEnumConverter))]
         public string CommunicationType { get; set; }
 
         /// <summary>

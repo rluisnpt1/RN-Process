@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.Models
@@ -52,7 +51,7 @@ namespace RN_Process.Api.Models
         /// <summary>
         /// 
         /// </summary>
-        [JsonIgnore]
+        //[JsonIgnore]
         public bool IsDeleted { get; set; }
 
 

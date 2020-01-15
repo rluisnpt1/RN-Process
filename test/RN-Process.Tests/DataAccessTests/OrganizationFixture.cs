@@ -31,12 +31,12 @@ namespace RN_Process.Tests.DataAccessTests
             var start = numberofTime == 0 ? 1 : numberofTime;
             for (var i = 0; i < start; i++)
                 SystemUnderTest.AddTerm(null, 99 + i, 6651 + i, TermsType.Loan, FileAccessType.LocalMachine,
-                    string.Empty, "C://Temp", string.Empty,
+                    string.Empty, "C://TEMP//WorkDir", string.Empty,
                     string.Empty, false, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty, string.Empty,
                     true,string.Empty,
-                    new List<string> {""}, new List<string> {""});
+                    new List<string> {"teste1"}, new List<string> {"teste2"});
         }
 
         [Fact]

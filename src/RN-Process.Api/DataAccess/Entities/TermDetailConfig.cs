@@ -33,9 +33,9 @@ namespace RN_Process.Api.DataAccess.Entities
         public FileAccessType CommunicationType { get; private set; }
         public string InternalHost { get; }
         public string BaseWorkDirectoryHost { get; private set; }
-        public string LinkToAccess { get; private set; }
-        public string LinkToAccessType { get; private set; }
-        public string TypeOfResponse { get; private set; }
+        public string LinkToAccess { get; }
+        public string LinkToAccessType { get; }
+        public string TypeOfResponse { get; }
 
         public bool RequiredLogin { get; private set; }
         public string AuthenticationLogin { get; private set; }
@@ -48,8 +48,8 @@ namespace RN_Process.Api.DataAccess.Entities
         public string PathToFileBackupAtClient { get; private set; }
         public string PathToFileBackupAtHostServer { get; private set; }
         public string FileDelimiter { get; private set; }
-        public bool HasHeader { get; private set; }
-        public string FileProtectedPassword { get; private set; }
+        public bool HasHeader { get; }
+        public string FileProtectedPassword { get; }
 
         private int DirectoryHostServerSize { get; set; }
 
@@ -62,26 +62,28 @@ namespace RN_Process.Api.DataAccess.Entities
             protected set => _fileImport = value;
         }
 
-        public void AddOrganizationFile(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
+        public void AddOrganizationFile(string id, string orgCode, string fileDescription, int fileSize,
+            string fileFormat,
             string fileLocationOrigin, string locationToCopy, StatusType status, bool fileMigrated,
             DateTime? fileMigratedOn, List<BsonDocument> allDataInFile, bool active)
         {
             if (!string.IsNullOrEmpty(id))
-                UpdateExistingTermById(id, orgCode,status, fileMigrated, fileMigratedOn, active);
+                UpdateExistingTermById(id, orgCode, status, fileMigrated, fileMigratedOn, active);
             else
                 AddNwwOrganizationFile("", fileDescription, fileSize, fileFormat, fileLocationOrigin
                     , locationToCopy, status, allDataInFile);
         }
 
-        private void UpdateExistingTermById(string id, string orgCode, StatusType status, 
+        private void UpdateExistingTermById(string id, string orgCode, StatusType status,
             bool fileMigrated, DateTime? fileMigratedOn, bool active)
         {
-            OrganizationFile orgFile =null;
+            OrganizationFile orgFile = null;
             var foundIt = false;
-            if (!string.IsNullOrEmpty(id)) orgFile = 
-                OrganizationFiles.FirstOrDefault(temp => temp.Id == id
-                                                         && temp.OrgCode.ToUpper()
-                                                             .Equals(orgCode.ToUpper()));
+            if (!string.IsNullOrEmpty(id))
+                orgFile =
+                    OrganizationFiles.FirstOrDefault(temp => temp.Id == id
+                                                             && temp.OrgCode.ToUpper()
+                                                                 .Equals(orgCode.ToUpper()));
             if (orgFile != null)
             {
                 foundIt = true;
@@ -96,12 +98,12 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
         private void AddNwwOrganizationFile(string id, string fileDescription, int fileSize,
-            string fileFormat, string fileLocationOrigin, string locationToCopy, StatusType status, 
+            string fileFormat, string fileLocationOrigin, string locationToCopy, StatusType status,
             List<BsonDocument> allDataInFile)
         {
             var newdoc = new OrganizationFile(id, fileDescription, fileSize, fileFormat, fileLocationOrigin
                 , locationToCopy, status, false, null, this, allDataInFile);
-           
+
             OrganizationFiles.Add(newdoc);
         }
 
@@ -165,7 +167,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer,
             string fileDeLimiter,
-            bool hasHeader, 
+            bool hasHeader,
             string fileProtectedPassword,
             IList<string> fileHeaderColumns,
             IList<string> availableFieldsColumns)
@@ -226,8 +228,8 @@ namespace RN_Process.Api.DataAccess.Entities
 
             if (string.IsNullOrEmpty(pathToFileBackupAtHostServer))
             {
-                var te2 = PathToOriginFile.Replace("/", "");
-                PathToFileBackupAtClient = IntrumFile.CreateDirectory(te2 + clientDir);
+                var te2 = PathToOriginFile.Replace("/", string.Empty);
+                PathToFileBackupAtHostServer = IntrumFile.CreateDirectory(te2 + clientDir);
             }
             else
             {
@@ -244,7 +246,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         private void SetBackupClientDirectory(string pathToFileBackupAtClient)
         {
-            PathToFileBackupAtClient = pathToFileBackupAtClient;
+            PathToFileBackupAtClient = pathToFileBackupAtClient ?? string.Empty;
         }
 
         private void SetAvailableFieldsColumns(IList<string> availableFieldsColumns)

@@ -90,7 +90,8 @@ namespace RN_Process.Api.Services
             {
                 Id = item.Id,
                 DebtCode = item.DebtCode,
-                TermsType = item.TermsType.ToString()
+                TermsType = item.TermsType.ToString(),
+                OrgCode = item.OrgCode,
             };
 
             var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
@@ -98,6 +99,7 @@ namespace RN_Process.Api.Services
             var config = new DueDetailConfiguration
             {
                 Id = configTemp.Id,
+                OrgCode =item.OrgCode,
                 CommunicationType = configTemp.CommunicationType.ToString(),
                 LinkToAccess = configTemp.LinkToAccess,
                 LinkToAccessType = configTemp.LinkToAccessType,
@@ -129,6 +131,9 @@ namespace RN_Process.Api.Services
         /// <param name="organization"></param>
         public void AdaptDueDetail(ContractOrganization fromValue, Organization organization)
         {
+            Guard.Against.Null(fromValue, nameof(ContractOrganization));
+            Guard.Against.Null(organization, nameof(Organization));
+
             foreach (var itemDetailModel in fromValue.DueDetails)
             {
                 Enum.TryParse<TermsType>(itemDetailModel.TermsType, true, out var typeTerm);
@@ -194,7 +199,6 @@ namespace RN_Process.Api.Services
                 fromFileData.AllDataInFile, true);
 
             //var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
-
 
         }
 

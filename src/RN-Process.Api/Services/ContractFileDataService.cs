@@ -43,11 +43,14 @@ namespace RN_Process.Api.Services
         }
 
         /// <summary>
+        ///     get all files by codcredor
         /// </summary>
         /// <param name="codorg"></param>
         /// <returns></returns>
         public async Task<IList<FileDataContract>> GetOrganizationFileByOrgCod(string codorg)
         {
+            Guard.Against.NullOrWhiteSpace(codorg, nameof(codorg));
+
             var fromDbManyFiles = await _repositoryInstance.GetEqualField("OrgCode", codorg);
 
             if (fromDbManyFiles == null) return null;
@@ -55,10 +58,10 @@ namespace RN_Process.Api.Services
             var dbManyFiles = fromDbManyFiles.ToList();
 
             var toValues = new List<FileDataContract>();
-            if(dbManyFiles.Count > 0)
+            if (dbManyFiles.Count > 0)
             {
-              dbManyFiles.Select(x => x.OrgCode.Trim().ToUpper().Equals(codorg.Trim().ToUpper()));
-              _adapter.AdaptFile(dbManyFiles, toValues);
+                dbManyFiles.Select(x => x.OrgCode.Trim().ToUpper().Equals(codorg.Trim().ToUpper()));
+                _adapter.AdaptFile(dbManyFiles, toValues);
             }
 
             return toValues;

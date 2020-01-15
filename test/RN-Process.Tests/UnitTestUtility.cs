@@ -74,7 +74,7 @@ namespace RN_Process.Tests
                 BaseWorkdir + "\\backup\\SimulationCliente\\to_intrum",
                 RnProcessConstant.BaseTestWorkFolder + "\\Destination",
                 RnProcessConstant.BaseTestWorkFolder + "\\Backup",
-                BaseWorkdir + "\\BackupToHost",
+                BaseWorkdir + "\\backup",
                 ",",
                 true,
                 string.Empty,
@@ -113,7 +113,7 @@ namespace RN_Process.Tests
                 "https://assist.healthcare.com.pt/index.php?r=auth%2Flogin",
                 "AUTH", "INTERNAL RESPONSE", true, "intrum", "int2019#u", "", null,
                 "https://assist.healthcare.com.pt/index.php?r=intrum%2Fdebts&export=csv", "", "",
-                BaseWorkdir + "\\BackupToHost", ",", true, string.Empty,
+                BaseWorkdir + "\\backup", ",", true, string.Empty,
                 new List<string>
                     {"NDIV", "COD_CRED", "DATA2", "DATA3"},
                 new List<string>
@@ -128,7 +128,7 @@ namespace RN_Process.Tests
                 string.Empty, false, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
-                new List<string> { "" }, new List<string> { "" });
+                new List<string> { "teste1" }, new List<string> { "teste1" });
         }
 
         public static Organization GetCompleteOrganization()
@@ -173,7 +173,7 @@ namespace RN_Process.Tests
 
             var dueDetails = infoModel.DueDetails.Select(x => x);
             foreach (var dueDetail in dueDetails)
-                dueDetail.AddDueDetailConfigs(null, "FTP",
+                dueDetail.AddDueDetailConfigs(null, dueDetail.OrgCode, "FTP",
                     "SFTP://ftp.unicre.pt",
                     "C://Desktop",
                     "",
@@ -207,7 +207,7 @@ namespace RN_Process.Tests
 
             var dueDetails = infoModel.DueDetails.Select(x => x);
             foreach (var dueDetail in dueDetails)
-                dueDetail.AddDueDetailConfigs(null, "FTP",
+                dueDetail.AddDueDetailConfigs(null, dueDetail.OrgCode, "FTP",
                     "SFTP://ftp.unicre.pt",
                     "C://Desktop",
                     "",

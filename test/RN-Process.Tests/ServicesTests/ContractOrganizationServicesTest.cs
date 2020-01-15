@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using RN_Process.Api.DataAccess.Entities;
+using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 using RN_Process.Api.Services;
 using RN_Process.Shared.Commun;
@@ -20,8 +22,9 @@ namespace RN_Process.Tests.ServicesTests
             _repository = null;
         }
 
+        private IContractOrganizationDataServices _sut;
         private InMemoryRepository<Organization> _repository;
-        private ContractOrganizationServices _sut;
+        //private ContractOrganizationServices _sut;
         private MockOrganizationValidatorStrategy _validatorStrategyInstance;
 
         public MockOrganizationValidatorStrategy ValidatorStrategyInstance
@@ -38,7 +41,7 @@ namespace RN_Process.Tests.ServicesTests
         //private IMongoContext Context => _context ??= _context =
         //    new RnProcessMongoDbContext(InitConfiguration());
 
-        private ContractOrganizationServices SystemUnderTest =>
+        private IContractOrganizationDataServices SystemUnderTest =>
             _sut ??= _sut = new ContractOrganizationServices(RepositoryInstance, ValidatorStrategyInstance);
 
 
@@ -192,7 +195,7 @@ namespace RN_Process.Tests.ServicesTests
         {
             PopulateRepositoryWithTestData();
 
-            var actual = SystemUnderTest.Search("Nova Org");
+            var actual = SystemUnderTest.Search("Nova Org",null);
 
             actual.Count().Should().BeGreaterOrEqualTo(2);
 
@@ -202,6 +205,54 @@ namespace RN_Process.Tests.ServicesTests
 
             lastNames.Should().Contain("Nova Org");
             lastNames.Should().Contain("Nova Org 3");
+        }
+
+        [Fact]
+        public async Task OrganizationServerRepositorySincronization()
+        {
+            // Arrange
+            //representation of data in database
+            var organization = UnitTestUtility.GetCompleteOrganization();
+
+            //breaking dependence of our database. using fake in memory repository.
+            await RepositoryInstance.AddAsync(organization);
+
+            //act
+            bool sut = (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id);
+
+            //asset 
+            sut.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task OrganizationServerRepositorySincronization_should_have_lastchangeddate_equal()
+        {
+            // Arrange
+            var expectfile = "C:\\TEMP\\Myfile.txt";
+
+            //representation of data in database
+            var organization = UnitTestUtility.GetCompleteOrganization();
+
+            //breaking dependence of our database. using fake in memory repository.
+            await RepositoryInstance.AddAsync(organization);
+
+            //act
+            bool sut = (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id);
+
+        }
+
+        [Fact]
+        public async Task OrganizationServerRepositorySincronization_ShouldThrowExceptionIf_ParamEmpty()
+        {
+            // Arrange
+            //representation of data in database
+            var organization = UnitTestUtility.GetCompleteOrganization();
+
+            //breaking dependence of our database. using fake in memory repository.
+            await RepositoryInstance.AddAsync(organization);
+            var sut = Assert.Throws<System.ArgumentException>(() => (bool)SystemUnderTest.OrganizationSyncRepositories(string.Empty));
+            //assert
+            Assert.Contains("Required input 'ORGANIZATIONID' was empty", sut.Message);
         }
     }
 }

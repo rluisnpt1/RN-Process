@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
 
@@ -63,7 +64,8 @@ namespace RN_Process.WebUi.Controllers
                 return NotFound();
             }
 
-            return Ok(returnRepo);
+            var data = JsonConvert.SerializeObject(returnRepo);
+            return Ok(data);
         }
     }
 }
