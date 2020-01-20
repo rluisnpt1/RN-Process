@@ -22,4 +22,19 @@ namespace RN_Process.Tests.ServicesTests
         }
     }
 
+    public class MockDueDetailStrategy : IValidatorStrategy<DueDetail>
+    {
+        public MockDueDetailStrategy()
+        {
+            IsValidReturnValue = true;
+        }
+
+        public bool IsValidReturnValue { get; set; }
+
+        public bool IsValid(DueDetail validateThis)
+        {
+            return IsValidReturnValue;
+        }
+    }
+
 }

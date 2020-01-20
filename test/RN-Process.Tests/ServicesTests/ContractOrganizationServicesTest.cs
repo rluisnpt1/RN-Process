@@ -212,7 +212,7 @@ namespace RN_Process.Tests.ServicesTests
         {
             // Arrange
             //representation of data in database
-            var organization = UnitTestUtility.GetCompleteOrganization();
+            var organization = UnitTestUtility.GetCompleteOrganization_2();
 
             //breaking dependence of our database. using fake in memory repository.
             await RepositoryInstance.AddAsync(organization);
@@ -223,6 +223,21 @@ namespace RN_Process.Tests.ServicesTests
             //asset 
             sut.Should().BeTrue();
         }
+        
+        [Fact]
+        public async Task OrganizationServerRepositorySincronization_throwException_when_invalidFTP_type()
+        {
+            // Arrange
+            //representation of data in database
+            var organization = UnitTestUtility.GetCompleteOrganization();
+
+            //breaking dependence of our database. using fake in memory repository.
+            await RepositoryInstance.AddAsync(organization);
+
+            var sut = Assert.Throws<Exception>(() => (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id));
+            //assert
+            Assert.Contains("ERROR: Method available only for FTP", sut.Message);
+        }
 
         [Fact]
         public async Task OrganizationServerRepositorySincronization_should_have_lastchangeddate_equal()
@@ -231,7 +246,7 @@ namespace RN_Process.Tests.ServicesTests
             var expectfile = "C:\\TEMP\\Myfile.txt";
 
             //representation of data in database
-            var organization = UnitTestUtility.GetCompleteOrganization();
+            var organization = UnitTestUtility.GetCompleteOrganization_2();
 
             //breaking dependence of our database. using fake in memory repository.
             await RepositoryInstance.AddAsync(organization);

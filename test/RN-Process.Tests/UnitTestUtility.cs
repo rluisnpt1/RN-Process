@@ -15,7 +15,9 @@ namespace RN_Process.Tests
     public static class UnitTestUtility
     {
         //Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+        
         private const string BaseWorkdir = "C:\\TEMP\\WorkDir";
+
 
         public static Organization GetBancoPortugalOrganizationToTest()
         {
@@ -124,7 +126,7 @@ namespace RN_Process.Tests
         public static TermDetailConfig TermDetailIdNull()
         {
             return new TermDetailConfig(null, GetTermBaseToTeste(), FileAccessType.LocalMachine,
-                string.Empty, "C://Temp", string.Empty,
+                string.Empty, BaseWorkdir, string.Empty,
                 string.Empty, false, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
@@ -160,6 +162,35 @@ namespace RN_Process.Tests
             return info;
         }
 
+
+        public static Organization GetCompleteOrganization_2()
+        {
+            var info = new Organization(string.Empty, "Real Unicre de Portugal", "UNIC1");
+
+            var detailConfig = GetRealTermUnicreDetailConfigToTest();
+            info.AddTerm(null, 1423123, 45632, TermsType.Leasing,
+                detailConfig.CommunicationType,
+                detailConfig.InternalHost,
+                detailConfig.LinkToAccess,
+                detailConfig.LinkToAccessType,
+                detailConfig.TypeOfResponse,
+                detailConfig.RequiredLogin,
+                detailConfig.AuthenticationLogin,
+                Encoding.ASCII.GetString(detailConfig.AuthenticationPassword),
+                Encoding.ASCII.GetString(detailConfig.HostKeyFingerPrint),
+                detailConfig.AuthenticationCodeApp,
+                detailConfig.PathToOriginFile,
+                detailConfig.PathToDestinationFile,
+                detailConfig.PathToFileBackupAtClient,
+                detailConfig.PathToFileBackupAtHostServer,
+                detailConfig.FileDelimiter,
+                detailConfig.HasHeader,
+                detailConfig.FileProtectedPassword,
+                detailConfig.FileHeaderColumns,
+                detailConfig.AvailableFieldsColumns
+            );
+            return info;
+        }
         public static ContractOrganization GetContractOrganizationModel()
         {
             var infoModel = new ContractOrganization
@@ -175,14 +206,14 @@ namespace RN_Process.Tests
             foreach (var dueDetail in dueDetails)
                 dueDetail.AddDueDetailConfigs(null, dueDetail.OrgCode, "FTP",
                     "SFTP://ftp.unicre.pt",
-                    "C://Desktop",
+                    BaseWorkdir,
                     "",
                     true,
                     "logi",
                     "ih3bb6",
                     "",
                     null,
-                    BaseWorkdir,
+                    BaseWorkdir+"\\BACKUP",
                     "SFTP",
                     "FTP",
                     ",",
@@ -209,7 +240,7 @@ namespace RN_Process.Tests
             foreach (var dueDetail in dueDetails)
                 dueDetail.AddDueDetailConfigs(null, dueDetail.OrgCode, "FTP",
                     "SFTP://ftp.unicre.pt",
-                    "C://Desktop",
+                    "BaseWorkdir",
                     "",
                     true,
                     "logi",

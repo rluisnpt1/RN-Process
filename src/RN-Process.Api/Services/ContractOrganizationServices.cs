@@ -20,7 +20,7 @@ namespace RN_Process.Api.Services
         private IValidatorStrategy<ContractOrganization> _validatorInstance;
         private readonly OrganizationToContractOrganizationAdapter _adapter;
 
-        public ContractOrganizationServices(IRepositoryMongo<Organization> 
+        public ContractOrganizationServices(IRepositoryMongo<Organization>
             repository, IValidatorStrategy<ContractOrganization> validatorInstance)
         {
             _repositoryInstance = repository;
@@ -55,7 +55,7 @@ namespace RN_Process.Api.Services
         public void CreateContractOrganization(ContractOrganization organizationFromModel)
         {
             Guard.Against.Null(organizationFromModel, nameof(organizationFromModel));
-          
+
             //GET ALL DATA --PLEASE CHANGE IT LATER
             var allData = _repositoryInstance.GetAllAsync();
 
@@ -81,7 +81,7 @@ namespace RN_Process.Api.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        public  IEnumerable<ContractOrganization> GetContractOrganizations()
+        public IEnumerable<ContractOrganization> GetContractOrganizations()
         {
             var allPeople = _repositoryInstance.GetAllAsync();
 
@@ -162,8 +162,38 @@ namespace RN_Process.Api.Services
         public bool OrganizationSyncRepositories(string organizationId)
         {
             Guard.Against.NullOrWhiteSpace(organizationId, nameof(organizationId));
-            
-            return true;
+            var match = GetContractOrganizationById(organizationId);
+
+            var isValid = false;
+
+            if (match != null)
+            {
+                var org = new Organization(match.Id, match.Description, match.CodOrg);
+                _adapter.Adapt(match, org);
+
+                try
+                {
+                    if (org.Terms != null)
+                        foreach (var item in org.Terms.Select(x =>
+                            x.TermDetails.GetTermDetails(org.Terms.GetTermOrg(org.Id, org.OrgCode))))
+                            foreach (var termDetail in item)
+                            {
+                                var configTemp =
+                                    termDetail.TermDetailConfigs.GetTermDetailConfiguration(termDetail.Id,
+                                        termDetail.OrgCode);
+
+                                configTemp.FtpDownloadingTheMostRecentFileRemoteDir();
+                            }
+
+                    isValid = true;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException($"Could not sync the repository ORG: {match.CodOrg} - ERROR: {ex.Message}");
+                }
+            }
+
+            return isValid;
         }
 
         /// <summary>

@@ -176,7 +176,15 @@ namespace RN_Process.Api.Services
             }
         }
 
+        public void AdaptToTermDetailConfig(DueDetailConfiguration fromValue, TermDetailConfig toValue)
+        {
 
+        }
+
+        public void AdaptToTermDetailConfig(TermDetailConfig fromValue, DueDetailConfiguration toValue)
+        {
+
+        }
 
         public void AdaptToOrganizationFile(FileDataContract fromFileData, TermDetailConfig configuration)
         {

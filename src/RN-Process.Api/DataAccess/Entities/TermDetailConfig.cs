@@ -117,7 +117,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
 
             if (CommunicationType != FileAccessType.FTP)
-                throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
+               throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
 
             var sessionOptionsLogin = FtpWork(out var options);
 
@@ -130,7 +130,11 @@ namespace RN_Process.Api.DataAccess.Entities
             return destination;
         }
 
-
+        /// <summary>
+        /// Has the information to contact at ftp
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
         protected virtual FtpWork FtpWork(out SessionOptions options)
         {
             var sessionOptionsLogin = new FtpWork();
