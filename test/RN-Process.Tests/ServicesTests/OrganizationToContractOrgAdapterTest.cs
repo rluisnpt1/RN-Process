@@ -76,7 +76,7 @@ namespace RN_Process.Tests.ServicesTests
             var fromValue = UnitTestUtility.GetFileDataContract("BBEE");
           
             // Act
-            SystemUnderTest.AdaptToOrganizationFile(fromValue, config);
+            SystemUnderTest.AdaptToOrganizationFile(fromValue, (TermDetailConfig) config);
 
             config.OrganizationFiles.Count.Should().BeGreaterThan(0);
             // Assert

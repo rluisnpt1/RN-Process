@@ -4,7 +4,7 @@ namespace RN_Process.DataAccess
 {
     public abstract class AuditableEntity<T> : Entity<T>, IAuditableEntity
     {
-        private readonly string _createdBy;
+        //private readonly string _createdBy;
         private DateTime? _createdDate;
 
         public DateTime CreatedDate
@@ -18,7 +18,7 @@ namespace RN_Process.DataAccess
 
         public string CreatedBy
         {
-            get => _createdBy ?? "Internal System";
+            get =>  "Internal System";
             set { }
         }
 

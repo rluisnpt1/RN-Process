@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
@@ -96,12 +101,12 @@ namespace RN_Process.Tests.ServicesTests
         {
             ValidatorStrategyInstance.IsValidReturnValue = false;
 
-            Action act = () => SystemUnderTest.CreateContractOrganization(new ContractOrganization());
+            Action act = () => SystemUnderTest.CreateContractOrganization(new ContractOrganization()).Wait();
             act.Should().Throw<ArgumentException>();
         }
 
         [Fact]
-        public async void GivenIHaveAnAlreadyExistingOrganization_WhenISaveThrowException()
+        public async Task GivenIHaveAnAlreadyExistingOrganization_WhenISaveThrowException()
         {
             // Arrange
             //representation of data in database
@@ -122,7 +127,7 @@ namespace RN_Process.Tests.ServicesTests
             {
                 // Assert
                 gotException = false;
-                SystemUnderTest.CreateContractOrganization(userImput);
+              await  SystemUnderTest.CreateContractOrganization(userImput);
             }
             catch (Exception exception)
             {
@@ -135,7 +140,7 @@ namespace RN_Process.Tests.ServicesTests
 
 
         [Fact]
-        public async void GivenIHaveAnUnicOrganization_WhenISaveShouldBeAddinDataBase()
+        public async Task GivenIHaveAnUnicOrganization_WhenISaveShouldBeAddinDataBase()
         {
             // Arrange
             //representation of data in database
@@ -151,7 +156,7 @@ namespace RN_Process.Tests.ServicesTests
             //represent de duplication
             var uniqOrg = UnitTestUtility.GetContractOrganizationModel();
 
-            SystemUnderTest.CreateContractOrganization(uniqOrg);
+           await SystemUnderTest.CreateContractOrganization(uniqOrg);
             uniqOrg.Id.Should().NotBeNullOrEmpty("Organization was not saved");
             var fromRepository = _repository.GetByIdAsync(uniqOrg.Id);
             fromRepository.Should().NotBeNull();
@@ -218,7 +223,7 @@ namespace RN_Process.Tests.ServicesTests
             await RepositoryInstance.AddAsync(organization);
 
             //act
-            bool sut = (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id);
+            var sut = SystemUnderTest.OrganizationSyncRepositories(organization.Id).Result;
 
             //asset 
             sut.Should().BeTrue();
@@ -234,7 +239,7 @@ namespace RN_Process.Tests.ServicesTests
             //breaking dependence of our database. using fake in memory repository.
             await RepositoryInstance.AddAsync(organization);
 
-            var sut = Assert.Throws<Exception>(() => (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id));
+            var sut = Assert.Throws<AggregateException>(() => (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id).Result);
             //assert
             Assert.Contains("ERROR: Method available only for FTP", sut.Message);
         }
@@ -243,7 +248,6 @@ namespace RN_Process.Tests.ServicesTests
         public async Task OrganizationServerRepositorySincronization_should_have_lastchangeddate_equal()
         {
             // Arrange
-            var expectfile = "C:\\TEMP\\Myfile.txt";
 
             //representation of data in database
             var organization = UnitTestUtility.GetCompleteOrganization_2();
@@ -252,8 +256,8 @@ namespace RN_Process.Tests.ServicesTests
             await RepositoryInstance.AddAsync(organization);
 
             //act
-            bool sut = (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id);
-
+            bool sut = (bool)SystemUnderTest.OrganizationSyncRepositories(organization.Id).Result;
+            Assert.True(sut);
         }
 
         [Fact]
@@ -265,9 +269,21 @@ namespace RN_Process.Tests.ServicesTests
 
             //breaking dependence of our database. using fake in memory repository.
             await RepositoryInstance.AddAsync(organization);
-            var sut = Assert.Throws<System.ArgumentException>(() => (bool)SystemUnderTest.OrganizationSyncRepositories(string.Empty));
+            var sut = Assert.Throws<AggregateException>(() => (bool)SystemUnderTest.OrganizationSyncRepositories(string.Empty).Result);
             //assert
             Assert.Contains("Required input 'ORGANIZATIONID' was empty", sut.Message);
         }
+
+
+        //Add the file in the underlying request object.
+        //private ControllerContext RequestWithFile()
+        //{
+        //    var httpContext = new DefaultHttpContext();
+        //    httpContext.Request.Headers.Add("Content-Type", "multipart/form-data");
+        //    var file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
+        //    httpContext.Request.Form = new FormCollection(new Dictionary<string, StringValues>(), new FormFileCollection { file });
+        //    var actx = new ActionContext(httpContext, new RouteData(), new ControllerActionDescriptor());
+        //    return new ControllerContext(actx);
+        //}
     }
 }

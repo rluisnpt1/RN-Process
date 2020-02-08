@@ -27,7 +27,7 @@ namespace RN_Process.Tests.DataAccessTests
         private Term _sut;
         private Term SystemUnderTest => _sut ??= _sut = UnitTestUtility.GetTermOrganizationToTest();
 
-        private static Term TermInit(int termNumber, Organization Organization)
+        private static Term TermInit(int termNumber, IOrganization Organization)
         {
             return new Term(termNumber, Organization);
         }

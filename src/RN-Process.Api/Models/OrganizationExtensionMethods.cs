@@ -6,7 +6,7 @@ namespace RN_Process.Api.Models
 {
     public static class OrganizationExtensionMethods
     {
-        public static Term GetTermOrg(this ICollection<Term> terms, string orgId, string orgcod)
+        public static ITerm GetTermOrg(this ICollection<ITerm> terms, string orgId, string orgcod)
         {
             var returnValue = (from temp in terms
                     where temp.OrganizationId == orgId
@@ -17,7 +17,7 @@ namespace RN_Process.Api.Models
             return returnValue;
         }
 
-        public static TermDetail GetTermDetail(this ICollection<TermDetail> details, int debtCode, string orgcod)
+        public static ITermDetail GetTermDetail(this ICollection<ITermDetail> details, int debtCode, string orgcod)
         {
             var returnValue = (from temp in details
                     where temp.DebtCode == debtCode
@@ -28,7 +28,7 @@ namespace RN_Process.Api.Models
             return returnValue;
         }
 
-        public static TermDetailConfig GetTermDetailConfiguration(this ICollection<TermDetailConfig> detailsConfig,
+        public static ITermDetailConfig GetTermDetailConfiguration(this ICollection<ITermDetailConfig> detailsConfig,
             string termDetailId, string orgcod)
         {
             var returnValue = (from temp in detailsConfig
@@ -40,7 +40,7 @@ namespace RN_Process.Api.Models
             return returnValue;
         }
 
-        public static ICollection<Term> GetTerms(this ICollection<Term> terms, string orgId, string orgcod)
+        public static ICollection<ITerm> GetTerms(this ICollection<ITerm> terms, string orgId, string orgcod)
         {
             var returnValue = (from temp in terms
                     where temp.OrganizationId == orgId
@@ -51,7 +51,7 @@ namespace RN_Process.Api.Models
             return returnValue;
         }
 
-        public static int GetTermNumber(this ICollection<Term> terms, string orgId, string orgcod)
+        public static int GetTermNumber(this ICollection<ITerm> terms, string orgId, string orgcod)
         {
             var returnValue = (from temp in terms
                     where temp.OrganizationId == orgId
@@ -62,7 +62,7 @@ namespace RN_Process.Api.Models
             return returnValue?.TermNumber ?? 0;
         }
 
-        public static ICollection<TermDetail> GetTermDetails(this ICollection<TermDetail> details, Term term)
+        public static ICollection<ITermDetail> GetTermDetails(this ICollection<ITermDetail> details, Term term)
         {
             var returnValue = (from temp in details
                     where temp.TermId == term.Id

@@ -24,9 +24,6 @@ namespace RN_Process.DataAccess.MongoDb
             DbSet.InsertOne(obj);
             return obj;
         }
-
-
-
         public virtual Task AddAsync(TEntity obj)
         {
             return _context.AddCommand(async () => await DbSet.InsertOneAsync(obj));
@@ -40,6 +37,12 @@ namespace RN_Process.DataAccess.MongoDb
         public virtual async Task<TEntity> GetByIdAsync(string id)
         {
             var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id.Trim()));
+            return data.FirstOrDefault();
+        }
+
+        public virtual async Task<TEntity> GetByIdAsync(BsonObjectId id)
+        {
+            var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id));
             return data.FirstOrDefault();
         }
 

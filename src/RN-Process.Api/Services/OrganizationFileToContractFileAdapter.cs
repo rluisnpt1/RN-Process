@@ -29,8 +29,6 @@ namespace RN_Process.Api.Services
             toValue.FileMigratedOn = fromValue.FileMigratedOn;
         }
 
-
-
         public void AdaptFile(IEnumerable<OrganizationFile> fromValue, IEnumerable<FileDataContract> toValue)
         {
             var fileDataContracts = toValue.ToList();

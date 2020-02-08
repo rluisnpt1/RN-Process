@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Interfaces;
 using RN_Process.Api.Models;
@@ -23,7 +21,7 @@ namespace RN_Process.Api.Services
         {
             Guard.Against.Null(fromValue, nameof(Organization));
             Guard.Against.Null(toValue, nameof(ContractOrganization));
-            
+
             var term = fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode);
 
             toValue.Id = fromValue.Id;
@@ -36,13 +34,11 @@ namespace RN_Process.Api.Services
             //toValue.ChangedDate = fromValue.UpdatedDate;
             toValue.IsDeleted = fromValue.Deleted;
 
-
             if (term != null)
-                foreach (var item in term.TermDetails.GetTermDetails(fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
-                    AdaptTermsDetail(item, toValue);
+                foreach (var item in term.TermDetails.GetTermDetails(
+                    (Term) fromValue.Terms.GetTermOrg(fromValue.Id, fromValue.OrgCode)))
+                    AdaptTermsDetail((TermDetail) item, toValue);
         }
-
-
 
 
         /// <summary>
@@ -91,34 +87,13 @@ namespace RN_Process.Api.Services
                 Id = item.Id,
                 DebtCode = item.DebtCode,
                 TermsType = item.TermsType.ToString(),
-                OrgCode = item.OrgCode,
+                OrgCode = item.OrgCode
             };
 
             var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
 
-            var config = new DueDetailConfiguration
-            {
-                Id = configTemp.Id,
-                OrgCode =item.OrgCode,
-                CommunicationType = configTemp.CommunicationType.ToString(),
-                LinkToAccess = configTemp.LinkToAccess,
-                LinkToAccessType = configTemp.LinkToAccessType,
-                TypeOfResponse = configTemp.TypeOfResponse,
-                RequiredLogin = configTemp.RequiredLogin,
-                AuthenticationLogin = configTemp.AuthenticationLogin,
-                AuthenticationPassword = configTemp.AuthenticationPassword.Length > 0
-                    ? Encoding.ASCII.GetString(configTemp.AuthenticationPassword)
-                    : "",
-                HostkeyFingerPrint = configTemp.HostKeyFingerPrint.Length > 0
-                    ? Encoding.ASCII.GetString(configTemp.HostKeyFingerPrint)
-                    : "",
-                AuthenticationCodeApp = configTemp.AuthenticationCodeApp,
-                PathToOriginFile = configTemp.PathToOriginFile,
-                PathToDestinationFile = configTemp.PathToDestinationFile,
-                PathToFileBackupAtClient = configTemp.PathToFileBackupAtClient,
-                FileDelimiter = configTemp.FileDelimiter
-            };
-
+            var config = AdptToDueDetailConfiguration((TermDetailConfig) configTemp);
+            config.CodOrg = item.OrgCode;
             toValue.DueDetails.Add(tempDt);
             tempDt.DueDetailConfigs.Add(config);
             //toValue.DueDetails.Select(x => x.DueDetailConfigs.Select(s => config));
@@ -142,10 +117,11 @@ namespace RN_Process.Api.Services
                 if (fromValue.IsDeleted.Equals(false))
                     foreach (var dueDetailConfiguration in itemDetailModel.DueDetailConfigs)
                     {
-                        Enum.TryParse<FileAccessType>(dueDetailConfiguration.CommunicationType, true, out var fileAccessType);
+                        Enum.TryParse<FileAccessType>(dueDetailConfiguration.CommunicationType, true,
+                            out var fileAccessType);
                         //Boolean.TryParse(dueDetailConfiguration.HasHeader, out var hasHeaderValue);
                         //Boolean.TryParse(dueDetailConfiguration.RequiredLogin, out var hasRequiredLogin);
-                      
+
                         organization.AddTerm(null,
                             fromValue.ContractNumber,
                             itemDetailModel.DebtCode,
@@ -176,15 +152,17 @@ namespace RN_Process.Api.Services
             }
         }
 
-        public void AdaptToTermDetailConfig(DueDetailConfiguration fromValue, TermDetailConfig toValue)
-        {
 
+        public void AdaptTermDetailConfig(TermDetail fromValue, DueDetail toValue)
+        {
+            Guard.Against.Null(fromValue, nameof(toValue));
+            Guard.Against.Null(fromValue, nameof(toValue));
+
+            toValue.Id = fromValue.Id;
+            toValue.OrgCode = fromValue.OrgCode;
+            foreach (var item in fromValue.TermDetailConfigs) DueDetailToTermDetail(toValue, (TermDetailConfig) item);
         }
 
-        public void AdaptToTermDetailConfig(TermDetailConfig fromValue, DueDetailConfiguration toValue)
-        {
-
-        }
 
         public void AdaptToOrganizationFile(FileDataContract fromFileData, TermDetailConfig configuration)
         {
@@ -192,10 +170,9 @@ namespace RN_Process.Api.Services
             Guard.Against.Null(configuration, nameof(TermDetailConfig));
 
             Enum.TryParse<StatusType>(fromFileData.Status, true, out var statusType);
-            Boolean.TryParse(fromFileData.FileMigrated, out var fileMigrated);
+            bool.TryParse(fromFileData.FileMigrated, out var fileMigrated);
 
-            configuration.AddOrganizationFile("",
-                fromFileData.OrgCode,
+            configuration.AddOrganizationFile("",fromFileData.OrgCode,
                 fromFileData.FileDescription,
                 fromFileData.FileSize,
                 fromFileData.FileFormat,
@@ -206,9 +183,82 @@ namespace RN_Process.Api.Services
                 fromFileData.FileMigratedOn,
                 fromFileData.AllDataInFile, true);
 
-            //var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.OrgCode);
-
+            //var configTemp = item.TermDetailConfigs.GetTermDetailConfiguration(item.Id, item.CodOrg);
         }
+
+        public void AdaptTermDetailConfig(IEnumerable<TermDetailConfig> fromTermDetailConfigs,
+            IEnumerable<DueDetailConfiguration> toValueDueConfiguration)
+        {
+            Guard.Against.Null(fromTermDetailConfigs, nameof(fromTermDetailConfigs));
+            Guard.Against.Null(toValueDueConfiguration, nameof(toValueDueConfiguration));
+
+            foreach (var fromTermDetailConfig in fromTermDetailConfigs)
+            {
+                toValueDueConfiguration.Append(AdptToDueDetailConfiguration(fromTermDetailConfig));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="termDetailItem"></param>
+        /// <param name="configTemp"></param>
+        /// <returns></returns>
+        private static DueDetailConfiguration AdptToDueDetailConfiguration(TermDetailConfig configTemp)
+        {
+            var config = new DueDetailConfiguration
+            {
+                Id = configTemp.Id,
+                CommunicationType = configTemp.CommunicationType.ToString(),
+                LinkToAccess = configTemp.LinkToAccess,
+                LinkToAccessType = configTemp.LinkToAccessType,
+                TypeOfResponse = configTemp.TypeOfResponse,
+                RequiredLogin = configTemp.RequiredLogin,
+                AuthenticationLogin = configTemp.AuthenticationLogin,
+                AuthenticationPassword = configTemp.AuthenticationPassword.Length > 0
+                    ? Encoding.ASCII.GetString(configTemp.AuthenticationPassword)
+                    : "",
+                HostkeyFingerPrint = configTemp.HostKeyFingerPrint.Length > 0
+                    ? Encoding.ASCII.GetString(configTemp.HostKeyFingerPrint)
+                    : "",
+                AuthenticationCodeApp = configTemp.AuthenticationCodeApp,
+                PathToOriginFile = configTemp.PathToOriginFile,
+                PathToDestinationFile = configTemp.PathToDestinationFile,
+                PathToFileBackupAtClient = configTemp.PathToFileBackupAtClient,
+                FileDelimiter = configTemp.FileDelimiter
+            };
+            return config;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="toValue"></param>
+        /// <param name="item"></param>
+        private static void DueDetailToTermDetail(DueDetail toValue, TermDetailConfig item)
+        {
+            toValue.AddDueDetailConfigs(item.Id, item.OrgCode,
+                item.CommunicationType.ToString(),
+                item.LinkToAccess,
+                item.LinkToAccessType,
+                item.TypeOfResponse,
+                item.RequiredLogin,
+                item.AuthenticationLogin,
+                item.AuthenticationPassword.Length > 0 ? Encoding.ASCII.GetString(item.AuthenticationPassword) : "",
+                item.HostKeyFingerPrint.Length > 0 ? Encoding.ASCII.GetString(item.HostKeyFingerPrint) : "",
+                item.AuthenticationCodeApp,
+                item.PathToOriginFile,
+                item.PathToDestinationFile,
+                item.PathToFileBackupAtClient,
+                item.FileDelimiter,
+                item.FileName,
+                item.HasHeader,
+                item.FileProtectedPassword,
+                item.FileHeaderColumns,
+                item.AvailableFieldsColumns);
+        }
+
 
     }
 }

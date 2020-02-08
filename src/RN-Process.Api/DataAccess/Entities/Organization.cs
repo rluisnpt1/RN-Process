@@ -10,11 +10,11 @@ using RN_Process.Shared.Enums;
 namespace RN_Process.Api.DataAccess.Entities
 {
     [BsonKnownTypes(typeof(Organization))]
-    public class Organization : AuditableEntity<string>
+    public class Organization : AuditableEntity<string>, IOrganization
     {
         private static readonly DateTime DefaultDateTime = DateTime.UtcNow;
 
-        [BsonIgnore] private ICollection<Term> _term;
+        [BsonIgnore] private ICollection<ITerm> _term;
 
 
         public Organization(string id, string description, string orgCode)
@@ -38,43 +38,10 @@ namespace RN_Process.Api.DataAccess.Entities
         public virtual string OrgCode { get; private set; }
         public string Description { get; private set; }
 
-        public virtual ICollection<Term> Terms
+        public virtual ICollection<ITerm> Terms
         {
-            get { return _term ??= new List<Term>(); }
+            get { return _term ??= new List<ITerm>(); }
             protected set => _term = value;
-        }
-
-
-
-
-        /// <summary>
-        /// </summary>
-        /// <param name="orgCode"></param>
-        private void SetOrgCode(string orgCode)
-        {
-            Guard.Against.NullOrEmpty(orgCode, nameof(orgCode));
-            Guard.Against.NullOrWhiteSpace(orgCode, nameof(orgCode));
-            Guard.Against.OutOfRange(orgCode.Length, nameof(orgCode), 3, 5);
-
-            OrgCode = orgCode.ToUpper();
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="description"></param>
-        private void SetDescription(string description)
-        {
-            Guard.Against.NullOrEmpty(description, nameof(description));
-            Guard.Against.OutOfRange(description.Length, nameof(description), 5, 250);
-            Description = description;
-        }
-
-        /// <summary>
-        ///     Return a version byte
-        /// </summary>
-        private void SetVersion()
-        {
-            RowVersion = new byte[0];
         }
 
 
@@ -100,7 +67,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                 authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
                 pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
-                hashearder,  fileProtectedPassword,
+                hashearder, fileProtectedPassword,
                 fileHeaderColumns, availableFieldsColumns);
         }
 
@@ -136,40 +103,6 @@ namespace RN_Process.Api.DataAccess.Entities
                     fileHeaderColumns, availableFieldsColumns);
         }
 
-
-        private void UpdateExistingTermById(string id, int debtCode, int termNumber, TermsType termsType,
-            bool active = true)
-        {
-            Term term = null;
-            var foundIt = false;
-
-            if (!string.IsNullOrEmpty(id)) term = Terms.FirstOrDefault(temp => temp.Id == id);
-            //for 
-            if (term == null)
-            {
-                term = new Term(termNumber, this);
-                //term.AddTermDetail(null, debtCode, termsType);
-            }
-            else
-            {
-                //add update term ?
-                foundIt = true;
-                term.UpdatedDate = DateTime.UtcNow;
-                term.ModifiedBy = "System-- need change for user";
-                term.Active = active;
-                term.Deleted = !active;
-
-                var config = term.TermDetails.Where(temp => temp.TermId == term.Id);
-                foreach (var item in config)
-                {
-                    //var first = item.TermDetailConfigs.First(x => x.TermDetailId == item.Id);
-                    term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, active);
-                }
-            }
-
-            if (foundIt == false) Terms.Add(term);
-        }
-
         public void RemoveTerms(string id) //, bool softDelete)
         {
             if (string.IsNullOrEmpty(id)) return;
@@ -186,6 +119,69 @@ namespace RN_Process.Api.DataAccess.Entities
 
             var first = match.TermDetailConfigs.First(x => x.TermDetailId == match.Id);
             UpdateExistingTermById(matchTerm.Id, match.DebtCode, matchTerm.TermNumber, match.TermsType, false);
+        }
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name="orgCode"></param>
+        private void SetOrgCode(string orgCode)
+        {
+            Guard.Against.NullOrEmpty(orgCode, nameof(orgCode));
+            Guard.Against.NullOrWhiteSpace(orgCode, nameof(orgCode));
+            Guard.Against.OutOfRange(orgCode.Length, nameof(orgCode), 3, 5);
+
+            OrgCode = orgCode.ToUpper();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="description"></param>
+        private void SetDescription(string description)
+        {
+            Guard.Against.NullOrEmpty(description, nameof(description));
+            Guard.Against.OutOfRange(description.Length, nameof(description), 5, 250);
+            Description = description;
+        }
+
+        /// <summary>
+        ///     Return a version byte
+        /// </summary>
+        private void SetVersion()
+        {
+            RowVersion = new byte[0];
+        }
+
+
+        private void UpdateExistingTermById(string id, int debtCode, int termNumber, TermsType termsType,
+            bool active = true)
+        {
+            ITerm term = null;
+            var foundIt = false;
+
+            if (!string.IsNullOrEmpty(id)) term = Terms.FirstOrDefault(temp => temp.Id == id);
+            //for 
+            if (term == null)
+            {
+                term = new Term(termNumber, this);
+                //term.AddTermDetail(null, debtCode, termsType);
+            }
+            else
+            {
+                //add update term ?
+                foundIt = true;
+                //term.UpdatedDate = DateTime.UtcNow;
+                //term.ModifiedBy = "System-- need change for user";
+                term.Active = active;
+                term.Deleted = !active;
+
+                var config = term.TermDetails.Where(temp => temp.TermId == term.Id);
+                foreach (var item in config)
+                    //var first = item.TermDetailConfigs.First(x => x.TermDetailId == item.Id);
+                    term.UpdateTermTermById(item.Id, item.DebtCode, item.TermsType, active);
+            }
+
+            if (foundIt == false) Terms.Add(term);
         }
     }
 }

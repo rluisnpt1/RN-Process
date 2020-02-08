@@ -17,15 +17,16 @@ namespace RN_Process.Api.Models
            // FilesDataInContracts = new List<FileDataContract>();
         }
 
-        public DueDetailConfiguration(string id, string orgCode, string communicationType, string linkToAccess,
+        public DueDetailConfiguration(string id, string codOrg, string communicationType, string linkToAccess,
             string linkToAccessType, string typeOfResponse, bool requiredLogin, string authenticationLogin,
             string authenticationPassword, string hostkeyFingerPrint, string authenticationCodeApp,
             string pathToOriginFile, string pathToDestinationFile, string pathToFileBackupAtClient,
             string fileDelimiter, bool hashearder, string fileProtectedPassword,
+            string fileName,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             Id = id;
-            OrgCode = orgCode;
+            CodOrg = codOrg;
             CommunicationType = communicationType;
             LinkToAccess = linkToAccess;
             LinkToAccessType = linkToAccessType;
@@ -43,11 +44,12 @@ namespace RN_Process.Api.Models
             FileProtectedPassword = fileProtectedPassword;
             FileHeaderColumns = fileHeaderColumns;
             AvailableFieldsColumns = availableFieldsColumns;
+            FileName = fileName;
         }
 
         public string Id { get; set; }
 
-        public string OrgCode { get;  set; }
+        public string CodOrg { get;  set; }
         /// <summary>
         ///     Type communication has been agreed
         /// </summary>
@@ -120,6 +122,11 @@ namespace RN_Process.Api.Models
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string FileProtectedPassword { get;  set; }
 
+        [Display(Name = "File Name")]
+        [Required]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public string FileName { get;  set; }
+
         [Display(Name = "Columns Names at file")]
         [Required]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
@@ -134,11 +141,11 @@ namespace RN_Process.Api.Models
        // [DisplayFormat(ConvertEmptyStringToNull = false)]
         //public IList<FileDataContract> FilesDataInContracts { get; set; }
 
-        //public void AddFileIncontract(string id, string orgCode, string fileDescription, int fileSize, string fileFormat,
+        //public void AddFileIncontract(string id, string codOrg, string fileDescription, int fileSize, string fileFormat,
         //    string fileLocationOrigin, string locationToCopy, string status, List<BsonDocument> allDataInFile)
         //{
         //    FilesDataInContracts.Add(new FileDataContract(id,
-        //        orgCode, fileDescription, fileSize, fileFormat, fileLocationOrigin, locationToCopy, status
+        //        codOrg, fileDescription, fileSize, fileFormat, fileLocationOrigin, locationToCopy, status
         //        , false, null, allDataInFile));
         //}
 

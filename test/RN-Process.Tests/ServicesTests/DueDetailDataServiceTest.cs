@@ -30,8 +30,8 @@ namespace RN_Process.Tests.ServicesTests
         private InMemoryRepository<TermDetail> RepositoryInstance =>
             _repository ??= _repository = new InMemoryRepository<TermDetail>();
 
-        private IDueDetailDataService SystemUnderTest =>
-            _sut ??= _sut = new DueDetailDataService(RepositoryInstance, ValidatorStrategyInstance);
+        //private IDueDetailDataService SystemUnderTest =>
+        //    _sut ??= _sut = new DueDetailDataService(RepositoryInstance, ValidatorStrategyInstance);
 
      
 

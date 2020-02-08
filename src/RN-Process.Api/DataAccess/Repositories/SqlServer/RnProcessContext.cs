@@ -40,7 +40,7 @@ namespace RN_Process.Api.DataAccess
                 entity.HasKey(x => x.Id);
 
                 entity.HasMany(x => x.Terms)
-                    .WithOne(x => x.Organization);
+                    .WithOne(x => (Organization) x.Organization);
 
                 entity.Property(x => x.OrgCode).IsUnicode();
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
@@ -52,7 +52,7 @@ namespace RN_Process.Api.DataAccess
 
                 entity.HasKey(x => x.Id);
                 entity.HasMany(x => x.TermDetails)
-                    .WithOne(x => x.Term);
+                    .WithOne(x => (Term) x.Term);
 
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
@@ -63,7 +63,7 @@ namespace RN_Process.Api.DataAccess
 
                 entity.HasKey(x => x.Id);
                 entity.HasMany(x => x.TermDetailConfigs)
-                    .WithOne(x => x.TermDetail);
+                    .WithOne(x => x.TermDetail as TermDetail);
 
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
@@ -72,7 +72,7 @@ namespace RN_Process.Api.DataAccess
             {
                 entity.ToTable("TermDetailConfig");
                 entity.HasKey(x => x.Id);
-                entity.HasMany(x => x.OrganizationFiles).WithOne(x => x.TermDetailConfig);
+                entity.HasMany(x => x.OrganizationFiles).WithOne(x => (TermDetailConfig) x.TermDetailConfig);
                 entity.Property(x => x.RowVersion).IsConcurrencyToken();
             });
             modelBuilder.Entity<OrganizationFile>(entity =>

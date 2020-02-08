@@ -12,12 +12,14 @@ using WinSCP;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class TermDetailConfig : AuditableEntity<string>
+    public class TermDetailConfig : AuditableEntity<string>, ITermDetailConfig
     {
         private static readonly string
             BaseWorkDir = "C:\\TEMP\\WorkDir"; //Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-        [BsonIgnore] private ICollection<OrganizationFile> _fileImport;
+        [BsonIgnore] private ICollection<IOrganizationFile> _fileImport;
+
+        public int DirectoryHostServerSize { get; set; }
 
         [BsonRepresentation(BsonType.ObjectId)]
         //public string TermId { get; private set; }
@@ -25,7 +27,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public string TermDetailId { get; private set; }
 
-        [BsonIgnore] public TermDetail TermDetail { get; set; }
+        [BsonIgnore] public ITermDetail TermDetail { get; set; }
 
 
         public string OrgCode { get; private set; }
@@ -48,17 +50,16 @@ namespace RN_Process.Api.DataAccess.Entities
         public string PathToFileBackupAtClient { get; private set; }
         public string PathToFileBackupAtHostServer { get; private set; }
         public string FileDelimiter { get; private set; }
+        public string FileName { get; }
         public bool HasHeader { get; }
         public string FileProtectedPassword { get; }
-
-        private int DirectoryHostServerSize { get; set; }
 
         public IList<string> FileHeaderColumns { get; private set; }
         public IList<string> AvailableFieldsColumns { get; private set; }
 
-        public ICollection<OrganizationFile> OrganizationFiles
+        public ICollection<IOrganizationFile> OrganizationFiles
         {
-            get { return _fileImport ??= new List<OrganizationFile>(); }
+            get { return _fileImport ??= new List<IOrganizationFile>(); }
             protected set => _fileImport = value;
         }
 
@@ -74,11 +75,33 @@ namespace RN_Process.Api.DataAccess.Entities
                     , locationToCopy, status, allDataInFile);
         }
 
+        /// <summary>
+        ///     Downloading the most recent file
+        /// </summary>
+        public string FtpDownloadingTheMostRecentFileRemoteDir()
+        {
+            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
+            if (!Directory.Exists(BaseWorkDirectoryHost))
+                throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
+
+            if (CommunicationType != FileAccessType.FTP)
+                throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
+
+            var sessionOptionsLogin = FtpWork(out var options);
+
+            var directoryInfo = sessionOptionsLogin.GetRemoteDirectoryInfo(options, PathToOriginFile);
+            var latest = sessionOptionsLogin.GetLastFileRemoteFileInfo(directoryInfo);
+
+            var destination = BaseWorkDirectoryHost + "\\" + latest.Name;
+            sessionOptionsLogin.DownloadFileRemoteDir(options, latest.FullName, destination);
+
+            return destination;
+        }
+
         private void UpdateExistingTermById(string id, string orgCode, StatusType status,
             bool fileMigrated, DateTime? fileMigratedOn, bool active)
         {
-            OrganizationFile orgFile = null;
-            var foundIt = false;
+            IOrganizationFile orgFile = null;
             if (!string.IsNullOrEmpty(id))
                 orgFile =
                     OrganizationFiles.FirstOrDefault(temp => temp.Id == id
@@ -86,7 +109,6 @@ namespace RN_Process.Api.DataAccess.Entities
                                                                  .Equals(orgCode.ToUpper()));
             if (orgFile != null)
             {
-                foundIt = true;
                 orgFile.Status = status;
                 orgFile.FileMigrated = fileMigrated;
                 orgFile.FileMigratedOn = fileMigratedOn;
@@ -108,30 +130,7 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
         /// <summary>
-        ///     Downloading the most recent file
-        /// </summary>
-        public string FtpDownloadingTheMostRecentFileRemoteDir()
-        {
-            Guard.Against.NullOrWhiteSpace(BaseWorkDirectoryHost, nameof(BaseWorkDirectoryHost));
-            if (!Directory.Exists(BaseWorkDirectoryHost))
-                throw new Exception($"ERROR: {BaseWorkDirectoryHost} does not exist");
-
-            if (CommunicationType != FileAccessType.FTP)
-               throw new Exception($"ERROR: Method available only for {FileAccessType.FTP}");
-
-            var sessionOptionsLogin = FtpWork(out var options);
-
-            var directoryInfo = sessionOptionsLogin.GetRemoteDirectoryInfo(options, PathToOriginFile);
-            var latest = sessionOptionsLogin.GetLastFileRemoteFileInfo(directoryInfo);
-
-            var destination = BaseWorkDirectoryHost + "\\" + latest.Name;
-            sessionOptionsLogin.DownloadFileRemoteDir(options, latest.FullName, destination);
-
-            return destination;
-        }
-
-        /// <summary>
-        /// Has the information to contact at ftp
+        ///     Has the information to contact at ftp
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
@@ -156,7 +155,9 @@ namespace RN_Process.Api.DataAccess.Entities
         }
 
 
-        public TermDetailConfig(string id, TermDetail termDetail, FileAccessType communicationType,
+        public TermDetailConfig(string id,
+            ITermDetail termDetail,
+            FileAccessType communicationType,
             string internalHost,
             string linkToAccess,
             string linkToAccessType,
@@ -173,6 +174,7 @@ namespace RN_Process.Api.DataAccess.Entities
             string fileDeLimiter,
             bool hasHeader,
             string fileProtectedPassword,
+            string fileName,
             IList<string> fileHeaderColumns,
             IList<string> availableFieldsColumns)
         {
@@ -195,7 +197,8 @@ namespace RN_Process.Api.DataAccess.Entities
             SetBackupHostServer(pathToFileBackupAtHostServer);
             SetDelimiter(fileDeLimiter);
             HasHeader = hasHeader;
-            FileProtectedPassword = FileProtectedPassword;
+            FileProtectedPassword = fileProtectedPassword;
+            FileName = fileName;
             SetFileHeaderColumns(fileHeaderColumns);
             SetAvailableFieldsColumns(availableFieldsColumns);
             SetDirectoriesSize();
@@ -209,7 +212,7 @@ namespace RN_Process.Api.DataAccess.Entities
 
         #region Sets
 
-        private void SetDirectoriesSize()
+        private protected void SetDirectoriesSize()
         {
             if (!string.IsNullOrEmpty(BaseWorkDirectoryHost))
             {
@@ -287,7 +290,7 @@ namespace RN_Process.Api.DataAccess.Entities
             FileDelimiter = result;
         }
 
-        private void SetTermDetail(TermDetail term)
+        private void SetTermDetail(ITermDetail term)
         {
             Guard.Against.Null(term, nameof(TermDetail));
             TermDetailId = term.Id;

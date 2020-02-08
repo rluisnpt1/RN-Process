@@ -17,6 +17,7 @@ namespace RN_Process.Api.DataAccess.Repositories
     {
         private IMongoDatabase Database { get; set; }
         public MongoClient MongoClient { get; set; }
+
         private readonly List<Func<Task>> _commands;
         public IClientSessionHandle Session { get; set; }
 

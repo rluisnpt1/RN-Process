@@ -9,11 +9,11 @@ using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class TermDetail : AuditableEntity<string>
+    public class TermDetail : AuditableEntity<string>, ITermDetail
     {
-        [BsonIgnore] private ICollection<TermDetailConfig> _termConfig;
+        [BsonIgnore] private ICollection<ITermDetailConfig> _termConfig;
 
-        public TermDetail(int debtCode, TermsType name, Term term)
+        public TermDetail(int debtCode, TermsType name, ITerm term)
         {
             Id = ObjectId.GenerateNewId().ToString();
             SetDebtCode(debtCode);
@@ -30,11 +30,11 @@ namespace RN_Process.Api.DataAccess.Entities
 
         public string TermId { get; private set; }
 
-        [BsonIgnore] public Term Term { get; set; }
+        [BsonIgnore] public ITerm Term { get; set; }
 
-        public virtual ICollection<TermDetailConfig> TermDetailConfigs
+        public virtual ICollection<ITermDetailConfig> TermDetailConfigs
         {
-            get { return _termConfig ??= new List<TermDetailConfig>(); }
+            get { return _termConfig ??= new List<ITermDetailConfig>(); }
             protected set => _termConfig = value;
         }
 
@@ -50,14 +50,13 @@ namespace RN_Process.Api.DataAccess.Entities
             DebtCode = debtCode;
         }
 
-        private void SetTerm(Term term)
+        private void SetTerm(ITerm term)
         {
             Guard.Against.Null(term, nameof(term));
             Term = term;
             TermId = term.Id;
             OrgCode = term.OrgCode;
         }
-
 
         public void AddDetailConfig(string id, FileAccessType communicationType, string internalHost,
             string linkToAccess, string linkToAccessType, string typeOfResponse,
@@ -116,7 +115,7 @@ namespace RN_Process.Api.DataAccess.Entities
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns,
             bool active = true)
         {
-            TermDetailConfig config = null;
+            ITermDetailConfig config = null;
             var foundIt = false;
 
             if (!string.IsNullOrEmpty(id))
@@ -136,8 +135,8 @@ namespace RN_Process.Api.DataAccess.Entities
             else
             {
                 foundIt = true;
-                config.UpdatedDate = DateTime.UtcNow;
-                config.ModifiedBy = "System-- need change for user";
+                //config.UpdatedDate = DateTime.UtcNow;
+                //config.ModifiedBy = "System-- need change for user";
                 config.Active = active;
                 config.Deleted = !active;
             }
@@ -160,8 +159,7 @@ namespace RN_Process.Api.DataAccess.Entities
                 linkToAccess, linkToAccessType, typeOfResponse, requiredLogin,
                 authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                 authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
-                pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, hashearder, fileProtectedPassword,
-                fileHeaderColumns, availableFieldsColumns);
+                pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, hashearder, fileProtectedPassword, string.Empty, fileHeaderColumns, availableFieldsColumns);
             return fact;
         }
     }

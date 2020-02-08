@@ -52,14 +52,16 @@ namespace RN_Process.Api.Services
         /// <summary>
         /// </summary>
         /// <param name="organizationFromModel"></param>
-        public void CreateContractOrganization(ContractOrganization organizationFromModel)
+        public async Task CreateContractOrganization(ContractOrganization organizationFromModel)
         {
             Guard.Against.Null(organizationFromModel, nameof(organizationFromModel));
+            Guard.Against.NullOrWhiteSpace(organizationFromModel.CodOrg, nameof(organizationFromModel.CodOrg));
+            Guard.Against.Zero(organizationFromModel.ContractNumber, nameof(organizationFromModel.ContractNumber));
 
             //GET ALL DATA --PLEASE CHANGE IT LATER
-            var allData = _repositoryInstance.GetAllAsync();
+            var allData = await _repositoryInstance.GetAllAsync();
 
-            var match = allData.Result.FirstOrDefault(x => x.OrgCode == organizationFromModel.CodOrg);
+            var match = allData.FirstOrDefault(x => x.OrgCode == organizationFromModel.CodOrg);
 
             if (match == null)
             {
@@ -159,7 +161,7 @@ namespace RN_Process.Api.Services
         /// </summary>
         /// <param name="organizationId"></param>
         /// <returns></returns>
-        public bool OrganizationSyncRepositories(string organizationId)
+        public async Task<bool> OrganizationSyncRepositories(string organizationId)
         {
             Guard.Against.NullOrWhiteSpace(organizationId, nameof(organizationId));
             var match = GetContractOrganizationById(organizationId);
@@ -175,7 +177,7 @@ namespace RN_Process.Api.Services
                 {
                     if (org.Terms != null)
                         foreach (var item in org.Terms.Select(x =>
-                            x.TermDetails.GetTermDetails(org.Terms.GetTermOrg(org.Id, org.OrgCode))))
+                            x.TermDetails.GetTermDetails((Term) org.Terms.GetTermOrg(org.Id, org.OrgCode))))
                             foreach (var termDetail in item)
                             {
                                 var configTemp =

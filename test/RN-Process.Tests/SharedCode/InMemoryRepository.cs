@@ -13,7 +13,7 @@ namespace RN_Process.Tests
     {
        public InMemoryRepository()
         {
-            Items = new List<TEntity>();
+            Items =  new List<TEntity>();
         }
 
         public List<TEntity> Items
@@ -77,12 +77,23 @@ namespace RN_Process.Tests
             return (Items.Where(temp => temp.Id.Equals(id))).FirstOrDefault();
         }
 
+        public async Task<TEntity> GetByIdAsync(BsonObjectId id)
+        {
+           
+            return (Items.FirstOrDefault(temp => temp.Id == id));
+        }
+
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return Items;
         }
 
         public Task<IEnumerable<TEntity>> GetEqualField(string fieldName, string fieldValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TEntity> GetEntityByCodorg(string codorg)
         {
             throw new NotImplementedException();
         }

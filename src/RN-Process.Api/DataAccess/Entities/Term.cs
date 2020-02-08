@@ -10,17 +10,19 @@ using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class Term : AuditableEntity<string>
+  
+
+    public class Term : AuditableEntity<string>, ITerm
     {
-        //[BsonIgnore] private ICollection<TermDetailConfig> _configMapping;
-        [BsonIgnore] private ICollection<TermDetail> _termDetail;
+        [BsonIgnore] 
+        private ICollection<ITermDetail> _termDetail;
 
         //Runtime execution
         protected Term()
         {
         }
 
-        public Term(int termNumber, Organization organization)
+        public Term(int termNumber, IOrganization organization)
         {
             Id = ObjectId.GenerateNewId().ToString();
             SetTermNumber(termNumber);
@@ -29,7 +31,8 @@ namespace RN_Process.Api.DataAccess.Entities
             Deleted = false;
         }
 
-        [BsonIgnore] public virtual Organization Organization { get; set; }
+        [BsonIgnore] 
+        public virtual IOrganization Organization { get; set; }
 
 
         public int TermNumber { get; private set; }
@@ -38,13 +41,13 @@ namespace RN_Process.Api.DataAccess.Entities
         public string OrganizationId { get; private set; }
 
 
-        public virtual ICollection<TermDetail> TermDetails
+        public virtual ICollection<ITermDetail> TermDetails
         {
-            get { return _termDetail ??= new List<TermDetail>(); }
-            protected set => _termDetail = value;
+            get { return _termDetail ??= new List<ITermDetail>(); }
+            set => _termDetail = value;
         }
 
-        private void SetCustomer(Organization organization)
+        private void SetCustomer(IOrganization organization)
         {
             Guard.Against.Null(organization, nameof(organization));
             OrganizationId = organization.Id;
@@ -101,14 +104,14 @@ namespace RN_Process.Api.DataAccess.Entities
                 requiredLogin, authenticationLogin, authenticationPassword, hostKeyFingerPrint,
                 authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
                 pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
-                hashearder,fileProtectedPassword,
+                hashearder, fileProtectedPassword,
                 fileHeaderColumns, availableFieldsColumns);
         }
 
 
         public void UpdateTermTermById(string id, int debtCode, TermsType term, bool active)
         {
-            TermDetail termdet = null;
+            ITermDetail termdet = null;
             var foundIt = false;
 
             if (!string.IsNullOrEmpty(id))
@@ -123,8 +126,8 @@ namespace RN_Process.Api.DataAccess.Entities
             else
             {
                 foundIt = true;
-                termdet.UpdatedDate = DateTime.UtcNow;
-                termdet.ModifiedBy = "System-- need change for user";
+                //termdet.UpdatedDate = DateTime.UtcNow;
+                //termdet.ModifiedBy = "System-- need change for user";
                 termdet.Active = active;
                 termdet.Deleted = !active;
 

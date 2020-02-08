@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using FakeItEasy;
 using FluentAssertions;
+using Moq;
 using RN_Process.Api;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Shared.Enums;
@@ -11,24 +14,20 @@ using Xunit.Abstractions;
 
 namespace RN_Process.Tests.DataAccessTests
 {
-    public class TermDetailConfigFixture : IDisposable
+    public class TermDetailConfigFixture : UnitTestBase, IDisposable
     {
-        public TermDetailConfigFixture(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
+    
 
         public void Dispose()
         {
             _sut = null;
+            MockRepository.VerifyAll();
         }
 
-        private readonly ITestOutputHelper _testOutputHelper;
 
         private TermDetailConfig _sut;
 
         private TermDetailConfig SystemUnderTest => _sut ??= _sut = UnitTestUtility.GetTermDetailConfigToTest();
-
 
         public TermDetailConfig InitizerTest(
             FileAccessType communicationType,
@@ -46,6 +45,9 @@ namespace RN_Process.Tests.DataAccessTests
             string pathToFileBackupAtClient,
             string pathToFileBackupAtHostServer,
             string fileDeLimiter,
+            bool hasHeader,
+            string fileProtected,
+            string fileName,
             IList<string> fileHeaderColumns,
             IList<string> availableFieldsColumns
         )
@@ -53,7 +55,10 @@ namespace RN_Process.Tests.DataAccessTests
             return new TermDetailConfig("", UnitTestUtility.GetTermBaseToTeste(), communicationType, internalHost,
                 linkToAccess, linkToAccessType, typeOfResponse, requiredLogin, authenticationLogin,
                 authenticationPassword, "", authenticationCodeApp, pathToOriginFile, pathToDestinationFile,
-                pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter, true, string.Empty,
+                pathToFileBackupAtClient, pathToFileBackupAtHostServer, fileDeLimiter,
+                hasHeader,
+                fileProtected,
+                fileName,
                 fileHeaderColumns,
                 availableFieldsColumns);
         }
@@ -75,14 +80,13 @@ namespace RN_Process.Tests.DataAccessTests
                 IntrumFile.GetFilesInDirectory(SystemUnderTest.BaseWorkDirectoryHost, "*"));
         }
 
+        delegate void ValidateCallback();
 
         [Fact]
         public void
-            TermConfigWhenCreated_RequiredLoginIsFalse_And_HasOthersLogin_ThrowException_requiredPassword()
+            TermConfigWhenCreated_ShouldThrowException_when_hasLoginNotNullAndPassWordNull()
         {
             //arrange
-
-            // Act
             var ex = Assert.Throws<ArgumentException>(() =>
                 InitizerTest(FileAccessType.FTP, string.Empty,
                     string.Empty, string.Empty,
@@ -90,12 +94,14 @@ namespace RN_Process.Tests.DataAccessTests
                     false, "my login",
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
-                    string.Empty, string.Empty, new List<string> {"cdb"},
-                    new List<string> {"ab"}));
+                    string.Empty, string.Empty,
+                    true, string.Empty, string.Empty,
+                    new List<string> { "cdb" },
+                    new List<string> { "ab" }));
 
-            // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);
             Assert.Equal("password", ex.ParamName);
+
         }
 
 
@@ -158,8 +164,9 @@ namespace RN_Process.Tests.DataAccessTests
                 string.Empty,
                 string.Empty,
                 string.Empty,
-                new List<string> {"ss", "s"},
-                new List<string> {"ss", " "}));
+                true, string.Empty, string.Empty,
+                new List<string> { "ss", "s" },
+                new List<string> { "ss", " " }));
             // Act            
 
             // Assert            
@@ -178,7 +185,8 @@ namespace RN_Process.Tests.DataAccessTests
                     "s", string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty,
-                    new List<string> {"ss", "s"}, null));
+                    true, string.Empty, string.Empty,
+                    new List<string> { "ss", "s" }, null));
 
             Assert.Contains("Value cannot be null. (Parameter 'availableFieldsColumns')", expect.Message);
         }
@@ -195,7 +203,8 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", "s"}, new List<string>()));
+                true, string.Empty, string.Empty,
+                new List<string> { "ss", "s" }, new List<string>()));
 
 
             Assert.Contains(
@@ -213,7 +222,8 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string> {"ss", " "}, new List<string> {"cdb"}));
+                true, string.Empty, string.Empty,
+                new List<string> { "ss", " " }, new List<string> { "cdb" }));
 
             // Act            
 
@@ -232,7 +242,8 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                null, new List<string> {"cdb"}));
+                true, string.Empty, string.Empty,
+                null, new List<string> { "cdb" }));
 
             Assert.Contains("Value cannot be null. (Parameter 'fileHeaderColumns')", expect.Message);
         }
@@ -248,7 +259,8 @@ namespace RN_Process.Tests.DataAccessTests
                 "s", string.Empty,
                 string.Empty, string.Empty, string.Empty,
                 string.Empty, string.Empty,
-                new List<string>(), new List<string> {"cdb"}));
+                true, string.Empty, string.Empty,
+                new List<string>(), new List<string> { "cdb" }));
 
             // Act            
 
@@ -269,7 +281,10 @@ namespace RN_Process.Tests.DataAccessTests
                 false, string.Empty,
                 string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, new List<string> {"cdb"}, new List<string> {"cdb"});
+
+                string.Empty, string.Empty,
+                true, string.Empty, string.Empty,
+                new List<string> { "cdb" }, new List<string> { "cdb" });
 
 
             // Assert
@@ -287,10 +302,13 @@ namespace RN_Process.Tests.DataAccessTests
             var ex = Assert.Throws<ArgumentException>(() =>
                 UnitTestUtility.GetTermDetailConfigToTest(
                     new TermDetailConfig("", UnitTestUtility.GetTermBaseToTeste(), FileAccessType.FTP, string.Empty,
-                        string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, "", string.Empty,
-                        string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
-                        new List<string> {"cdb"},
-                        new List<string> {"cdb"})));
+                        string.Empty, string.Empty, string.Empty, true, string.Empty,
+                        string.Empty, "", string.Empty,
+                        string.Empty, string.Empty, string.Empty,
+                        string.Empty, string.Empty,
+                        true, string.Empty, string.Empty,
+                        new List<string> { "cdb" },
+                        new List<string> { "cdb" })));
 
             // Assert
             Assert.Equal("Required input 'AUTHENTICATIONLOGIN' was empty. (Parameter 'authenticationLogin')",
@@ -313,7 +331,8 @@ namespace RN_Process.Tests.DataAccessTests
                     string.Empty, string.Empty,
                     string.Empty, string.Empty, string.Empty,
                     string.Empty, string.Empty,
-                    new List<string> {"cdb"}, new List<string> {"cdb"}));
+                    true, string.Empty, string.Empty,
+                    new List<string> { "cdb" }, new List<string> { "cdb" }));
 
             // Assert
             Assert.Equal("Required input 'PASSWORD' was empty. (Parameter 'password')", ex.Message);

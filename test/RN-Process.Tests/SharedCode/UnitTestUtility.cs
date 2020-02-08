@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using FluentAssertions;
 using MongoDB.Bson;
+using Moq;
 using RN_Process.Api.DataAccess.Entities;
 using RN_Process.Api.Models;
 using RN_Process.Shared.Commun;
@@ -17,10 +18,16 @@ namespace RN_Process.Tests
         //Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
         
         private const string BaseWorkdir = "C:\\TEMP\\WorkDir";
+        private static Mock<IOrganization> organizationMock = new Mock<IOrganization>();
+        private static Mock<ITerm> termMock = new Mock<ITerm>();
+        private static Mock<ITermDetail> termDetailMock = new Mock<ITermDetail>();
+        private static Mock<ITermDetailConfig> iTermDetailConfigMock = new Mock<ITermDetailConfig>();
 
 
         public static Organization GetBancoPortugalOrganizationToTest()
         {
+
+            
             return new Organization(string.Empty, "Banco de portugal", "120@1");
         }
 
@@ -34,10 +41,6 @@ namespace RN_Process.Tests
             return new Organization(string.Empty, "UNICRE PORTO", "UNPOR");
         }
 
-        public static Term GetContracuNICREtOrganizationToTest()
-        {
-            return new Term(14533686, GetUNICRE_OrganizationToTest());
-        }
 
         public static Term GetTermOrganizationToTest()
         {
@@ -79,10 +82,8 @@ namespace RN_Process.Tests
                 BaseWorkdir + "\\backup",
                 ",",
                 true,
-                string.Empty,
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"},
-                new List<string>
+                string.Empty, string.Empty, new List<string>
+                    {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"}, new List<string>
                     {"NDIV", "COD_CRED", "VAL1", "VAL2", "DATA3"});
         }
 
@@ -100,10 +101,8 @@ namespace RN_Process.Tests
                 "/De Unicre",
                 "/Para Unicre",
                 "",
-                "", ",", true, string.Empty,
-                new List<string>
-                    {"NDIV", "COD_CRED", "VAL1"},
-                new List<string>
+                "", ",", true, string.Empty, string.Empty, new List<string>
+                    {"NDIV", "COD_CRED", "VAL1"}, new List<string>
                     {"NDIV", "COD_CRED", "VAL1"});
         }
 
@@ -115,10 +114,8 @@ namespace RN_Process.Tests
                 "https://assist.healthcare.com.pt/index.php?r=auth%2Flogin",
                 "AUTH", "INTERNAL RESPONSE", true, "intrum", "int2019#u", "", null,
                 "https://assist.healthcare.com.pt/index.php?r=intrum%2Fdebts&export=csv", "", "",
-                BaseWorkdir + "\\backup", ",", true, string.Empty,
-                new List<string>
-                    {"NDIV", "COD_CRED", "DATA2", "DATA3"},
-                new List<string>
+                BaseWorkdir + "\\backup", ",", true, string.Empty, string.Empty, new List<string>
+                    {"NDIV", "COD_CRED", "DATA2", "DATA3"}, new List<string>
                     {"NDIV", "COD_CRED", "DATA2", "DATA3"});
         }
 
@@ -129,8 +126,7 @@ namespace RN_Process.Tests
                 string.Empty, BaseWorkdir, string.Empty,
                 string.Empty, false, string.Empty, string.Empty,
                 string.Empty, string.Empty, string.Empty,
-                string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty,
-                new List<string> { "teste1" }, new List<string> { "teste1" });
+                string.Empty, string.Empty, string.Empty, string.Empty, true, string.Empty, string.Empty, new List<string> { "teste1" }, new List<string> { "teste1" });
         }
 
         public static Organization GetCompleteOrganization()
@@ -217,6 +213,7 @@ namespace RN_Process.Tests
                     "SFTP",
                     "FTP",
                     ",",
+                    string.Empty,
                     false,
                     string.Empty,
                     new List<string> { "NDIV", "COD_CRED", "VAL1" },
@@ -251,6 +248,7 @@ namespace RN_Process.Tests
                     "SFTP",
                     "FTP",
                     ",",
+                    string.Empty,
                     true,
                     string.Empty,
                     new List<string> { "NDIV", "COD_CRED", "VAL1" },

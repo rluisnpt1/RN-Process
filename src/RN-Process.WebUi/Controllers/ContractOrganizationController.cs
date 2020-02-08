@@ -101,11 +101,34 @@ namespace RN_Process.WebUi.Controllers
         {
             Guard.Against.Null(contractForCreation, nameof(ContractOrganization));
 
-            _service.CreateContractOrganization(contractForCreation);
+            await _service.CreateContractOrganization(contractForCreation);
 
             return CreatedAtRoute("OrganizationContract",
                 new { contractId = contractForCreation.Id },
                 contractForCreation);
+        }
+
+
+        /// <summary>
+        ///    Sync Repository base from client to server Intrum
+        /// </summary>
+        /// <param name="organizationId">The id of the Contract</param>
+        /// <returns>An ActionResult of type contract</returns>
+        /// <response code="200">Returns the requested contractorganization</response>
+        [HttpGet("syncrepository/{organizationId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces("application/vnd.marvin.syncrepository+json")]
+        public async Task<ActionResult<bool>> SyncRepositoryBase(string organizationId)
+        {
+            if (string.IsNullOrWhiteSpace(organizationId))
+            {
+                return BadRequest();
+            }
+            var contract = await _service.OrganizationSyncRepositories(organizationId);
+            
+            // var data = JsonConvert.SerializeObject(contract);
+            return Ok(contract);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using RN_Process.Api.Models;
 
 namespace RN_Process.Api.Interfaces
@@ -17,7 +18,7 @@ namespace RN_Process.Api.Interfaces
         /// <summary>
         /// </summary>
         /// <param name="organizationFromModel"></param>
-        void CreateContractOrganization(ContractOrganization organizationFromModel);
+        Task CreateContractOrganization(ContractOrganization organizationFromModel);
 
         /// <summary>
         /// 
@@ -54,6 +55,6 @@ namespace RN_Process.Api.Interfaces
         /// </summary>
         /// <param name="organizationId"></param>
         /// <returns></returns>
-        bool OrganizationSyncRepositories(string organizationId);
+       Task<bool> OrganizationSyncRepositories(string organizationId);
     }
 }

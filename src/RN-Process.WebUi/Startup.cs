@@ -42,6 +42,10 @@ namespace RN_Process.WebUi
                     new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
                 setupAction.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                setupAction.Filters.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status401Unauthorized));
+                setupAction.Filters.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status404NotFound));
 
                 setupAction.OutputFormatters.Add(new XmlSerializerOutputFormatter());
             }).AddNewtonsoftJson(opt =>
@@ -120,17 +124,20 @@ namespace RN_Process.WebUi
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IMongoContext, MongoContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-           
+
             services.AddScoped<IRepositoryMongo<Organization>, MongoOrganizationRepository>();
             services.AddScoped<IRepositoryMongo<Term>, MongoTermRepository>();
             services.AddScoped<IRepositoryMongo<TermDetail>, MongoTermDetailRepository>();
             services.AddScoped<IRepositoryMongo<TermDetailConfig>, MongoTermDetailConfigRepository>();
             services.AddScoped<IRepositoryMongo<OrganizationFile>, MongoOrganizationFileRepository>();
-            services.AddTransient<IValidatorStrategy<ContractOrganization>,DefaultValidatorStrategy<ContractOrganization>>();
+
+            services.AddTransient<IValidatorStrategy<ContractOrganization>, DefaultValidatorStrategy<ContractOrganization>>();
+            services.AddTransient<IValidatorStrategy<DueDetail>, DefaultValidatorStrategy<DueDetail>>();
+
 
             services.AddTransient<IContractOrganizationDataServices, ContractOrganizationServices>();
             services.AddTransient<IContractFileDataService, ContractFileDataService>();
-
+            services.AddTransient<IDueDetailDataService, DueDetailDataService>();
         }
 
         private static void SwaggerConfiguration(IServiceCollection services)
@@ -146,7 +153,7 @@ namespace RN_Process.WebUi
                     Contact = new OpenApiContact
                     {
                         Name = "Robson Nascimento",
-                        Email = string.Empty,
+                        Email = "robsonluisn@outlook.com",
                         Url = new Uri("https://twitter.com/rluisnpt1")
                     },
                     License = new OpenApiLicense

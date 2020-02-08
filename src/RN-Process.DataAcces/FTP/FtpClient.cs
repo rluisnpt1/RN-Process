@@ -420,7 +420,6 @@ namespace RN_Process.DataAccess.FTP
 
         public string[] GetFileList(string directory)
         {
-            string[] downloadFiles;
             var result = new StringBuilder();
             WebResponse response = null;
             StreamReader reader = null;
@@ -450,8 +449,8 @@ namespace RN_Process.DataAccess.FTP
             }
             finally
             {
-                if (reader != null) reader.Close();
-                if (response != null) response.Close();
+                reader?.Close();
+                response?.Close();
             }
         }
 

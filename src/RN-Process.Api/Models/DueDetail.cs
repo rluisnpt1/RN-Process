@@ -47,13 +47,14 @@ namespace RN_Process.Api.Models
             string typeOfResponse, bool requiredLogin, string authenticationLogin, string authenticationPassword,
             string hostkeyFingerPrint, string authenticationCodeApp, string pathToOriginFile,
             string pathToDestinationFile, string pathToFileBackupAtClient, string fileDelimiter,
+            string fileName,
             bool hashearder, string fileProtectedPassword,
             IList<string> fileHeaderColumns, IList<string> availableFieldsColumns)
         {
             DueDetailConfigs.Add(new DueDetailConfiguration
             {
                 Id = id,
-                OrgCode = orgCode,
+                CodOrg = orgCode,
                 CommunicationType = communicationType.ToString(),
                 LinkToAccess = linkToAccess,
                 LinkToAccessType = linkToAccessType,
@@ -67,6 +68,7 @@ namespace RN_Process.Api.Models
                 PathToDestinationFile = pathToDestinationFile,
                 PathToFileBackupAtClient = pathToFileBackupAtClient,
                 FileDelimiter = fileDelimiter,
+                FileName = fileName,
                 HasHeader = hashearder,
                 FileProtectedPassword = fileProtectedPassword,
                 FileHeaderColumns = fileHeaderColumns,

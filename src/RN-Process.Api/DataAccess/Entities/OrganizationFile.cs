@@ -8,7 +8,7 @@ using RN_Process.Shared.Enums;
 
 namespace RN_Process.Api.DataAccess.Entities
 {
-    public class OrganizationFile : AuditableEntity<string>
+    public class OrganizationFile : AuditableEntity<string>, IOrganizationFile
     {
         protected OrganizationFile()
         {
@@ -56,7 +56,7 @@ namespace RN_Process.Api.DataAccess.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string TermDetailConfigId { get; private set; }
 
-        public virtual TermDetailConfig TermDetailConfig { get; private set; }
+        public virtual ITermDetailConfig TermDetailConfig { get; private set; }
 
         private void SetStatus(StatusType status)
         {

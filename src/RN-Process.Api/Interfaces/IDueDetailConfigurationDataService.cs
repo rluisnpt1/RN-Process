@@ -6,8 +6,18 @@ namespace RN_Process.Api.Interfaces
 {
     public interface IDueDetailDataService
     {
-        Task<DueDetail> GetDueDetailConfigurationById(string id);
-        Task<IList<DueDetail>> GetDueDetailConfigurationOrgCod(string codorg);
-        Task Create(DueDetail fileContract);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<DueDetail> GetDueDetailById(string id);
+
+        /// <summary>
+        /// Get Configuration list of configuration of organization By DueDetail Id
+        /// </summary>
+        /// <param name="dueDetailId"> DueDetailId</param>
+        /// <returns></returns>
+        Task<IList<DueDetailConfiguration>> GetDueDetailConfigurationByDueDetailId(string dueDetailId);
     }
 }
